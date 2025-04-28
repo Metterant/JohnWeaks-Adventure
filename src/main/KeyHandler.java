@@ -1,0 +1,103 @@
+package main;
+
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+public class KeyHandler implements KeyListener {
+
+    // Booleans for moving input
+    private boolean isMoveUpPressed, isMoveDownPressed, isMoveLeftPressed, isMoveRightPressed;
+    // Booleans for shooting input
+    private boolean isShootUpPressed, isShootDownPressed, isShootLeftPressed, isShootRightPressed;
+    // Horizontal and Verticle Movement Input
+    private int inputMoveX, inputMoveY;
+    // Horizontal and Verticle direction when shooting
+    private int inputShootX, inputShootY; 
+
+    public int getInputMoveX() { return inputMoveX; }
+    public int getInputMoveY() { return inputMoveY; }
+
+    public int getInputShootX() { return inputShootX; }
+    public int getInputShootY() { return inputShootY; }
+
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        int code = e.getKeyCode();
+
+        // Moving Input
+        if (code == KeyEvent.VK_W)
+            isMoveUpPressed = true;
+        if (code == KeyEvent.VK_A)
+            isMoveLeftPressed = true;
+        if (code == KeyEvent.VK_S)
+            isMoveDownPressed = true;
+        if (code == KeyEvent.VK_D)
+            isMoveRightPressed = true;
+
+        // Shooting Input
+        if (code == KeyEvent.VK_UP)
+            isShootUpPressed = true;
+        if (code == KeyEvent.VK_LEFT)
+            isShootLeftPressed = true;
+        if (code == KeyEvent.VK_DOWN)
+            isShootDownPressed = true;
+        if (code == KeyEvent.VK_RIGHT)
+            isShootRightPressed = true;
+        
+
+        setAxises();
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        int code = e.getKeyCode();
+
+        // Moving Input
+        if (code == KeyEvent.VK_W)
+            isMoveUpPressed = false;
+        if (code == KeyEvent.VK_A)
+            isMoveLeftPressed = false;
+        if (code == KeyEvent.VK_S)
+            isMoveDownPressed = false;
+        if (code == KeyEvent.VK_D)
+            isMoveRightPressed = false;
+
+        // Shooting Input
+        if (code == KeyEvent.VK_UP)
+            isShootUpPressed = false;
+        if (code == KeyEvent.VK_LEFT)
+            isShootLeftPressed = false;
+        if (code == KeyEvent.VK_DOWN)
+            isShootDownPressed = false;
+        if (code == KeyEvent.VK_RIGHT)
+            isShootRightPressed = false;
+
+        setAxises();
+    }
+
+    private void setAxises() {
+        inputMoveX = calculateAxis(isMoveRightPressed, isMoveLeftPressed);
+        inputMoveY = calculateAxis(isMoveUpPressed, isMoveDownPressed);
+        inputShootX = calculateAxis(isShootRightPressed, isShootLeftPressed);
+        inputShootY = calculateAxis(isShootUpPressed, isShootDownPressed);
+    }
+
+    private int calculateAxis(boolean positivePressed, boolean negativePressed) {
+        if (positivePressed && negativePressed) {
+            return 0;
+        }
+        if (positivePressed) {
+            return 1;
+        }
+        if (negativePressed) {
+            return -1;
+        }
+        return 0;
+    }
+}
