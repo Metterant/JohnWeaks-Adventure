@@ -3,8 +3,8 @@ package entity;
 import util.Renderable;
 
 public abstract class Entity implements Renderable {
-    protected float posX, posY;
-    protected float movementSpeed;   
+    protected double posX, posY;
+    protected double movementSpeed;   
 
     @Override
     public void getImages() { }

@@ -19,16 +19,18 @@ public class Player extends Entity {
         WALKING_RIGHT,
         WALKING_LEFT,
         WALKING_UP,
-        SHOOTING_DOWN_WALING,
+        SHOOTING_DOWN_WALKING,
         SHOOTING_UP_WALKING,
         SHOOTING_DOWN_STILL,
-        SHOOTING_UP_STILL
+        SHOOTING_RIGHT_STILL,
+        SHOOTING_LEFT_STILL,
+        SHOOTING_UP_STILL,
     }
     private PlayerAnimState animState;
     private PlayerAnimState lastState;
 
     // Sprites
-    private BufferedImage[] walkingDownSprite, walkingUpSprite, walkingSideSprite, walking_shootingDownSprite;
+    private BufferedImage[] walkingDownSprite, walkingUpSprite, walkingSideSprite, walkingShootingDownSprite;
     private BufferedImage idleUpSprite, idleDownSprite;
     private int frameCounter, frameNum;
     private boolean isFlipped;
@@ -40,25 +42,35 @@ public class Player extends Entity {
     private KeyHandler keyHandler;
     private int lastInputY = 0;
 
+    // Logic-related
+    private double lastPosX;
+    private double lastPosY;
+    private boolean isMoving;
+
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
         this.gamePanel = gamePanel;
         this.keyHandler = keyHandler;
     }
 
     public void setDefaultValues() {
-        posX = 100;
-        posY = 100;
+        lastPosX = posX = 100;
+        lastPosY = posY = 100;
         movementSpeed = 4;
         lastState = animState = PlayerAnimState.IDLE_DOWN;
 
         walkingDownSprite = new BufferedImage[4];
         walkingUpSprite = new BufferedImage[4];
         walkingSideSprite = new BufferedImage[4];
-        walking_shootingDownSprite = new BufferedImage[4];
+        walkingShootingDownSprite = new BufferedImage[4];
 
         frameCounter = 0;
     }
 
+    /**
+     * From {@link util.Renderable} interface
+     * 
+     * Load Sprites from "resources"
+     */
     @Override
     public void getImages() {
         try {
@@ -84,10 +96,10 @@ public class Player extends Entity {
             walkingSideSprite[3] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_side4.png"));
             
             // Walking Down and Shooting
-            walking_shootingDownSprite[0] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_shoot_down1.png"));
-            walking_shootingDownSprite[1] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_shoot_down2.png"));
-            walking_shootingDownSprite[2] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_shoot_down3.png"));
-            walking_shootingDownSprite[3] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_shoot_down4.png"));
+            walkingShootingDownSprite[0] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_shoot_down1.png"));
+            walkingShootingDownSprite[1] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_shoot_down2.png"));
+            walkingShootingDownSprite[2] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_shoot_down3.png"));
+            walkingShootingDownSprite[3] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_shoot_down4.png"));
 
         } catch (IOException e) {
             e.getStackTrace();
@@ -95,30 +107,7 @@ public class Player extends Entity {
     }
 
     public void update() {
-        if (keyHandler.getInputMoveY() > 0) {
-            setAnimState(PlayerAnimState.WALKING_UP);
-        }
-        else if (keyHandler.getInputMoveY() < 0) {
-            setAnimState(PlayerAnimState.WALKING_DOWN);
-        }
-        else  { 
-            if (lastInputY > 0 || lastState == PlayerAnimState.IDLE_UP) setAnimState(PlayerAnimState.IDLE_UP);
-            else setAnimState(PlayerAnimState.IDLE_DOWN);
-        }
-
-        if (keyHandler.getInputMoveX() > 0) {
-            setAnimState(PlayerAnimState.WALKING_RIGHT);
-            isFlipped = false;
-        }
-        else if (keyHandler.getInputMoveX() < 0) {
-            setAnimState(PlayerAnimState.WALKING_LEFT);
-            isFlipped = true;
-        }
-        
-        lastState = animState;
-        lastInputY = keyHandler.getInputMoveY();
-        
-        // Normalize Input Vector
+        // MOVEMENT
         if (Math.abs(keyHandler.getInputMoveX()) == 1 && Math.abs(keyHandler.getInputMoveY()) == 1) {
             posY -= keyHandler.getInputMoveY() * movementSpeed / Math.sqrt(2);
             posX += keyHandler.getInputMoveX() * movementSpeed / Math.sqrt(2);
@@ -128,6 +117,18 @@ public class Player extends Entity {
             posX += keyHandler.getInputMoveX() * movementSpeed;
         }
 
+        // LOGIC
+        isMoving = true;
+        if (lastPosX == posX && lastPosY == posY)
+            isMoving = false;
+        lastPosX = posX;
+        lastPosY = posY;
+       
+        animLogic();
+        lastInputY = keyHandler.getInputMoveY();
+        
+
+        // ANIMATION
         frameCounter++;
         // Increase the counter every 8 frames
         if (frameCounter >= 8) {
@@ -137,7 +138,12 @@ public class Player extends Entity {
             
             frameCounter = 0;
         }
+
+        // DEBUG
         // System.out.printf("ShootX:%d, ShootY:%d\n", keyHandler.getInputShootX(), keyHandler.getInputShootY());
+        // System.out.println("Anim state:" + animState);
+        // System.out.println("Is Moving:" + isMoving);
+
     }
 
     public void draw(Graphics2D g2) {
@@ -156,8 +162,31 @@ public class Player extends Entity {
             case WALKING_UP:
                 image = walkingUpSprite[frameNum];
                 break;
-            case WALKING_RIGHT, WALKING_LEFT:
+            case WALKING_RIGHT:
                 image = walkingSideSprite[frameNum];
+                break;
+            case WALKING_LEFT:
+                isFlipped = true;
+                image = walkingSideSprite[frameNum];
+                break;
+            case SHOOTING_DOWN_WALKING:
+                image = walkingShootingDownSprite[frameNum];
+                break;
+            case SHOOTING_UP_WALKING:
+                image = walkingUpSprite[frameNum]; // Reuse walking up sprite for shooting
+                break;
+            case SHOOTING_DOWN_STILL:
+                image = walkingShootingDownSprite[1]; // Use the second frame of side sprite for shooting down
+                break;
+            case SHOOTING_RIGHT_STILL:
+                image = walkingSideSprite[1]; // Use the second frame of side sprite for shooting to the side
+                break;
+            case SHOOTING_LEFT_STILL:
+                isFlipped = true;
+                image = walkingSideSprite[1]; // Use the second frame of side sprite for shooting
+                break;
+            case SHOOTING_UP_STILL:
+                image = idleUpSprite; // Reuse idle up sprite for shooting
                 break;
             default:
                 image = idleDownSprite; // Default to down if direction is invalid
@@ -174,13 +203,124 @@ public class Player extends Entity {
         }
     }
 
-    // A method that changes Animation State of the Player
-    // At the same time, it changes frameCounter and animation-related variables 
+    /**
+     * A method that changes Animation State of the Player
+     * 
+     * At the same time, it changes frameCounter and animation-related variables 
+     */ 
     private void setAnimState(PlayerAnimState newState) {
         if (animState != newState) {
             animState = newState;
             // frameCounter = 0;
             // frameNum = 0;
+        }
+    }
+    
+    /**
+     * A method that determines animation state logically using the inputs provided
+     */
+    private void animLogic() {
+        isFlipped = false;
+        
+        /*
+         * ANIMATION LOGIC:
+         * - Priortize shooting animation:
+         *   + Always Shoot to the side when 2 components whose values are not 0 (flip if neccessary)
+         *   + Shoot like normal when the player is standing still or when only one component (x or y) is not 0
+         * - When not shooting:
+         *   + When the horizontal component (x) of the movement input value is not 0, always walk to the side
+         *  
+         */
+
+        // Walking animation (vertical and standing still)
+        if (keyHandler.getInputMoveY() > 0) {
+            setAnimState(PlayerAnimState.WALKING_UP);
+        }
+        else if (keyHandler.getInputMoveY() < 0) {
+            setAnimState(PlayerAnimState.WALKING_DOWN);
+        }
+        else  { 
+            if (lastInputY > 0 || lastState == PlayerAnimState.IDLE_UP) setAnimState(PlayerAnimState.IDLE_UP);
+            else setAnimState(PlayerAnimState.IDLE_DOWN);
+        }
+
+        // Walking and Shooting
+        if (keyHandler.getInputMoveY() != 0) {
+            if (keyHandler.getInputShootY() > 0)
+                setAnimState(PlayerAnimState.SHOOTING_UP_WALKING);
+            if (keyHandler.getInputShootY() < 0)
+                setAnimState(PlayerAnimState.SHOOTING_DOWN_WALKING);
+        }
+
+        // Walking animation (horizontal)
+        if (keyHandler.getInputMoveX() > 0) 
+            setAnimState(PlayerAnimState.WALKING_RIGHT);
+            
+        else if (keyHandler.getInputMoveX() < 0)
+            setAnimState(PlayerAnimState.WALKING_LEFT);
+
+        // Handle shooting animation
+        handleShootingAnim();
+
+        // TODO: Unused
+        lastState = animState;
+    }
+
+    /**
+     * Handle Shooting animation
+     */
+    private void handleShootingAnim() {
+        if (isMoving) {
+            handleMovingShooting();
+        } else {
+            handleStillShooting();
+        }
+    }
+
+    /**
+     * Handle Shooting Animation while moving
+     */
+    private void handleMovingShooting() {
+        if (keyHandler.getInputShootY() != 0 && keyHandler.getInputShootX() == 0) {
+            handleVerticalMovingShooting();
+        }
+        if (keyHandler.getInputShootX() != 0) {
+            handleHorizontalMovingShooting();
+        }
+    }
+    /**
+     * Handle Shooting animation while moving vertically
+     */
+    private void handleVerticalMovingShooting() {
+        if (keyHandler.getInputShootY() > 0) {
+            setAnimState(PlayerAnimState.SHOOTING_UP_WALKING);
+        } else if (keyHandler.getInputShootY() < 0) {
+            setAnimState(PlayerAnimState.SHOOTING_DOWN_WALKING);
+        }
+    }
+    /**
+     * Handle Shooting animation while moving horizontally
+     */
+    private void handleHorizontalMovingShooting() {
+        if (keyHandler.getInputShootX() > 0) {
+            setAnimState(PlayerAnimState.WALKING_RIGHT);
+        } else if (keyHandler.getInputShootX() < 0) {
+            setAnimState(PlayerAnimState.WALKING_LEFT);
+        }
+    }
+
+    /**
+     * Handle Shooting animation while standing still
+     */
+    private void handleStillShooting() {
+        if (keyHandler.getInputShootY() > 0) {
+            setAnimState(PlayerAnimState.SHOOTING_UP_STILL);
+        } else if (keyHandler.getInputShootY() < 0) {
+            setAnimState(PlayerAnimState.SHOOTING_DOWN_STILL);
+        } else if (keyHandler.getInputShootX() > 0) {
+            setAnimState(PlayerAnimState.SHOOTING_RIGHT_STILL);
+        } else if (keyHandler.getInputShootX() < 0) {
+            setAnimState(PlayerAnimState.SHOOTING_LEFT_STILL);
         }
     }
 }
