@@ -1,6 +1,7 @@
 package entity;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -8,10 +9,16 @@ import javax.imageio.ImageIO;
 
 import main.GamePanel;
 import main.KeyHandler;
+import util.CollisionHandler;
 import util.GameConstants;
 
 public class Player extends Entity {
     // State
+    /**
+     * Inside {@Link entity.Player} <p>
+     * 
+     * Enum for determining the state of an animmation of a Player 
+     */
     public enum PlayerAnimState {
         IDLE_DOWN,
         IDLE_UP,
@@ -39,13 +46,16 @@ public class Player extends Entity {
     private GamePanel gamePanel;
 
     // Input
-    private KeyHandler keyHandler;
     private int lastInputY = 0;
 
     // Logic-related
     private double lastPosX;
     private double lastPosY;
+    private int lastShootInputY;
     private boolean isMoving;
+
+    // Collison Handler
+    CollisionHandler collisionHandler;
 
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
         this.gamePanel = gamePanel;
@@ -63,11 +73,23 @@ public class Player extends Entity {
         walkingSideSprite = new BufferedImage[4];
         walkingShootingDownSprite = new BufferedImage[4];
 
+        lastShootInputY = 0;
         frameCounter = 0;
+
+        collisionBoxWidth = 8;
+        collisionBoxHeight = 8;
+
+        collisionBox = new Rectangle();
+        collisionBox.x = 4 * GameConstants.SCALE;
+        collisionBox.y = 8 * GameConstants.SCALE;
+        collisionBox.width = collisionBoxWidth * GameConstants.SCALE;
+        collisionBox.height = collisionBoxHeight * GameConstants.SCALE;
+
+        collisionHandler = new CollisionHandler();
     }
 
     /**
-     * From {@link util.Renderable} interface
+     * From {@link util.Renderable} interface <p>
      * 
      * Load Sprites from "resources"
      */
@@ -108,24 +130,29 @@ public class Player extends Entity {
 
     public void update() {
         // MOVEMENT
-        if (Math.abs(keyHandler.getInputMoveX()) == 1 && Math.abs(keyHandler.getInputMoveY()) == 1) {
-            posY -= keyHandler.getInputMoveY() * movementSpeed / Math.sqrt(2);
-            posX += keyHandler.getInputMoveX() * movementSpeed / Math.sqrt(2);
-        }
-        else {
-            posY -= keyHandler.getInputMoveY() * movementSpeed;
-            posX += keyHandler.getInputMoveX() * movementSpeed;
-        }
+        double desiredAxialDisplacement = movementSpeed;
+        double desiredPosX, desiredPosY;
+        if (keyHandler.getInputMoveX() != 0 && keyHandler.getInputMoveY() != 0)
+            desiredAxialDisplacement /= Math.sqrt(2);
 
+        desiredPosX = posX + keyHandler.getInputMoveX() * desiredAxialDisplacement;
+        desiredPosY = posY - keyHandler.getInputMoveY() * desiredAxialDisplacement;
+
+        posX = desiredPosX;
+        posY = desiredPosY;
+        // Collision
+        collisionHandler.checkTile(this, desiredPosX, desiredPosY, desiredAxialDisplacement);
+        
         // LOGIC
         isMoving = true;
         if (lastPosX == posX && lastPosY == posY)
             isMoving = false;
         lastPosX = posX;
         lastPosY = posY;
-       
+        
         animLogic();
         lastInputY = keyHandler.getInputMoveY();
+        lastShootInputY = keyHandler.getInputShootY();
         
 
         // ANIMATION
@@ -216,12 +243,9 @@ public class Player extends Entity {
         }
     }
     
-    /**
-     * A method that determines animation state logically using the inputs provided
-     */
+    /** A method that determines animation state logically using the inputs provided */
     private void animLogic() {
         isFlipped = false;
-        
         /*
          * ANIMATION LOGIC:
          * - Priortize shooting animation:
@@ -240,7 +264,7 @@ public class Player extends Entity {
             setAnimState(PlayerAnimState.WALKING_DOWN);
         }
         else  { 
-            if (lastInputY > 0 || lastState == PlayerAnimState.IDLE_UP) setAnimState(PlayerAnimState.IDLE_UP);
+            if (lastShootInputY > 0|| lastInputY > 0 || lastState == PlayerAnimState.IDLE_UP) setAnimState(PlayerAnimState.IDLE_UP);
             else setAnimState(PlayerAnimState.IDLE_DOWN);
         }
 
@@ -266,9 +290,7 @@ public class Player extends Entity {
         lastState = animState;
     }
 
-    /**
-     * Handle Shooting animation
-     */
+    /** Handle Shooting animation */
     private void handleShootingAnim() {
         if (isMoving) {
             handleMovingShooting();
@@ -277,9 +299,7 @@ public class Player extends Entity {
         }
     }
 
-    /**
-     * Handle Shooting Animation while moving
-     */
+    /** Handle Shooting Animation while moving */
     private void handleMovingShooting() {
         if (keyHandler.getInputShootY() != 0 && keyHandler.getInputShootX() == 0) {
             handleVerticalMovingShooting();
@@ -288,9 +308,7 @@ public class Player extends Entity {
             handleHorizontalMovingShooting();
         }
     }
-    /**
-     * Handle Shooting animation while moving vertically
-     */
+    /** Handle Shooting animation while moving vertically */
     private void handleVerticalMovingShooting() {
         if (keyHandler.getInputShootY() > 0) {
             setAnimState(PlayerAnimState.SHOOTING_UP_WALKING);
@@ -298,9 +316,7 @@ public class Player extends Entity {
             setAnimState(PlayerAnimState.SHOOTING_DOWN_WALKING);
         }
     }
-    /**
-     * Handle Shooting animation while moving horizontally
-     */
+    /** Handle Shooting animation while moving horizontally */
     private void handleHorizontalMovingShooting() {
         if (keyHandler.getInputShootX() > 0) {
             setAnimState(PlayerAnimState.WALKING_RIGHT);
@@ -309,9 +325,7 @@ public class Player extends Entity {
         }
     }
 
-    /**
-     * Handle Shooting animation while standing still
-     */
+    /** Handle Shooting animation while standing still */
     private void handleStillShooting() {
         if (keyHandler.getInputShootY() > 0) {
             setAnimState(PlayerAnimState.SHOOTING_UP_STILL);

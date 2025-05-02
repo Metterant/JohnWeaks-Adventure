@@ -3,6 +3,9 @@ package main;
 import javax.swing.JPanel;
 
 import entity.Player;
+import tile.Tile;
+import tile.TileManager;
+import util.CollisionHandler;
 import util.GameConstants;
 
 import java.awt.Color;
@@ -19,7 +22,7 @@ public class GamePanel extends JPanel implements Runnable {
     transient Thread gameThread;
 
     // Player
-    private transient Player player =  new Player(this, keyHandler);
+    transient Player player =  new Player(this, keyHandler);
 
     // Constructor
     public GamePanel() {
@@ -33,6 +36,9 @@ public class GamePanel extends JPanel implements Runnable {
     public void startGameThread() {
         player.setDefaultValues();
         player.getImages();
+
+        TileManager.getInstance().getImages();
+        TileManager.getInstance().loadMap("/resources/maps/map_test.txt");
 
         gameThread = new Thread(this);
         gameThread.start();
@@ -56,6 +62,9 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    /**
+     * Repeating method that handles repeating logic every frame
+     */
     public void update() {
         player.update();
     }
@@ -66,6 +75,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         Graphics2D g2 = (Graphics2D)g;
         
+        TileManager.getInstance().draw(g2);
         player.draw(g2);
 
         g2.dispose();
