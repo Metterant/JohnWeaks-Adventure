@@ -1,6 +1,6 @@
 package util;
 
-import entity.Entity;
+import entity.*;
 import tile.TileManager;
 
 /**
@@ -15,11 +15,11 @@ public class CollisionHandler {
      * @param desiredPosY : The vertical position in the world to which the entity wants to move
      * @param desiredAxialDisplacement : The speed/displacement that the entity is going to move
      */
-    public void checkTile(Entity entity, double desiredPosX, double desiredPosY, double desiredAxialDisplacement) {
+    public void checkTile(ControllableEntity entity, double desiredPosX, double desiredPosY, double desiredAxialDisplacement) {
         // Calculate collision box world coordinates
-        double leftX   = desiredPosX + entity.collisionBox.x;
+        double leftX   = desiredPosX + entity.offsetX;
         double rightX  = leftX + entity.collisionBox.width;
-        double topY    = desiredPosY + entity.collisionBox.y;
+        double topY    = desiredPosY + entity.offsetY;
         double bottomY = topY + entity.collisionBox.height;
 
         // Sides of the collision box
@@ -31,6 +31,9 @@ public class CollisionHandler {
         // Player movement direction
         int moveX = entity.keyHandler.getInputMoveX();
         int moveY = entity.keyHandler.getInputMoveY();
+
+        // System.out.printf("%d, %d\n", moveX, moveY);
+        // System.out.printf("%f\n", desiredAxialDisplacement);
 
         // columns and rows of the sides of unmoved collision box
         int leftOriginCol   = (int) (leftX   - moveX * desiredAxialDisplacement) / GameConstants.TILE_SIZE;
@@ -60,5 +63,30 @@ public class CollisionHandler {
         if (isCollidable.test(leftOriginCol, topRow) || isCollidable.test(rightOriginCol, topRow)) {
             entity.setPositionY(desiredPosY + moveY * desiredAxialDisplacement);
         }
+    }
+
+    /**
+     * Check if an entity is colliding with any colliable object
+     * 
+     * @param entity : entity that needs to check if it is colliding with any Pickable objects
+     */
+    public void checkPickable(ControllableEntity entity) {
+        // Get entities
+        var entities = EntityManager.getInstance().instantiatedEntities;
+        // Iterate through the list
+        for (int i = 0; i < entities.size(); i++) {
+            Entity nearbyEntity = entities.get(i);
+            if (nearbyEntity == null || nearbyEntity == entity) continue;
+
+            if (nearbyEntity instanceof Pickable pickable && isColliding(nearbyEntity, entity)) {
+                pickable.getPickedUp(entity);
+
+                entities.set(i, null); // Assign null to the picked up object
+            }
+        }
+    }
+
+    private boolean isColliding(Entity entityA, Entity entityB) {
+        return entityA.collisionBox.intersects(entityB.collisionBox);
     }
 }

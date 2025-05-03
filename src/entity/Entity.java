@@ -1,36 +1,108 @@
 package entity;
 
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 
-import main.KeyHandler;
-
+import util.EntityManager;
+import util.GameConstants;
 import util.Renderable;
 
 public abstract class Entity implements Renderable {
     protected double posX, posY;
-    protected double movementSpeed;  
-
-    // Input
-    public KeyHandler keyHandler;
-
+    
+    /** Current Sprite of an Entity */
+    protected BufferedImage image;
+    
     // COLLISION HANDLING
-
     /** A rectangle box used for checking collision */
     public Rectangle collisionBox;
     /** Collision Box Wid in pixels */
-    protected int collisionBoxWidth = 0;
+    protected int collisionBoxWidth = 16;
     /** Collision Box Height in pixels */
-    protected int collisionBoxHeight = 0;
+    protected int collisionBoxHeight = 16;
+    /** Collision Box horizontal offset */
+    public int offsetX = 0;
+    /** Collision Box vertical offset */
+    public int offsetY = 0;
 
     protected boolean isColliding = false;
 
     public double getPositionX() { return posX; }
     public double getPositionY() { return posY; }
-    public double getMovementSpeed() { return movementSpeed; }
+    
+    public void setPositionX(double posX) {
+        // double displacement = posX - this.posX;
+        this.posX = posX; 
+        
+        // collisionBox.x += (int)displacement;
+    }
+    public void setPositionY(double posY) { 
+        // double displacement = posY - this.posY;
+        this.posY = posY; 
+        
+        // collisionBox.y += (int)displacement;
+    }
 
-    public void setPositionX(double posX) { this.posX = posX; }
-    public void setPositionY(double posY) { this.posY = posY; }
+    /** Instantiate Entity with default position (0, 0) */
+    protected Entity() { 
+        posX = GameConstants.DEFAULT_SPAWN_X;
+        posY = GameConstants.DEFAULT_SPAWN_Y;
 
-    @Override
-    public void getImages() { }
+        EntityManager.getInstance().addInstance(this);
+        initBoxPosition();
+    }
+    
+    /** Instantiate Entity on the TileMap */
+    protected Entity(int row, int col) {
+        posX = (double) col * GameConstants.TILE_SIZE;
+        posY = (double) row * GameConstants.TILE_SIZE;
+
+        EntityManager.getInstance().addInstance(this);
+        initBoxPosition();
+    }
+
+    /** Instantiate Entity on using World Coordinates */
+    protected Entity(double locationX, double locationY) {
+        posX = locationX;
+        posY = locationY;
+
+        EntityManager.getInstance().addInstance(this);
+        initBoxPosition();
+    }
+
+    /** Default initialization of Collision Box */
+    protected void initBoxPosition() {
+        collisionBox = new Rectangle((int)posX, (int)posY, 0, 0);
+        collisionBox.width = collisionBoxWidth * GameConstants.SCALE;
+        collisionBox.height = collisionBoxHeight * GameConstants.SCALE;
+    }
+
+    /** Initialization of collisionBox with Offset and Size variation <p>
+     * 
+     * @param offsetX : horizontal offset of collisionBox in pixels
+     * @param offsetY : vertical offset of collisionBox in pixels
+     * @param width : width of the collisionBox in pixels
+     * @param height : height of the collisionBox in pixels
+     */
+    protected void initBoxPosition(int offsetX, int offsetY, int width, int height) {
+        this.offsetX = offsetX * GameConstants.SCALE;
+        this.offsetY = offsetY * GameConstants.SCALE;
+
+        collisionBox.x = (int)posX + this.offsetX;
+        collisionBox.y = (int)posY + this.offsetY;
+        collisionBoxWidth = collisionBox.width = width * GameConstants.SCALE;
+        collisionBoxHeight = collisionBox.height = height * GameConstants.SCALE;
+    }
+    
+    /** Move Collision Box position */
+    protected void moveCollisionBox() {
+        collisionBox.x = (int)posX + offsetX;
+        collisionBox.y = (int)posY + offsetY;
+    }
+
+    /** Start method */
+    public void start() { }
+
+    /** Update method */
+    public void update() { }
 }

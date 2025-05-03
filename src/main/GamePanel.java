@@ -3,9 +3,10 @@ package main;
 import javax.swing.JPanel;
 
 import entity.Player;
-import tile.Tile;
+import entity.pickables.*;
+import input.KeyHandler;
 import tile.TileManager;
-import util.CollisionHandler;
+import util.EntityManager;
 import util.GameConstants;
 
 import java.awt.Color;
@@ -20,9 +21,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     // Thread
     transient Thread gameThread;
-
+    
     // Player
-    transient Player player =  new Player(this, keyHandler);
+    transient Player player = new Player(keyHandler);
 
     // Constructor
     public GamePanel() {
@@ -33,9 +34,13 @@ public class GamePanel extends JPanel implements Runnable {
         this.setFocusable(true);
     }
 
+    // UI
+    transient UI ui = new UI(this);
+
     public void startGameThread() {
-        player.setDefaultValues();
-        player.getImages();
+        EntityManager.getInstance().entitiesStart();
+
+        Key key = new Key();
 
         TileManager.getInstance().getImages();
         TileManager.getInstance().loadMap("/resources/maps/map_test.txt");
@@ -62,21 +67,24 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    /**
-     * Repeating method that handles repeating logic every frame
-     */
+    /** Repeating method that handles repeating logic every frame */
     public void update() {
-        player.update();
+        EntityManager.getInstance().entitiesUpdate();
     }
 
+    /** Implementation of paintComponent inherited from JPanel */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D)g;
         
+        EntityManager.getInstance().removeNull();
+
         TileManager.getInstance().draw(g2);
-        player.draw(g2);
+        EntityManager.getInstance().entitiesDraw(g2);
+
+        ui.draw(g2);
 
         g2.dispose();
     }
