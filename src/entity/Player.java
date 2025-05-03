@@ -7,12 +7,11 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import main.GamePanel;
-import main.KeyHandler;
+import input.KeyHandler;
 import util.CollisionHandler;
 import util.GameConstants;
 
-public class Player extends Entity {
+public class Player extends ControllableEntity {
     // State
     /**
      * Inside {@Link entity.Player} <p>
@@ -42,9 +41,6 @@ public class Player extends Entity {
     private int frameCounter, frameNum;
     private boolean isFlipped;
 
-    // Etc
-    private GamePanel gamePanel;
-
     // Input
     private int lastInputY = 0;
 
@@ -57,15 +53,26 @@ public class Player extends Entity {
     // Collison Handler
     CollisionHandler collisionHandler;
 
-    public Player(GamePanel gamePanel, KeyHandler keyHandler) {
-        this.gamePanel = gamePanel;
+    public Player(KeyHandler keyHandler) {
+        super();
+        
         this.keyHandler = keyHandler;
+
+        setDefaultValues();
     }
 
-    public void setDefaultValues() {
-        lastPosX = posX = 100;
-        lastPosY = posY = 100;
-        movementSpeed = 4;
+    @Override
+    public void start() {
+        setDefaultValues();
+        getImages();
+    }
+
+    private void setDefaultValues() {
+        setPositionX(100);
+        setPositionY(100);
+        lastPosX = posX;
+        lastPosY = posY;
+        movementSpeed = 2.5d;
         lastState = animState = PlayerAnimState.IDLE_DOWN;
 
         walkingDownSprite = new BufferedImage[4];
@@ -80,10 +87,7 @@ public class Player extends Entity {
         collisionBoxHeight = 8;
 
         collisionBox = new Rectangle();
-        collisionBox.x = 4 * GameConstants.SCALE;
-        collisionBox.y = 8 * GameConstants.SCALE;
-        collisionBox.width = collisionBoxWidth * GameConstants.SCALE;
-        collisionBox.height = collisionBoxHeight * GameConstants.SCALE;
+        initBoxPosition(4, 8, collisionBoxWidth, collisionBoxHeight);
 
         collisionHandler = new CollisionHandler();
     }
@@ -128,6 +132,7 @@ public class Player extends Entity {
         }
     }
 
+    @Override
     public void update() {
         // MOVEMENT
         double desiredAxialDisplacement = movementSpeed;
@@ -140,8 +145,12 @@ public class Player extends Entity {
 
         posX = desiredPosX;
         posY = desiredPosY;
+
+        moveCollisionBox();
+
         // Collision
         collisionHandler.checkTile(this, desiredPosX, desiredPosY, desiredAxialDisplacement);
+        collisionHandler.checkPickable(this);
         
         // LOGIC
         isMoving = true;
@@ -165,17 +174,9 @@ public class Player extends Entity {
             
             frameCounter = 0;
         }
-
-        // DEBUG
-        // System.out.printf("ShootX:%d, ShootY:%d\n", keyHandler.getInputShootX(), keyHandler.getInputShootY());
-        // System.out.println("Anim state:" + animState);
-        // System.out.println("Is Moving:" + isMoving);
-
     }
 
     public void draw(Graphics2D g2) {
-        BufferedImage image = null;
-
         switch (animState) {
             case IDLE_UP:
                 image = idleUpSprite;
@@ -228,6 +229,8 @@ public class Player extends Entity {
             else g2.drawImage(image, (int)posX, (int)posY, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);
             
         }
+        // Draw collision Box
+        // g2.fillRect(collisionBox.x, collisionBox.y, collisionBoxWidth, collisionBoxHeight);
     }
 
     /**
@@ -301,21 +304,18 @@ public class Player extends Entity {
 
     /** Handle Shooting Animation while moving */
     private void handleMovingShooting() {
-        if (keyHandler.getInputShootY() != 0 && keyHandler.getInputShootX() == 0) {
-            handleVerticalMovingShooting();
-        }
-        if (keyHandler.getInputShootX() != 0) {
+        if (keyHandler.getInputShootY() < 0) {
+            // Set animState to shooting down in case the player doesn't shoot diagonally
+            setAnimState(PlayerAnimState.SHOOTING_DOWN_WALKING);
+            
+            // Horizontal direction
             handleHorizontalMovingShooting();
         }
-    }
-    /** Handle Shooting animation while moving vertically */
-    private void handleVerticalMovingShooting() {
         if (keyHandler.getInputShootY() > 0) {
             setAnimState(PlayerAnimState.SHOOTING_UP_WALKING);
-        } else if (keyHandler.getInputShootY() < 0) {
-            setAnimState(PlayerAnimState.SHOOTING_DOWN_WALKING);
         }
     }
+
     /** Handle Shooting animation while moving horizontally */
     private void handleHorizontalMovingShooting() {
         if (keyHandler.getInputShootX() > 0) {
