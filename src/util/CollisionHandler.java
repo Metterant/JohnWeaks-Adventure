@@ -81,7 +81,7 @@ public class CollisionHandler {
             if (nearbyEntity instanceof Pickable pickable && isColliding(nearbyEntity, entity)) {
                 pickable.getPickedUp(entity);
 
-                entities.set(i, null); // Assign null to the picked up object
+                EntityManager.getInstance().destroyEntity(nearbyEntity);
             }
         }
     }
