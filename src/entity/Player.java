@@ -53,23 +53,31 @@ public class Player extends ControllableEntity {
     // Collison Handler
     CollisionHandler collisionHandler;
 
+    //#region CONSTRUCTORS
     public Player(KeyHandler keyHandler) {
         super();
         
         this.keyHandler = keyHandler;
-
-        setDefaultValues();
     }
+    public Player(int row, int col, KeyHandler keyHandler) {
+        super(row, col);
+
+        this.keyHandler = keyHandler;
+    }
+    public Player(double locationX, double locationY, KeyHandler keyHandler) {
+        super(locationX, locationY);
+
+        this.keyHandler = keyHandler;
+    }
+    //#endregion
 
     @Override
     public void start() {
         setDefaultValues();
-        getImages();
+        loadImages();
     }
 
     private void setDefaultValues() {
-        setPositionX(100);
-        setPositionY(100);
         lastPosX = posX;
         lastPosY = posY;
         movementSpeed = 2.5d;
@@ -98,7 +106,7 @@ public class Player extends ControllableEntity {
      * Load Sprites from "resources"
      */
     @Override
-    public void getImages() {
+    public void loadImages() {
         try {
             idleDownSprite = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_idle1.png"));
             idleUpSprite = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_idle2.png"));
@@ -336,5 +344,10 @@ public class Player extends ControllableEntity {
         } else if (keyHandler.getInputShootX() < 0) {
             setAnimState(PlayerAnimState.SHOOTING_LEFT_STILL);
         }
+    }
+
+    @Override
+    public void dispose() {
+        // TODO Add die   
     }
 }
