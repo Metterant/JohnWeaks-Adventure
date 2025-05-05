@@ -4,11 +4,10 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import util.EntityManager;
-import util.GameComponent;
 import util.GameConstants;
 import util.Renderable;
 
-public abstract class Entity implements Renderable, GameComponent {
+public abstract class Entity implements Renderable {
     protected double posX, posY;
     
     /** Current Sprite of an Entity */
@@ -102,13 +101,8 @@ public abstract class Entity implements Renderable, GameComponent {
     }
 
     /** Start method */
-    public void start() {
-        loadImages();
-    }
+    public void start() { }
 
     /** Update method */
     public void update() { }
-
-    /** How the entity would act when it is killed */
-    public abstract void dispose();
 }
