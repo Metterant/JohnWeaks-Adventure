@@ -17,6 +17,16 @@ public class GameConstants {
     // Frame-Rate
     public static final int FPS = 60;
 
+    /** Game Constants */
+    public class Game {
+        /* Total frames = FPS * Seconds */
+        public static final int BASE_ROUND_DURATION = FPS * 40; // 45 seconds
+        public static final int INCREMENT_DURATION = FPS * 10;  // + 10 seconds after each round 
+
+        public static final int PLAYER_LIVES = 3; 
+
+    }
+
     // Hide constructor to avoid instantiating GameConstants
     // as GameConstants is class used to store static constants
     private GameConstants() { }
