@@ -38,12 +38,17 @@ public class GamePanel extends JPanel implements Runnable {
     transient UI ui = new UI(this);
 
     public void startGameThread() {
+        Key key = new Key(10, 10);
+        
         EntityManager.getInstance().entitiesStart();
+        GameManager.getInstance().start();
 
-        Key key = new Key();
-
-        TileManager.getInstance().getImages();
+        // Init Tile Manager
+        TileManager.getInstance().loadImages();
         TileManager.getInstance().loadMap("/resources/maps/map_test.txt");
+
+        // Init UI
+        ui.start();
 
         gameThread = new Thread(this);
         gameThread.start();
@@ -69,7 +74,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     /** Repeating method that handles repeating logic every frame */
     public void update() {
-        EntityManager.getInstance().entitiesUpdate();
+        EntityManager.getInstance().update();
     }
 
     /** Implementation of paintComponent inherited from JPanel */
@@ -79,8 +84,6 @@ public class GamePanel extends JPanel implements Runnable {
 
         Graphics2D g2 = (Graphics2D)g;
         
-        EntityManager.getInstance().removeNull();
-
         TileManager.getInstance().draw(g2);
         EntityManager.getInstance().entitiesDraw(g2);
 
