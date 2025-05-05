@@ -10,14 +10,27 @@ import entity.Pickable;
 import util.GameConstants;
 
 public class Key extends Pickable {
+    //#region CONSTRUCTORS
     public Key() {
-        name = "Key";
+        super();
+    }
+    public Key(int row, int col) {
+        super(row, col);
+    }
+    public Key(double positionX, double positionY) {
+        super(positionX, positionY);
+    }
+    //#endregion
 
-        getImages();
+    @Override
+    public void start() {
+        super.start();
+
+        name = "Key";
     }
 
     @Override
-    public void getImages() {
+    public void loadImages() {
         try {
             image = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/key.png"));
         }
@@ -33,5 +46,10 @@ public class Key extends Pickable {
     @Override
     public void getPickedUp(ControllableEntity entity) {
         System.out.println("Picked up a Key");
+    }
+
+    @Override
+    public void dispose() {
+        
     }
 }
