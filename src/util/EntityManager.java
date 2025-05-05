@@ -8,12 +8,14 @@ import java.util.List;
 import entity.Entity;
 
 /** Manage all Entity instances in the world */
-public class EntityManager {
+public class EntityManager implements RenewableSingleton, GameComponent {
     public List<Entity> instantiatedEntities = new ArrayList<>();
 
     private static EntityManager instance = new EntityManager();
 
-    private EntityManager() { }
+    private EntityManager() {
+        instantiatedEntities = new ArrayList<>();
+    }
 
     /* Eager Initialized Method */
     public static synchronized EntityManager getInstance() {
@@ -41,7 +43,7 @@ public class EntityManager {
     }
 
     /** Run all update methods from all entities in the world */
-    public void entitiesUpdate() { 
+    private void entitiesUpdate() { 
         for (Entity entity : instantiatedEntities) {
             if (entity == null) 
                 continue;
@@ -62,8 +64,31 @@ public class EntityManager {
         }
     }
 
-    /** d instance */
+    /** Add instance */
     public void addInstance(Entity entity) {
         instantiatedEntities.add(entity);
     }
+    
+    /** Reset fields of the Singleton */
+    public void resetSingleton() {
+        instantiatedEntities = new ArrayList<>();
+    }
+
+    /** Call an entity's dispose method and remove it from the list */
+    public void destroyEntity(Entity entity) {
+        entity.dispose();
+
+        // Remove the entity
+        instantiatedEntities.remove(entity);
+    }
+
+    @Override
+    public void start() { }
+
+    @Override
+    public void update() {
+        entitiesUpdate();
+        removeNull();
+    }
+
 }
