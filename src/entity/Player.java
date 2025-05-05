@@ -170,7 +170,6 @@ public class Player extends ControllableEntity {
         animLogic();
         lastInputY = keyHandler.getInputMoveY();
         lastShootInputY = keyHandler.getInputShootY();
-        
 
         // ANIMATION
         frameCounter++;
@@ -182,6 +181,9 @@ public class Player extends ControllableEntity {
             
             frameCounter = 0;
         }
+
+        /** DEBUGGING **/
+        // System.out.printf("x=%.1f, y=%.1f\n", posX, posY);
     }
 
     public void draw(Graphics2D g2) {
@@ -297,7 +299,6 @@ public class Player extends ControllableEntity {
         // Handle shooting animation
         handleShootingAnim();
 
-        // TODO: Unused
         lastState = animState;
     }
 
@@ -315,10 +316,9 @@ public class Player extends ControllableEntity {
         if (keyHandler.getInputShootY() < 0) {
             // Set animState to shooting down in case the player doesn't shoot diagonally
             setAnimState(PlayerAnimState.SHOOTING_DOWN_WALKING);
-            
-            // Horizontal direction
-            handleHorizontalMovingShooting();
         }
+        // Horizontal direction
+        handleHorizontalMovingShooting();
         if (keyHandler.getInputShootY() > 0) {
             setAnimState(PlayerAnimState.SHOOTING_UP_WALKING);
         }
