@@ -16,6 +16,17 @@ public abstract class ControllableEntity extends Entity {
     // public void setPositionX(double posX) { this.posX = posX; }
     // public void setPositionY(double posY) { this.posY = posY; }
 
+    /// CONSTRUCTORS
+    protected ControllableEntity() {
+        super();
+    }
+    protected ControllableEntity(int row, int col) {
+        super(row, col);
+    }
+    protected ControllableEntity(double locationX, double locationY) {
+        super(locationX, locationY);
+    }
+
     protected void setKeyHandler(KeyHandler keyHandler) {
         this.keyHandler = keyHandler;
     }
