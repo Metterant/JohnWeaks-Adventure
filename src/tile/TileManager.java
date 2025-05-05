@@ -36,7 +36,7 @@ public class TileManager implements Renderable {
     }
     
     @Override
-    public void getImages() {
+    public void loadImages() {
         try {
             // ASPALT
             tile[0] = new Tile();
