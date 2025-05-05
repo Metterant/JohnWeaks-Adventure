@@ -7,6 +7,18 @@ public abstract class Pickable extends Entity {
 
     public String getPickable() { return name; }
 
+    //#region CONSTRUCTORS
+    protected Pickable() {
+        super();
+    }
+    protected Pickable(int row, int col) {
+        super(row, col);
+    }
+    protected Pickable(double positionX, double positionY) {
+        super(positionX, positionY);
+    }
+    //#endregion
+    
     /**
      * Handle picking up action
      * 
