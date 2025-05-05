@@ -1,9 +1,6 @@
 package entity;
 
-import java.awt.RenderingHints.Key;
-
 import input.KeyHandler;
-import util.GameConstants;
 
 public abstract class ControllableEntity extends Entity {
     protected double movementSpeed;  
