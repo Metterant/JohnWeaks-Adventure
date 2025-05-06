@@ -18,6 +18,11 @@ public class GameConstants {
     // Frame-Rate
     public static final int FPS = 60;
 
+    /** UI Constants */
+    public class UI {
+        public static final int POWERUP_FRAME_SIDE = 20 * SCALE;
+    }
+
     /** Game Constants */
     public class Game {
         /* Total frames = FPS * Seconds */
@@ -26,6 +31,19 @@ public class GameConstants {
 
         public static final int PLAYER_LIVES = 3; 
 
+    }
+
+    /* Player Constants */
+    public class Player {
+        // Durations
+        public static final int SPEED_BOOST_DURATION = FPS * 15; // 15 seconds
+        public static final int SHOTGUN_DURATION = FPS * 12; // 12 seconds
+        public static final int MACHINE_GUN_DURATION = FPS * 12; // 12 seconds
+        public static final int OCTOSHOT_DURATION = FPS * 10; // 10 seconds
+
+        // Stats
+        public static final double PLAYER_DEFAULT_SPEED = 2.5d;
+        public static final double PLAYER_BOOSTED_SPPED = 1.0d;
     }
 
     // Hide constructor to avoid instantiating GameConstants
