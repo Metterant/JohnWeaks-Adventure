@@ -339,7 +339,8 @@ public class Player extends ControllableEntity {
             setAnimState(PlayerAnimState.SHOOTING_UP_STILL);
         } else if (keyHandler.getInputShootY() < 0) {
             setAnimState(PlayerAnimState.SHOOTING_DOWN_STILL);
-        } else if (keyHandler.getInputShootX() > 0) {
+        } 
+        if (keyHandler.getInputShootX() > 0) {
             setAnimState(PlayerAnimState.SHOOTING_RIGHT_STILL);
         } else if (keyHandler.getInputShootX() < 0) {
             setAnimState(PlayerAnimState.SHOOTING_LEFT_STILL);
