@@ -23,6 +23,7 @@ public class UI implements Renderable, GameComponent {
     // Powerup
     private BufferedImage powerupFrame;
     private BufferedImage powerupIcon;
+    private BufferedImage[] powerupIcons;
 
     // Lives
     private BufferedImage playerLivesIcon;
@@ -54,8 +55,11 @@ public class UI implements Renderable, GameComponent {
     public void loadImages() {
         try {
             powerupFrame = ImageIO.read(getClass().getResourceAsStream("/resources/ui/powerup_frame.png"));
-            // Testing
-            powerupIcon = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/key.png"));
+            // Powerup Icons
+            powerupIcons = new BufferedImage[2];
+            powerupIcons[0] = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/key.png"));
+            powerupIcons[1] = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/coffee.png"));
+
 
             // Lives
             playerLivesIcon = ImageIO.read(getClass().getResourceAsStream("/resources/ui/lives_icon.png"));
@@ -76,7 +80,7 @@ public class UI implements Renderable, GameComponent {
         // g2.drawString("Hello there!", 50, 50);
 
         // Draw Powerup
-        drawPowerup(g2, 190, 140, 2, 2, 1);
+        drawPowerup(g2, 190, 140, 3, 3, 1);
         
         // Draw Timer
         drawTimer(g2, 30, 20);
@@ -95,14 +99,29 @@ public class UI implements Renderable, GameComponent {
      * @param scale : The size scale of the whole Powerup Frame 
      */
     private void drawPowerup(Graphics2D g2,int posX, int posY, int offsetX, int offsetY, int scale) {
-        g2.drawImage(powerupFrame, posX, posY, GameConstants.TILE_SIZE * scale, (GameConstants.TILE_SIZE + 3) * scale, null);
+        g2.drawImage(powerupFrame, posX, posY, GameConstants.UI.POWERUP_FRAME_SIDE * scale, (GameConstants.UI.POWERUP_FRAME_SIDE + 3) * scale, null);
 
-        g2.drawImage(powerupIcon, 
-            posX + (offsetX * GameConstants.SCALE) * scale, 
-            posY + (offsetY * GameConstants.SCALE) * scale, 
-            (GameConstants.TILE_SIZE - offsetX * 2 * GameConstants.SCALE) * scale, 
-            (GameConstants.TILE_SIZE - offsetY * 2 * GameConstants.SCALE) * scale, 
-            null);
+        if (powerupIcon != null)
+            g2.drawImage(powerupIcon, 
+                posX + (offsetX * GameConstants.SCALE) * scale, 
+                posY + (offsetY * GameConstants.SCALE) * scale, 
+                (GameConstants.UI.POWERUP_FRAME_SIDE - offsetX * 2 * GameConstants.SCALE) * scale, 
+                (GameConstants.UI.POWERUP_FRAME_SIDE - offsetY * 2 * GameConstants.SCALE) * scale, 
+                null);
+    }
+
+    private void setPowerupIcon() {
+        switch (gamePanel.player.getPowerup()) {
+            case NONE:
+                powerupIcon = null;
+                break;
+            case SPEED_BOOST:
+                powerupIcon = powerupIcons[1];
+                break;
+        
+            default:
+                break;
+        }
     }
 
     /**
@@ -141,5 +160,7 @@ public class UI implements Renderable, GameComponent {
     }
 
     @Override
-    public void update() { }
+    public void update() {
+        setPowerupIcon();
+    }
 }
