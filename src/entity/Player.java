@@ -198,6 +198,7 @@ public class Player extends ControllableEntity {
         // POWERUP INPUT
         if (!lastSpaceInput && keyHandler.getSpaceInput()) {
             usePowerup(currentPowerup);
+            currentPowerup = PlayerPowerup.NONE;
         }
         lastSpaceInput = keyHandler.getSpaceInput();
 
@@ -434,6 +435,20 @@ public class Player extends ControllableEntity {
      */
     public PlayerPowerup getPowerup() {
         return currentPowerup;
+    }
+    
+    /**
+     * Try giving the Player a powerup. <P>
+     * If its powerup slot is occupied, use the powerup
+     * 
+     * @param powerup : PlayerPowerup that is going to be provided
+     */
+    public void setPowerup(PlayerPowerup powerup) {
+        if (currentPowerup != PlayerPowerup.NONE) {
+            usePowerup(powerup);
+            return;
+        }
+        currentPowerup = powerup;
     }
 
     /** Use speed bost */
