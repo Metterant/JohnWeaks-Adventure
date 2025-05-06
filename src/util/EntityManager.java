@@ -79,7 +79,11 @@ public class EntityManager implements RenewableSingleton, GameComponent {
         entity.dispose();
 
         // Remove the entity
-        instantiatedEntities.remove(entity);
+        // instantiatedEntities.remove(entity);
+        for (int i = 0; i < instantiatedEntities.size(); i++) {
+            if (instantiatedEntities.get(i) == entity)
+                instantiatedEntities.set(i, null);
+        }
     }
 
     @Override
