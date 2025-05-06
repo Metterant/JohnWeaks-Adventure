@@ -5,8 +5,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import entity.ControllableEntity;
 import entity.Pickable;
+import entity.Player;
 import util.GameConstants;
 
 public class Key extends Pickable {
@@ -44,7 +44,7 @@ public class Key extends Pickable {
     }
 
     @Override
-    public void getPickedUp(ControllableEntity entity) {
+    public void getPickedUp(Player player) {
         System.out.println("Picked up a Key");
     }
 

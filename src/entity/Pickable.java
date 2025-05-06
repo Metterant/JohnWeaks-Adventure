@@ -22,7 +22,7 @@ public abstract class Pickable extends Entity {
     /**
      * Handle picking up action
      * 
-     * @param entity ControllableEntity that is going to pick up this item
+     * @param entity Player that is going to pick up this item
      */
-    public abstract void getPickedUp(ControllableEntity entity);
+    public abstract void getPickedUp(Player player);
 }
