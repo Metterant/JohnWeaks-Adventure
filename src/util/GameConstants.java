@@ -1,7 +1,8 @@
 package util;
 
 public class GameConstants {
-    public static final int ORIGINAL_TILE_SIZE = 16; // 16 x 16 tile size
+    /** Sprite pixels, Tile size on the screen */
+    public static final int ORIGINAL_TILE_SIZE = 18;
     public static final int SCALE = 2;
     
     public static final int TILE_SIZE = ORIGINAL_TILE_SIZE * SCALE;
@@ -20,7 +21,7 @@ public class GameConstants {
     /** Game Constants */
     public class Game {
         /* Total frames = FPS * Seconds */
-        public static final int BASE_ROUND_DURATION = FPS * 40; // 45 seconds
+        public static final int BASE_ROUND_DURATION = FPS * 60; // 45 seconds
         public static final int INCREMENT_DURATION = FPS * 10;  // + 10 seconds after each round 
 
         public static final int PLAYER_LIVES = 3; 
