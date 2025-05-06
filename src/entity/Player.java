@@ -35,6 +35,22 @@ public class Player extends ControllableEntity {
     private PlayerAnimState animState;
     private PlayerAnimState lastState;
 
+    // Power-up
+    /**
+     * Inside {@Link entity.Player} <P>
+     * 
+     * Enum for determining that powerup the player is holding
+     */
+    public enum PlayerPowerup {
+        NONE,
+        SPEED_BOOST,
+        SHOTGUN,
+        MACHINE_GUN,
+        OCTOSHOT,
+        DETONATION,
+    }
+    public PlayerPowerup currentPowerup;
+
     // Sprites
     private BufferedImage[] walkingDownSprite, walkingUpSprite, walkingSideSprite, walkingShootingDownSprite;
     private BufferedImage idleUpSprite, idleDownSprite;
@@ -49,9 +65,16 @@ public class Player extends ControllableEntity {
     private double lastPosY;
     private int lastShootInputY;
     private boolean isMoving;
+    private boolean lastSpaceInput;
 
     // Collison Handler
     CollisionHandler collisionHandler;
+
+    // Timers
+    private int speedBoostTimer;
+    private int shotgunTimer;
+    private int machineGunTimer;
+    private int octoshotTimer;
 
     //#region CONSTRUCTORS
     public Player(KeyHandler keyHandler) {
@@ -82,6 +105,8 @@ public class Player extends ControllableEntity {
         lastPosY = posY;
         movementSpeed = 2.5d;
         lastState = animState = PlayerAnimState.IDLE_DOWN;
+
+        currentPowerup = PlayerPowerup.NONE;
 
         walkingDownSprite = new BufferedImage[4];
         walkingUpSprite = new BufferedImage[4];
@@ -155,6 +180,12 @@ public class Player extends ControllableEntity {
         posY = desiredPosY;
 
         moveCollisionBox();
+
+        // POWERUP INPUT
+        if (!lastSpaceInput && keyHandler.getSpaceInput()) {
+            usePowerup();
+        }
+        lastSpaceInput = keyHandler.getSpaceInput();
 
         // Collision
         collisionHandler.checkTile(this, desiredPosX, desiredPosY, desiredAxialDisplacement);
@@ -345,6 +376,52 @@ public class Player extends ControllableEntity {
         } else if (keyHandler.getInputShootX() < 0) {
             setAnimState(PlayerAnimState.SHOOTING_LEFT_STILL);
         }
+    }
+
+    private void usePowerup() {
+        switch (currentPowerup) {
+            case NONE:
+                // No powerup to use
+                break;
+            case SPEED_BOOST:
+                useSpeedBoost();
+                break;
+            case SHOTGUN:
+                useShotgun();
+                break;
+            case MACHINE_GUN:
+                useMachineGunTimer();
+                break;
+            case OCTOSHOT:
+                useOctoshot();
+                break;
+            case DETONATION:
+                useDetonation();
+                break;
+            default:
+                // Handle unexpected powerup cases
+                break;
+        }
+    }
+
+    private void useSpeedBoost() {
+        
+    }
+
+    private void useShotgun() {
+
+    }
+
+    private void useMachineGunTimer() {
+
+    }
+
+    private void useOctoshot() {
+
+    }
+
+    private void useDetonation() {
+
     }
 
     @Override
