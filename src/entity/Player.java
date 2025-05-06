@@ -39,7 +39,7 @@ public class Player extends ControllableEntity {
     /**
      * Inside {@Link entity.Player} <P>
      * 
-     * Enum for determining that powerup the player is holding
+     * Enum for determining what powerup the player is holding
      */
     public enum PlayerPowerup {
         NONE,
@@ -50,6 +50,20 @@ public class Player extends ControllableEntity {
         DETONATION,
     }
     private PlayerPowerup currentPowerup;
+
+    // Shooting mode
+    /**
+     * Inside {@Link entity.Player} <P>
+     * 
+     * Enum for determining what shooting mode the player is using
+     */
+    public enum PlayerShootingMode {
+        NORMAL,
+        SHOTGUN,
+        OCTOSHOT,
+        MIXED,
+    }
+    private PlayerShootingMode currentShootingMode;
 
     // Sprites
     private BufferedImage[] walkingDownSprite, walkingUpSprite, walkingSideSprite, walkingShootingDownSprite;
@@ -183,13 +197,15 @@ public class Player extends ControllableEntity {
 
         // POWERUP INPUT
         if (!lastSpaceInput && keyHandler.getSpaceInput()) {
-            usePowerup();
+            usePowerup(currentPowerup);
         }
         lastSpaceInput = keyHandler.getSpaceInput();
 
         // TIMERS
         handleTimers();
+        handleTimersEnd();
 
+        
         // Collision
         collisionHandler.checkTile(this, desiredPosX, desiredPosY, desiredAxialDisplacement);
         collisionHandler.checkPickable(this);
@@ -204,19 +220,20 @@ public class Player extends ControllableEntity {
         animLogic();
         lastInputY = keyHandler.getInputMoveY();
         lastShootInputY = keyHandler.getInputShootY();
-
+        
         // ANIMATION
         frameCounter++;
         // Increase the counter every 8 frames
         if (frameCounter >= 8) {
             frameNum++;
             if (frameNum == 4)
-                frameNum = 0;
+            frameNum = 0;
             
             frameCounter = 0;
         }
-
+        
         /** DEBUGGING **/
+        // System.out.println(speedBoostTimer);
         // System.out.printf("x=%.1f, y=%.1f\n", posX, posY);
     }
 
@@ -381,9 +398,10 @@ public class Player extends ControllableEntity {
         }
     }
 
-    private void usePowerup() {
-        switch (currentPowerup) {
+    private void usePowerup(PlayerPowerup powerup) {
+        switch (powerup) {
             case NONE:
+                useSpeedBoost();
                 // No powerup to use
                 break;
             case SPEED_BOOST:
@@ -422,7 +440,7 @@ public class Player extends ControllableEntity {
     private void useSpeedBoost() {
         speedBoostTimer = GameConstants.Player.SPEED_BOOST_DURATION;
         
-        setMovementSpeed(movementSpeed);
+        setMovementSpeed(GameConstants.Player.PLAYER_DEFAULT_SPEED + GameConstants.Player.PLAYER_BOOSTED_SPPED);
     }
     
     private void useShotgun() {
@@ -453,6 +471,15 @@ public class Player extends ControllableEntity {
             shotgunTimer--;
         if (octoshotTimer > 0) 
             octoshotTimer--;
+    }
+
+    private void handleTimersEnd() {
+        if (speedBoostTimer <= 0) {
+            setMovementSpeed(GameConstants.Player.PLAYER_DEFAULT_SPEED);
+        }
+        if (shotgunTimer <= 0) {
+            
+        }
     }
 
     @Override
