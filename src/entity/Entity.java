@@ -17,10 +17,10 @@ public abstract class Entity implements Renderable, GameComponent {
     // COLLISION HANDLING
     /** A rectangle box used for checking collision */
     public Rectangle collisionBox;
-    /** Collision Box Wid in pixels */
-    protected int collisionBoxWidth = 16;
-    /** Collision Box Height in pixels */
-    protected int collisionBoxHeight = 16;
+    /** Collision Box Wid in sprite pixels */
+    protected int collisionBoxWidth = GameConstants.ORIGINAL_TILE_SIZE;
+    /** Collision Box Height in sprite pixels */
+    protected int collisionBoxHeight = GameConstants.ORIGINAL_TILE_SIZE;
     /** Collision Box horizontal offset */
     public int offsetX = 0;
     /** Collision Box vertical offset */
@@ -80,10 +80,10 @@ public abstract class Entity implements Renderable, GameComponent {
 
     /** Initialization of collisionBox with Offset and Size variation <p>
      * 
-     * @param offsetX : horizontal offset of collisionBox in pixels
-     * @param offsetY : vertical offset of collisionBox in pixels
-     * @param width : width of the collisionBox in pixels
-     * @param height : height of the collisionBox in pixels
+     * @param offsetX : horizontal offset of collisionBox in sprite pixels
+     * @param offsetY : vertical offset of collisionBox in sprite pixels
+     * @param width : width of the collisionBox in sprite pixels
+     * @param height : height of the collisionBox in sprite pixels
      */
     protected void initBoxPosition(int offsetX, int offsetY, int width, int height) {
         this.offsetX = offsetX * GameConstants.SCALE;
