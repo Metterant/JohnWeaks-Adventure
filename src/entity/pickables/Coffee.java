@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 
 import entity.Pickable;
 import entity.Player;
+import entity.Player.PlayerPowerup;
 import util.GameConstants;
 
 public class Coffee extends Pickable {
@@ -46,6 +47,8 @@ public class Coffee extends Pickable {
     @Override
     public void getPickedUp(Player player) {
         System.out.println("Picked up Coffee");
+        
+        player.setPowerup(PlayerPowerup.SPEED_BOOST);
     }
 
     @Override
