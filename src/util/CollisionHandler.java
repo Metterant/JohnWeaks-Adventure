@@ -48,6 +48,15 @@ public class CollisionHandler {
         java.util.function.BiPredicate<Integer, Integer> isCollidable = (col, row) ->
             tm.tile[tm.tileMapNum[col][row]].isCollidable;
 
+        /**
+         * This method checks "tilemap collsion" by dividing displacement into 2 cases
+         * horizontal and vertical.
+         * This method is executed after the player has moved, so to get the old position, it will subtract
+         * current player's world position with the displacement the player has just moved. As a result, this
+         * method gets player's old position and checks if the position to which the player intended to move
+         * will have 2 boxes (tile box and player's collision box) overlap each other. If overlap will occur,
+         * this method will prevent the player from moving into the wrong position.
+         */
         // Horizontal collision
         if (isCollidable.test(leftCol, topOriginRow) || isCollidable.test(leftCol, bottomOriginRow)) {
             entity.setPositionX(desiredPosX - moveX * desiredAxialDisplacement);
