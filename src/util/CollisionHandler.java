@@ -77,18 +77,18 @@ public class CollisionHandler {
     /**
      * Check if an entity is colliding with any colliable object
      * 
-     * @param entity : entity that needs to check if it is colliding with any Pickable objects
+     * @param player : entity that needs to check if it is colliding with any Pickable objects
      */
-    public void checkPickable(ControllableEntity entity) {
+    public void checkPickable(Player player) {
         // Get entities
         var entities = EntityManager.getInstance().instantiatedEntities;
         // Iterate through the list
         for (int i = 0; i < entities.size(); i++) {
             Entity nearbyEntity = entities.get(i);
-            if (nearbyEntity == null || nearbyEntity == entity) continue;
+            if (nearbyEntity == null || nearbyEntity == player) continue;
 
-            if (nearbyEntity instanceof Pickable pickable && isColliding(nearbyEntity, entity)) {
-                pickable.getPickedUp(entity);
+            if (nearbyEntity instanceof Pickable pickable && isColliding(nearbyEntity, player)) {
+                pickable.getPickedUp(player);
 
                 EntityManager.getInstance().destroyEntity(nearbyEntity);
             }
