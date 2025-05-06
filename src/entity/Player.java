@@ -91,8 +91,8 @@ public class Player extends ControllableEntity {
         lastShootInputY = 0;
         frameCounter = 0;
 
-        collisionBoxWidth = 8;
-        collisionBoxHeight = 8;
+        collisionBoxWidth = 8 + (GameConstants.ORIGINAL_TILE_SIZE - 16);
+        collisionBoxHeight = 8 + (GameConstants.ORIGINAL_TILE_SIZE - 16);
 
         collisionBox = new Rectangle();
         initBoxPosition(4, 8, collisionBoxWidth, collisionBoxHeight);
