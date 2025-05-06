@@ -14,12 +14,16 @@ public class KeyHandler implements KeyListener {
     // Horizontal and Verticle direction when shooting
     private int inputShootX, inputShootY; 
 
+    // Space button
+    private boolean spacePressed;
+
     public int getInputMoveX() { return inputMoveX; }
     public int getInputMoveY() { return inputMoveY; }
 
     public int getInputShootX() { return inputShootX; }
     public int getInputShootY() { return inputShootY; }
 
+    public boolean getSpaceInput() { return spacePressed; }
 
     @Override
     public void keyTyped(KeyEvent e) { }
@@ -48,6 +52,8 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_RIGHT)
             isShootRightPressed = true;
         
+        if (code == KeyEvent.VK_SPACE)
+            spacePressed = true;
 
         setAxises();
     }
@@ -75,6 +81,9 @@ public class KeyHandler implements KeyListener {
             isShootDownPressed = false;
         if (code == KeyEvent.VK_RIGHT)
             isShootRightPressed = false;
+        
+        if (code == KeyEvent.VK_SPACE)
+            spacePressed = false;
 
         setAxises();
     }
