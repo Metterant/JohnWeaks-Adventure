@@ -23,7 +23,7 @@ public class GamePanel extends JPanel implements Runnable {
     transient Thread gameThread;
     
     // Player
-    transient Player player = new Player(keyHandler);
+    public transient Player player = new Player(keyHandler);
 
     // Constructor
     public GamePanel() {
@@ -44,6 +44,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void startGameThread() {
         Key key = new Key(10, 10);
+        Coffee coffee = new Coffee(15, 10);
         
         // Init Tile Manager
         TileManager.getInstance().loadImages();
