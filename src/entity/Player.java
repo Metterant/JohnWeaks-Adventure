@@ -49,7 +49,7 @@ public class Player extends ControllableEntity {
         OCTOSHOT,
         DETONATION,
     }
-    public PlayerPowerup currentPowerup;
+    private PlayerPowerup currentPowerup;
 
     // Sprites
     private BufferedImage[] walkingDownSprite, walkingUpSprite, walkingSideSprite, walkingShootingDownSprite;
@@ -186,6 +186,9 @@ public class Player extends ControllableEntity {
             usePowerup();
         }
         lastSpaceInput = keyHandler.getSpaceInput();
+
+        // TIMERS
+        handleTimers();
 
         // Collision
         collisionHandler.checkTile(this, desiredPosX, desiredPosY, desiredAxialDisplacement);
@@ -404,24 +407,52 @@ public class Player extends ControllableEntity {
         }
     }
 
-    private void useSpeedBoost() {
-        
+//#region POWERUPS
+
+    /**
+     * Get the current unused Power-up the player is holding
+     * 
+     * @return An enum {@Link Player.PlayerPowerup}
+     */
+    public PlayerPowerup getPowerup() {
+        return currentPowerup;
     }
 
+    /** Use speed bost */
+    private void useSpeedBoost() {
+        speedBoostTimer = GameConstants.Player.SPEED_BOOST_DURATION;
+        
+        setMovementSpeed(movementSpeed);
+    }
+    
     private void useShotgun() {
-
+        shotgunTimer = GameConstants.Player.SHOTGUN_DURATION;
     }
 
     private void useMachineGunTimer() {
-
+        machineGunTimer = GameConstants.Player.MACHINE_GUN_DURATION;
     }
 
     private void useOctoshot() {
-
+        octoshotTimer = GameConstants.Player.OCTOSHOT_DURATION;
     }
 
     private void useDetonation() {
 
+    }
+
+//#endregion
+
+    /** Handle timers */
+    private void handleTimers() {
+        if (speedBoostTimer > 0) 
+            speedBoostTimer--;
+        if (shotgunTimer > 0) 
+            shotgunTimer--;
+        if (machineGunTimer > 0) 
+            shotgunTimer--;
+        if (octoshotTimer > 0) 
+            octoshotTimer--;
     }
 
     @Override
