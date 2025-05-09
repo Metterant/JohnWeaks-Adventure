@@ -44,9 +44,8 @@ public class GamePanel extends JPanel implements Runnable {
      */
 
     public void startGameThread() {
-        Key key = new Key(10, 10);
-        Coffee coffee = new Coffee(15, 10);
-        Bullet bullet = new Bullet(15, 15, 1.0d, 1.0d);
+        new Key(10, 10);
+        new Coffee(15, 10);
         
         // Init Tile Manager
         TileManager.getInstance().loadImages();
