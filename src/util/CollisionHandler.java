@@ -16,8 +16,10 @@ public class CollisionHandler {
      * @param desiredAxialDisplacement : The speed/displacement that the entity is going to move
      * @param moveX : Direction on the X axis
      * @param moveY : Direction on the Y axis
+     * 
+     * @return: true if the entity get stopped by a tile, otherwise false 
      */
-    public void checkTile(Entity entity, double desiredPosX, double desiredPosY, double desiredAxialDisplacement, double moveX, double moveY) {
+    public boolean checkTile(Entity entity, double desiredPosX, double desiredPosY, double desiredAxialDisplacement, double moveX, double moveY) {
         // Calculate collision box world coordinates
         double leftX   = desiredPosX + entity.offsetX;
         double rightX  = leftX + entity.collisionBox.width;
@@ -58,18 +60,24 @@ public class CollisionHandler {
         // Horizontal collision
         if (isCollidable.test(leftCol, topOriginRow) || isCollidable.test(leftCol, bottomOriginRow)) {
             entity.setPositionX(desiredPosX - moveX * desiredAxialDisplacement);
+            return true;
         }
         if (isCollidable.test(rightCol, topOriginRow) || isCollidable.test(rightCol, bottomOriginRow)) {
             entity.setPositionX(desiredPosX - moveX * desiredAxialDisplacement);
+            return true;
         }
 
         // Vertical collision
         if (isCollidable.test(leftOriginCol, bottomRow) || isCollidable.test(rightOriginCol, bottomRow)) {
             entity.setPositionY(desiredPosY + moveY * desiredAxialDisplacement);
+            return true;
         }
         if (isCollidable.test(leftOriginCol, topRow) || isCollidable.test(rightOriginCol, topRow)) {
             entity.setPositionY(desiredPosY + moveY * desiredAxialDisplacement);
+            return true;
         }
+
+        return false;
     }
 
     /**
