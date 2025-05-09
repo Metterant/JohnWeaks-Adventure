@@ -190,10 +190,8 @@ public class Player extends ControllableEntity {
         desiredPosX = posX + keyHandler.getInputMoveX() * desiredAxialDisplacement;
         desiredPosY = posY - keyHandler.getInputMoveY() * desiredAxialDisplacement;
 
-        posX = desiredPosX;
-        posY = desiredPosY;
-
-        moveCollisionBox();
+        setPositionX(desiredPosX);
+        setPositionY(desiredPosY);
 
         // POWERUP INPUT
         if (!lastSpaceInput && keyHandler.getSpaceInput()) {
@@ -205,7 +203,6 @@ public class Player extends ControllableEntity {
         // TIMERS
         handleTimers();
         handleTimersEnd();
-
         
         // Collision
         collisionHandler.checkTile(this, desiredPosX, desiredPosY, desiredAxialDisplacement, keyHandler.getInputMoveX(), keyHandler.getInputMoveY());

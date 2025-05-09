@@ -36,12 +36,14 @@ public abstract class Entity implements Renderable, GameComponent {
         this.posX = posX; 
         
         // collisionBox.x += (int)displacement;
+        moveCollisionBox();
     }
     public void setPositionY(double posY) { 
         // double displacement = posY - this.posY;
         this.posY = posY; 
         
         // collisionBox.y += (int)displacement;
+        moveCollisionBox();
     }
 
     /** Instantiate Entity with default position (0, 0) */
@@ -85,7 +87,7 @@ public abstract class Entity implements Renderable, GameComponent {
      * @param width : width of the collisionBox in sprite pixels
      * @param height : height of the collisionBox in sprite pixels
      */
-    protected void initBoxPosition(int offsetX, int offsetY, int width, int height) {
+    protected void initBoxHelper(int offsetX, int offsetY, int width, int height) {
         this.offsetX = offsetX * GameConstants.SCALE;
         this.offsetY = offsetY * GameConstants.SCALE;
 
