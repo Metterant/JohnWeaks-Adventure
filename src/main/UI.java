@@ -83,7 +83,7 @@ public class UI implements Renderable, GameComponent {
         drawPowerup(g2, 190, 140, 3, 3, 1);
         
         // Draw Timer
-        drawTimer(g2, 30, 20);
+        drawTimer(g2, 30, 13);
 
         // Draw Lives
         drawLives(g2, 190, 90);
@@ -142,7 +142,7 @@ public class UI implements Renderable, GameComponent {
 
         g2.setColor(new Color(0x05ed01));
         g2.fillRect(posX, posY, (int)(remainingRatio * width), height);
-        g2.drawImage(timerIcon, posX - 45, posY - 7, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);
+        g2.drawImage(timerIcon, posX - 45, posY - 10, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);
     }
 
     private void drawLives(Graphics2D g2, int posX, int posY) {
