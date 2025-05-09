@@ -111,7 +111,7 @@ public class Player extends ControllableEntity {
     @Override
     public void start() {
         setDefaultValues();
-        loadImages();
+        super.start();
     }
 
     private void setDefaultValues() {
@@ -134,7 +134,7 @@ public class Player extends ControllableEntity {
         collisionBoxHeight = 8 + (GameConstants.ORIGINAL_TILE_SIZE - 16);
 
         collisionBox = new Rectangle();
-        initBoxPosition(4, 8, collisionBoxWidth, collisionBoxHeight);
+        initBoxHelper(4, 8, collisionBoxWidth, collisionBoxHeight);
 
         collisionHandler = new CollisionHandler();
     }
@@ -208,7 +208,7 @@ public class Player extends ControllableEntity {
 
         
         // Collision
-        collisionHandler.checkTile(this, desiredPosX, desiredPosY, desiredAxialDisplacement);
+        collisionHandler.checkTile(this, desiredPosX, desiredPosY, desiredAxialDisplacement, keyHandler.getInputMoveX(), keyHandler.getInputMoveY());
         collisionHandler.checkPickable(this);
         
         // LOGIC

@@ -14,8 +14,10 @@ public class CollisionHandler {
      * @param desiredPosX : The horizontal position in the world to which the entity wants to move
      * @param desiredPosY : The vertical position in the world to which the entity wants to move
      * @param desiredAxialDisplacement : The speed/displacement that the entity is going to move
+     * @param moveX : Direction on the X axis
+     * @param moveY : Direction on the Y axis
      */
-    public void checkTile(ControllableEntity entity, double desiredPosX, double desiredPosY, double desiredAxialDisplacement) {
+    public void checkTile(Entity entity, double desiredPosX, double desiredPosY, double desiredAxialDisplacement, double moveX, double moveY) {
         // Calculate collision box world coordinates
         double leftX   = desiredPosX + entity.offsetX;
         double rightX  = leftX + entity.collisionBox.width;
@@ -27,10 +29,6 @@ public class CollisionHandler {
         int rightCol  = (int) rightX  / GameConstants.TILE_SIZE;
         int topRow    = (int) topY    / GameConstants.TILE_SIZE;
         int bottomRow = (int) bottomY / GameConstants.TILE_SIZE;
-
-        // Player movement direction
-        int moveX = entity.keyHandler.getInputMoveX();
-        int moveY = entity.keyHandler.getInputMoveY();
 
         // System.out.printf("%d, %d\n", moveX, moveY);
         // System.out.printf("%f\n", desiredAxialDisplacement);
