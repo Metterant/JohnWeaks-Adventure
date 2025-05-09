@@ -32,9 +32,6 @@ public class CollisionHandler {
         int topRow    = (int) topY    / GameConstants.TILE_SIZE;
         int bottomRow = (int) bottomY / GameConstants.TILE_SIZE;
 
-        // System.out.printf("%d, %d\n", moveX, moveY);
-        // System.out.printf("%f\n", desiredAxialDisplacement);
-
         // columns and rows of the sides of unmoved collision box
         int leftOriginCol   = (int) (leftX   - moveX * desiredAxialDisplacement) / GameConstants.TILE_SIZE;
         int rightOriginCol  = (int) (rightX  - moveX * desiredAxialDisplacement) / GameConstants.TILE_SIZE;
@@ -48,6 +45,12 @@ public class CollisionHandler {
         java.util.function.BiPredicate<Integer, Integer> isCollidable = (col, row) ->
             tm.tile[tm.tileMapNum[col][row]].isCollidable;
 
+        // Use helper to check for collisions
+        int[][] leftCols = { {leftCol, topOriginRow}, {leftCol, bottomOriginRow} };
+        int[][] rightCols = { {rightCol, topOriginRow}, {rightCol, bottomOriginRow} };
+        int[][] vertBottom = { {leftOriginCol, bottomRow}, {rightOriginCol, bottomRow} };
+        int[][] vertTop = { {leftOriginCol, topRow}, {rightOriginCol, topRow} };
+
         /**
          * This method checks "tilemap collsion" by dividing displacement into 2 cases
          * horizontal and vertical.
@@ -57,22 +60,35 @@ public class CollisionHandler {
          * will have 2 boxes (tile box and player's collision box) overlap each other. If overlap will occur,
          * this method will prevent the player from moving into the wrong position.
          */
-        // Horizontal collision
-        if (isCollidable.test(leftCol, topOriginRow) || isCollidable.test(leftCol, bottomOriginRow)) {
-            entity.setPositionX(desiredPosX - moveX * desiredAxialDisplacement);
-            return true;
-        }
-        if (isCollidable.test(rightCol, topOriginRow) || isCollidable.test(rightCol, bottomOriginRow)) {
-            entity.setPositionX(desiredPosX - moveX * desiredAxialDisplacement);
-            return true;
-        }
 
+
+        // Horizontal collision
+        if (anyCollidable(isCollidable, leftCols)) {
+            entity.setPositionX(desiredPosX - moveX * desiredAxialDisplacement);
+            // Prevent diagonal case
+            if (anyCollidable(isCollidable, vertBottom))
+                entity.setPositionY(desiredPosY + moveY * desiredAxialDisplacement);
+            if (anyCollidable(isCollidable, vertTop))
+                entity.setPositionY(desiredPosY + moveY * desiredAxialDisplacement);
+
+            return true;
+        }
+        if (anyCollidable(isCollidable, rightCols)) {
+            entity.setPositionX(desiredPosX - moveX * desiredAxialDisplacement);
+            // Prevent diagonal case
+            if (anyCollidable(isCollidable, vertBottom))
+                entity.setPositionY(desiredPosY + moveY * desiredAxialDisplacement);
+            if (anyCollidable(isCollidable, vertTop))
+                entity.setPositionY(desiredPosY + moveY * desiredAxialDisplacement);
+
+            return true;
+        }
         // Vertical collision
-        if (isCollidable.test(leftOriginCol, bottomRow) || isCollidable.test(rightOriginCol, bottomRow)) {
+        if (anyCollidable(isCollidable, vertBottom)) {
             entity.setPositionY(desiredPosY + moveY * desiredAxialDisplacement);
             return true;
         }
-        if (isCollidable.test(leftOriginCol, topRow) || isCollidable.test(rightOriginCol, topRow)) {
+        if (anyCollidable(isCollidable, vertTop)) {
             entity.setPositionY(desiredPosY + moveY * desiredAxialDisplacement);
             return true;
         }
@@ -103,5 +119,15 @@ public class CollisionHandler {
 
     private boolean isColliding(Entity entityA, Entity entityB) {
         return entityA.collisionBox.intersects(entityB.collisionBox);
+    }
+
+    /**
+     * Helper to check if any of the given (col, row) pairs are collidable
+     */
+    private boolean anyCollidable(java.util.function.BiPredicate<Integer, Integer> isCollidable, int[][] positions) {
+        for (int[] pos : positions) {
+            if (isCollidable.test(pos[0], pos[1])) return true;
+        }
+        return false;
     }
 }
