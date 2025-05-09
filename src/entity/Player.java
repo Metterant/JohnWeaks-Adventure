@@ -140,6 +140,8 @@ public class Player extends ControllableEntity {
         initBoxHelper(4, 8, collisionBoxWidth, collisionBoxHeight);
 
         collisionHandler = new CollisionHandler();
+
+        currentShootingMode = PlayerShootingMode.NORMAL;
     }
 
     /**
@@ -217,7 +219,7 @@ public class Player extends ControllableEntity {
         
         if (shootingFrameCount == 0 && (keyHandler.getInputShootX() != 0 || keyHandler.getInputShootY() != 0)) {
             shootBullet();
-            shootingFrameCount = 10;
+            shootingFrameCount = 20;
         }
 
         // LOGIC
@@ -236,8 +238,9 @@ public class Player extends ControllableEntity {
         // Increase the counter every 8 frames
         if (frameCounter >= 8) {
             frameNum++;
-            if (frameNum == 4)
-            frameNum = 0;
+            if (frameNum == 4) {
+                frameNum = 0;
+            }
             
             frameCounter = 0;
         }
@@ -396,22 +399,26 @@ public class Player extends ControllableEntity {
 
     /** Handle Shooting animation while standing still */
     private void handleStillShooting() {
-        if (keyHandler.getInputShootY() > 0) {
-            setAnimState(PlayerAnimState.SHOOTING_UP_STILL);
-        } else if (keyHandler.getInputShootY() < 0) {
+        // Shooting down
+        if (keyHandler.getInputShootY() < 0) {
             setAnimState(PlayerAnimState.SHOOTING_DOWN_STILL);
-        } 
+        }
+
+        // Horizontal shooting
         if (keyHandler.getInputShootX() > 0) {
             setAnimState(PlayerAnimState.SHOOTING_RIGHT_STILL);
         } else if (keyHandler.getInputShootX() < 0) {
             setAnimState(PlayerAnimState.SHOOTING_LEFT_STILL);
+        }
+        // Shooting up
+        if (keyHandler.getInputShootY() > 0) {
+            setAnimState(PlayerAnimState.SHOOTING_UP_STILL);
         }
     }
 
     private void usePowerup(PlayerPowerup powerup) {
         switch (powerup) {
             case NONE:
-                useSpeedBoost();
                 // No powerup to use
                 break;
             case SPEED_BOOST:
@@ -437,7 +444,38 @@ public class Player extends ControllableEntity {
 
 
     private void shootBullet() {
-        new Bullet(posX, posY, keyHandler.getInputShootX(), keyHandler.getInputShootY());
+        double directionX = keyHandler.getInputShootX();
+        double directionY = keyHandler.getInputShootY();
+
+        if (keyHandler.getInputShootX() != 0 && keyHandler.getInputShootY() != 0) {
+            directionX /= Math.sqrt(2);
+            directionY /= Math.sqrt(2);
+        }
+
+        // Mixed means octashot and shotgun at the same time
+        if (currentShootingMode == PlayerShootingMode.MIXED || currentShootingMode == PlayerShootingMode.OCTOSHOT) {
+            for (double i = 0; i < 8; i++) {
+                double angle = Math.toRadians(i * 45);
+                double dx = Math.cos(angle);
+                double dy = Math.sin(angle);
+                if (currentShootingMode == PlayerShootingMode.MIXED)
+                    shotGunShot(dx, dy);
+                else
+                    new Bullet(posX, posY, dx, dy);
+            }
+        }
+        else if (currentShootingMode == PlayerShootingMode.SHOTGUN)
+            shotGunShot(directionX, directionY);
+        else {
+            new Bullet(posX, posY, directionX, directionY);
+        }
+
+    }
+    /** Shot 3 Bullets */
+    private void shotGunShot(double directionX, double directionY) {
+        new Bullet(posX, posY, directionX, directionY);
+        new Bullet(posX, posY, directionX, directionY, Math.toRadians(12d));
+        new Bullet(posX, posY, directionX, directionY, Math.toRadians(-12d));
     }
 
 //#region POWERUPS
