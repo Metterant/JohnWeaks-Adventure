@@ -1,6 +1,5 @@
 package entity;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.io.IOException;
 
@@ -13,7 +12,7 @@ import util.GameConstants;
 public class Bullet extends Entity {
 
     private double directionX, directionY;
-    private double bulletSpeed = 4.5d;
+    private double bulletSpeed = 5.5d;
 
     private CollisionHandler collisionHandler = new CollisionHandler();
 
@@ -41,12 +40,30 @@ public class Bullet extends Entity {
         this.directionX = directionX;
         this.directionY = directionY;
     }
+    // With rotated angle
+    public Bullet(int row, int col, double directionX, double directionY, double theta) {
+        super(row, col);
+        
+        this.directionX = directionX;
+        this.directionY = directionY;
+
+        rotateDirectionWithAngle(theta);
+    }
+    public Bullet(double posX, double posY, double directionX, double directionY, double theta) {
+        super(posX, posY);
+
+        this.directionX = directionX;
+        this.directionY = directionY;
+
+        rotateDirectionWithAngle(theta);
+    }
+
 //#region
 
     @Override
     public void start() {
         super.start();
-        System.out.println("hi");
+        // System.out.println("hi");
         initBoxHelper(7, 7, 4, 4);
     }
 
@@ -89,5 +106,15 @@ public class Bullet extends Entity {
     public void dispose() {
         // System.out.println("collided");
     }
-    
+
+    private void rotateDirectionWithAngle(double theta) {
+        /*
+         * x1, y1 : initial values
+         * x2, y2 : values of vector's components after being rotated
+         * theta : counter-clockwise angle
+         */
+        double x1 = directionX, y1 = directionY;
+        directionX = Math.cos(theta) * x1 - Math.sin(theta) * y1;
+        directionY = Math.sin(theta) * x1 + Math.cos(theta) * y1;
+    }
 }
