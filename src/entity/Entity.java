@@ -8,6 +8,8 @@ import util.GameComponent;
 import util.GameConstants;
 import util.Renderable;
 
+import java.util.logging.Logger;
+
 public abstract class Entity implements Renderable, GameComponent {
     protected double posX, posY;
     
@@ -31,6 +33,9 @@ public abstract class Entity implements Renderable, GameComponent {
     public double getPositionX() { return posX; }
     public double getPositionY() { return posY; }
     
+    /** Logger */
+    Logger logger = Logger.getLogger(getClass().getName());
+
     public void setPositionX(double posX) {
         // double displacement = posX - this.posX;
         this.posX = posX; 
@@ -51,8 +56,8 @@ public abstract class Entity implements Renderable, GameComponent {
         posX = GameConstants.DEFAULT_SPAWN_X;
         posY = GameConstants.DEFAULT_SPAWN_Y;
 
-        EntityManager.getInstance().addInstance(this);
         initBoxPosition();
+        EntityManager.getInstance().addInstance(this);
     }
     
     /** Instantiate Entity on the TileMap */
@@ -60,8 +65,8 @@ public abstract class Entity implements Renderable, GameComponent {
         posX = (double) col * GameConstants.TILE_SIZE;
         posY = (double) row * GameConstants.TILE_SIZE;
 
-        EntityManager.getInstance().addInstance(this);
         initBoxPosition();
+        EntityManager.getInstance().addInstance(this);
     }
 
     /** Instantiate Entity on using World Coordinates */
@@ -69,8 +74,8 @@ public abstract class Entity implements Renderable, GameComponent {
         posX = locationX;
         posY = locationY;
 
-        EntityManager.getInstance().addInstance(this);
         initBoxPosition();
+        EntityManager.getInstance().addInstance(this);
     }
 
     /** Default initialization of Collision Box */
@@ -113,4 +118,12 @@ public abstract class Entity implements Renderable, GameComponent {
 
     /** How the entity would act when it is killed */
     public abstract void dispose();
+
+    //#region DEBUGS
+
+    public void debugPosition() {
+        String toPrint = "[DEBUG] PosX : %.1f, PosY: %.1f";
+        toPrint = String.format(toPrint, posX, posY);
+        logger.info(toPrint);
+    }
 }
