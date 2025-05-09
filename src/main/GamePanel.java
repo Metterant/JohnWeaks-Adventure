@@ -2,6 +2,7 @@ package main;
 
 import javax.swing.JPanel;
 
+import entity.Bullet;
 import entity.Player;
 import entity.pickables.*;
 import input.KeyHandler;
@@ -45,13 +46,14 @@ public class GamePanel extends JPanel implements Runnable {
     public void startGameThread() {
         Key key = new Key(10, 10);
         Coffee coffee = new Coffee(15, 10);
+        Bullet bullet = new Bullet(15, 15, 1.0d, 1.0d);
         
         // Init Tile Manager
         TileManager.getInstance().loadImages();
         TileManager.getInstance().loadMap("/resources/maps/map_test.txt");
         
         GameManager.getInstance().start();
-        EntityManager.getInstance().entitiesStart();
+        // EntityManager.getInstance().entitiesStart();
 
         // Init UI
         ui.start();

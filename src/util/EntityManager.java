@@ -32,31 +32,22 @@ public class EntityManager implements RenewableSingleton, GameComponent {
         }
     }
 
-    /** Run all start methods from all entities in the world */
-    public void entitiesStart() {
-        for (Entity entity : instantiatedEntities) {
-            if (entity == null) 
-                continue;
-
-            entity.start();
-        }
-    }
-
     /** Run all update methods from all entities in the world */
     private void entitiesUpdate() { 
-        for (Entity entity : instantiatedEntities) {
+        List<Entity> entitiesCopy = new ArrayList<>(instantiatedEntities);
+
+        for (Entity entity : entitiesCopy) {
             if (entity == null) 
                 continue;
-
             entity.update();
-
-            // System.out.println(entity.getClass());
         }
     }
 
     /** Run all draw methods from all entities in the world */
     public void entitiesDraw(Graphics2D g2) {
-        for (Entity entity : instantiatedEntities) {
+        List<Entity> entitiesCopy = new ArrayList<>(instantiatedEntities);
+
+        for (Entity entity : entitiesCopy) {
             if (entity == null) 
                 continue;
 
@@ -67,6 +58,7 @@ public class EntityManager implements RenewableSingleton, GameComponent {
     /** Add instance */
     public void addInstance(Entity entity) {
         instantiatedEntities.add(entity);
+        entity.start();
     }
     
     /** Reset fields of the Singleton */
