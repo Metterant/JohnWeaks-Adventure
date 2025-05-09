@@ -84,6 +84,9 @@ public class Player extends ControllableEntity {
     // Collison Handler
     CollisionHandler collisionHandler;
 
+    // Shooting
+    private int shootingFrameCount = 0;
+
     // Timers
     private int speedBoostTimer;
     private int shotgunTimer;
@@ -208,6 +211,15 @@ public class Player extends ControllableEntity {
         collisionHandler.checkTile(this, desiredPosX, desiredPosY, desiredAxialDisplacement, keyHandler.getInputMoveX(), keyHandler.getInputMoveY());
         collisionHandler.checkPickable(this);
         
+        // SHOOTING
+        if (shootingFrameCount > 0) 
+            shootingFrameCount--;
+        
+        if (shootingFrameCount == 0 && (keyHandler.getInputShootX() != 0 || keyHandler.getInputShootY() != 0)) {
+            shootBullet();
+            shootingFrameCount = 10;
+        }
+
         // LOGIC
         isMoving = true;
         if (lastPosX == posX && lastPosY == posY)
@@ -423,8 +435,12 @@ public class Player extends ControllableEntity {
         }
     }
 
-//#region POWERUPS
 
+    private void shootBullet() {
+        new Bullet(posX, posY, keyHandler.getInputShootX(), keyHandler.getInputShootY());
+    }
+
+//#region POWERUPS
     /**
      * Get the current unused Power-up the player is holding
      * 
