@@ -9,9 +9,11 @@ import javax.imageio.ImageIO;
 
 import input.KeyHandler;
 import util.CollisionHandler;
+import util.EnemyCollidable;
+import util.EntityManager;
 import util.GameConstants;
 
-public class Player extends ControllableEntity {
+public class Player extends ControllableEntity implements EnemyCollidable {
     // State
     /**
      * Inside {@Link entity.Player} <p>
@@ -84,8 +86,11 @@ public class Player extends ControllableEntity {
     // Collison Handler
     CollisionHandler collisionHandler;
 
-    // Shooting
+    // Shooting Logic
     private int shootingFrameCount = 0;
+
+    // Stats
+    private int damage;
 
     // Timers
     private int speedBoostTimer;
@@ -142,6 +147,8 @@ public class Player extends ControllableEntity {
         collisionHandler = new CollisionHandler();
 
         currentShootingMode = PlayerShootingMode.NORMAL;
+
+        damage = 2;
     }
 
     /**
@@ -212,6 +219,7 @@ public class Player extends ControllableEntity {
         // Collision
         collisionHandler.checkTile(this, desiredPosX, desiredPosY, desiredAxialDisplacement, keyHandler.getInputMoveX(), keyHandler.getInputMoveY());
         collisionHandler.checkPickable(this);
+        checkEnemy();
         
         // SHOOTING
         if (shootingFrameCount > 0) 
@@ -234,16 +242,15 @@ public class Player extends ControllableEntity {
         lastShootInputY = keyHandler.getInputShootY();
         
         // ANIMATION
-        frameCounter++;
         // Increase the counter every 8 frames
         if (frameCounter >= 8) {
             frameNum++;
             if (frameNum == 4) {
                 frameNum = 0;
             }
-            
             frameCounter = 0;
         }
+        frameCounter++;
         
         /** DEBUGGING **/
         // System.out.println(speedBoostTimer);
@@ -461,21 +468,21 @@ public class Player extends ControllableEntity {
                 if (currentShootingMode == PlayerShootingMode.MIXED)
                     shotGunShot(dx, dy);
                 else
-                    new Bullet(posX, posY, dx, dy);
+                    new Bullet(posX, posY, dx, dy, damage);
             }
         }
         else if (currentShootingMode == PlayerShootingMode.SHOTGUN)
             shotGunShot(directionX, directionY);
         else {
-            new Bullet(posX, posY, directionX, directionY);
+            new Bullet(posX, posY, directionX, directionY, damage);
         }
 
     }
     /** Shot 3 Bullets */
     private void shotGunShot(double directionX, double directionY) {
-        new Bullet(posX, posY, directionX, directionY);
-        new Bullet(posX, posY, directionX, directionY, Math.toRadians(12d));
-        new Bullet(posX, posY, directionX, directionY, Math.toRadians(-12d));
+        new Bullet(posX, posY, directionX, directionY, damage);
+        new Bullet(posX, posY, directionX, directionY, Math.toRadians(12d), damage);
+        new Bullet(posX, posY, directionX, directionY, Math.toRadians(-12d), damage);
     }
 
 //#region POWERUPS
@@ -551,5 +558,18 @@ public class Player extends ControllableEntity {
     @Override
     public void dispose() {
         // TODO Add die   
+    }
+    @Override
+    public void checkEnemy() {
+        // Get entities
+        var entities = EntityManager.getInstance().instantiatedEntities;
+        // Iterate through the list
+        for (int i = 0; i < entities.size(); i++) {
+            Entity nearbyEntity = entities.get(i);
+            if (nearbyEntity == null || nearbyEntity == this) continue;
+
+            if (nearbyEntity instanceof Enemy && collisionHandler.isColliding(nearbyEntity, this))
+                EntityManager.getInstance().destroyEntity(this);
+        }
     }
 }
