@@ -2,10 +2,11 @@ package main;
 
 import javax.swing.JPanel;
 
-import entity.Bullet;
 import entity.Player;
+import entity.enemy.*;
 import entity.pickables.*;
-import input.KeyHandler;
+
+import input.PlayerController;
 import tile.TileManager;
 import util.EntityManager;
 import util.GameConstants;
@@ -18,7 +19,7 @@ import java.awt.Graphics2D;
 public class GamePanel extends JPanel implements Runnable {
 
     // KeyHandler
-    transient KeyHandler keyHandler = new KeyHandler();
+    transient PlayerController keyHandler = new PlayerController();
 
     // Thread
     transient Thread gameThread;
@@ -46,6 +47,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void startGameThread() {
         new Key(10, 10);
         new Coffee(15, 10);
+        new Biker(15, 15);
         
         // Init Tile Manager
         TileManager.getInstance().loadImages();
