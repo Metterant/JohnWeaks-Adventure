@@ -34,7 +34,7 @@ public abstract class Entity implements Renderable, GameComponent {
     public double getPositionY() { return posY; }
     
     /** Logger */
-    Logger logger = Logger.getLogger(getClass().getName());
+    public Logger logger = Logger.getLogger(getClass().getName());
 
     public void setPositionX(double posX) {
         // double displacement = posX - this.posX;
