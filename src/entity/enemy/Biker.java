@@ -1,6 +1,5 @@
 package entity.enemy;
 
-import java.awt.Graphics2D;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -32,7 +31,7 @@ public class Biker extends Enemy {
 
     @Override
     public void dispose() {
-        throw new UnsupportedOperationException("Unimplemented method 'dispose'");
+        logger.info("Biker died");
     }
     
     @Override
