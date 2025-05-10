@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import input.KeyHandler;
+import input.InputController;
 import util.CollisionHandler;
 import util.EnemyCollidable;
 import util.EntityManager;
@@ -99,17 +99,17 @@ public class Player extends ControllableEntity implements EnemyCollidable {
     private int octoshotTimer;
 
     //#region CONSTRUCTORS
-    public Player(KeyHandler keyHandler) {
+    public Player(InputController keyHandler) {
         super();
         
         this.keyHandler = keyHandler;
     }
-    public Player(int row, int col, KeyHandler keyHandler) {
+    public Player(int row, int col, InputController keyHandler) {
         super(row, col);
 
         this.keyHandler = keyHandler;
     }
-    public Player(double locationX, double locationY, KeyHandler keyHandler) {
+    public Player(double locationX, double locationY, InputController keyHandler) {
         super(locationX, locationY);
 
         this.keyHandler = keyHandler;
