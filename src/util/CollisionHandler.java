@@ -117,7 +117,7 @@ public class CollisionHandler {
         }
     }
 
-    private boolean isColliding(Entity entityA, Entity entityB) {
+    public boolean isColliding(Entity entityA, Entity entityB) {
         return entityA.collisionBox.intersects(entityB.collisionBox);
     }
 
