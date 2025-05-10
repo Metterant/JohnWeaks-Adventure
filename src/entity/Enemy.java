@@ -3,10 +3,11 @@ package entity;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import util.EntityManager;
 import util.GameConstants;
 
 public abstract class Enemy extends ControllableEntity {
-    public int health = 1;
+    protected int health;
 
     protected int spriteCount = 1;
     protected BufferedImage[] sprites;
@@ -14,6 +15,9 @@ public abstract class Enemy extends ControllableEntity {
     // Animation
     protected int frameCount = 0;
     protected int spriteFrame = 0; 
+
+    public int getHealth() { return health; }
+    public void setHealth(int health) { this.health = health; }
 
     protected Enemy () {
         super();
@@ -51,5 +55,23 @@ public abstract class Enemy extends ControllableEntity {
     @Override
     public void draw(Graphics2D g2) {
         g2.drawImage(sprites[spriteFrame], (int)posX, (int)posY, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);
+    }
+
+    /**
+     * Damage Enemy
+     * 
+     * @param damage : number of damage
+     * @return Remaining number of damage
+     */
+    public int applyDamage(int damage) {
+        if (damage < 0) throw new IllegalArgumentException("Damage can't be less than 0");
+
+        health -= damage;
+
+        if (health <= 0) {
+            EntityManager.getInstance().destroyEntity(this);
+            return -health;
+        }
+        else return 0;
     }
 }
