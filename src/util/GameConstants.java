@@ -21,6 +21,8 @@ public class GameConstants {
     /** UI Constants */
     public class UI {
         public static final int POWERUP_FRAME_SIDE = 20 * SCALE;
+
+        private UI() { }
     }
 
     /** Game Constants */
@@ -31,6 +33,7 @@ public class GameConstants {
 
         public static final int PLAYER_LIVES = 3; 
 
+        private Game() { }
     }
 
     /* Player Constants */
@@ -44,6 +47,10 @@ public class GameConstants {
         // Stats
         public static final double PLAYER_DEFAULT_SPEED = 2.5d;
         public static final double PLAYER_BOOSTED_SPPED = 1.0d;
+
+        public static final int PLAYER_BASE_DAMAGE = 1;
+
+        private Player() { }
     }
 
     // Hide constructor to avoid instantiating GameConstants
