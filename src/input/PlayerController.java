@@ -3,8 +3,13 @@ package input;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class PlayerController extends KeyHandler implements KeyListener {
+public class PlayerController extends InputController implements KeyListener {
     
+    // Booleans for moving input
+    private boolean isMoveUpPressed, isMoveDownPressed, isMoveLeftPressed, isMoveRightPressed;
+    // Booleans for shooting input
+    private boolean isShootUpPressed, isShootDownPressed, isShootLeftPressed, isShootRightPressed;
+
     @Override
     public void keyTyped(KeyEvent e) { }
 
