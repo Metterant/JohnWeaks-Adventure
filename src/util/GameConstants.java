@@ -31,7 +31,7 @@ public class GameConstants {
         public static final int BASE_ROUND_DURATION = FPS * 60; // 45 seconds
         public static final int INCREMENT_DURATION = FPS * 10;  // + 10 seconds after each round 
 
-        public static final int PLAYER_LIVES = 3; 
+        public static final int PLAYER_LIVES = 3;
 
         private Game() { }
     }
@@ -45,10 +45,11 @@ public class GameConstants {
         public static final int OCTOSHOT_DURATION = FPS * 10; // 10 seconds
 
         // Stats
-        public static final double PLAYER_DEFAULT_SPEED = 2.5d;
-        public static final double PLAYER_BOOSTED_SPPED = 1.0d;
+        public static final double BASE_SPEED = 2.5d;
+        public static final double BOOSTED_SPPED = 1.0d;
 
-        public static final int PLAYER_BASE_DAMAGE = 1;
+        public static final int BASE_DAMAGE = 1;
+        public static final int BASE_FRAMES_PER_SHOT = 25;
 
         private Player() { }
     }
