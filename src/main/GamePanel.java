@@ -2,10 +2,9 @@ package main;
 
 import javax.swing.JPanel;
 
-import entity.Bullet;
-import entity.Player;
+import entity.enemy.*;
 import entity.pickables.*;
-import input.KeyHandler;
+
 import tile.TileManager;
 import util.EntityManager;
 import util.GameConstants;
@@ -17,22 +16,16 @@ import java.awt.Graphics2D;
 
 public class GamePanel extends JPanel implements Runnable {
 
-    // KeyHandler
-    transient KeyHandler keyHandler = new KeyHandler();
-
     // Thread
     transient Thread gameThread;
-    
-    // Player
-    public transient Player player = new Player(keyHandler);
 
     // Constructor
     public GamePanel() {
         this.setPreferredSize(new Dimension(GameConstants.SCREEN_WIDTH, GameConstants.SCREEN_HEIGHT));
         this.setBackground(Color.WHITE);
         this.setDoubleBuffered(true);
-        this.addKeyListener(keyHandler);
         this.setFocusable(true);
+        this.addKeyListener(GameManager.getInstance().getPlayerController());
     }
 
     // UI
@@ -44,8 +37,11 @@ public class GamePanel extends JPanel implements Runnable {
      */
 
     public void startGameThread() {
+
         new Key(10, 10);
         new Coffee(15, 10);
+        Biker biker = new Biker(15, 15);
+        
         
         // Init Tile Manager
         TileManager.getInstance().loadImages();
@@ -56,6 +52,8 @@ public class GamePanel extends JPanel implements Runnable {
 
         // Init UI
         ui.start();
+
+        // System.out.println(biker.pathFinder.search(biker, GameManager.getInstance().player));
 
         gameThread = new Thread(this);
         gameThread.start();

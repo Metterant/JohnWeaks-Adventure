@@ -35,6 +35,16 @@ public class TileManager implements Renderable {
         tileMapNum = new int[GameConstants.MAX_SCREEN_COL][GameConstants.MAX_SCREEN_ROW];
     }
     
+    /**
+     * Check if a Tile in the Tile Map is collidable or not
+     * @param row : The row in the Tile Map
+     * @param col : The column in the Tile Map
+     * @return whether the Tile is collidable or not
+     */
+    public boolean getIsCollidable(int row, int col) {
+        return tile[tileMapNum[col][row]].isCollidable;
+    }
+
     @Override
     public void loadImages() {
         try {

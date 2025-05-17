@@ -3,27 +3,12 @@ package input;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class KeyHandler implements KeyListener {
-
+public class PlayerController extends InputController implements KeyListener {
+    
     // Booleans for moving input
     private boolean isMoveUpPressed, isMoveDownPressed, isMoveLeftPressed, isMoveRightPressed;
     // Booleans for shooting input
     private boolean isShootUpPressed, isShootDownPressed, isShootLeftPressed, isShootRightPressed;
-    // Horizontal and Verticle Movement Input
-    private int inputMoveX, inputMoveY;
-    // Horizontal and Verticle direction when shooting
-    private int inputShootX, inputShootY; 
-
-    // Space button
-    private boolean spacePressed;
-
-    public int getInputMoveX() { return inputMoveX; }
-    public int getInputMoveY() { return inputMoveY; }
-
-    public int getInputShootX() { return inputShootX; }
-    public int getInputShootY() { return inputShootY; }
-
-    public boolean getSpaceInput() { return spacePressed; }
 
     @Override
     public void keyTyped(KeyEvent e) { }
@@ -55,7 +40,7 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_SPACE)
             spacePressed = true;
 
-        setAxises();
+        calculateInput();
     }
 
     @Override
@@ -85,10 +70,11 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_SPACE)
             spacePressed = false;
 
-        setAxises();
+        calculateInput();
     }
 
-    private void setAxises() {
+    @Override
+    public void calculateInput() {
         inputMoveX = calculateAxis(isMoveRightPressed, isMoveLeftPressed);
         inputMoveY = calculateAxis(isMoveUpPressed, isMoveDownPressed);
         inputShootX = calculateAxis(isShootRightPressed, isShootLeftPressed);

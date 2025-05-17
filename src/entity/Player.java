@@ -7,11 +7,13 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import input.KeyHandler;
+import input.InputController;
 import util.CollisionHandler;
+import util.EnemyCollidable;
+import util.EntityManager;
 import util.GameConstants;
 
-public class Player extends ControllableEntity {
+public class Player extends ControllableEntity implements EnemyCollidable {
     // State
     /**
      * Inside {@Link entity.Player} <p>
@@ -72,7 +74,7 @@ public class Player extends ControllableEntity {
     private boolean isFlipped;
 
     // Input
-    private int lastInputY = 0;
+    private float lastInputY = 0;
 
     // Logic-related
     private double lastPosX;
@@ -80,12 +82,15 @@ public class Player extends ControllableEntity {
     private int lastShootInputY;
     private boolean isMoving;
     private boolean lastSpaceInput;
-
+    
     // Collison Handler
     CollisionHandler collisionHandler;
 
-    // Shooting
+    // Shooting Logic
     private int shootingFrameCount = 0;
+
+    // Stats
+    private int damage;
 
     // Timers
     private int speedBoostTimer;
@@ -94,56 +99,54 @@ public class Player extends ControllableEntity {
     private int octoshotTimer;
 
     //#region CONSTRUCTORS
-    public Player(KeyHandler keyHandler) {
+    public Player(InputController keyHandler) {
         super();
         
         this.keyHandler = keyHandler;
     }
-    public Player(int row, int col, KeyHandler keyHandler) {
+    public Player(int row, int col, InputController keyHandler) {
         super(row, col);
 
         this.keyHandler = keyHandler;
     }
-    public Player(double locationX, double locationY, KeyHandler keyHandler) {
+    public Player(double locationX, double locationY, InputController keyHandler) {
         super(locationX, locationY);
 
         this.keyHandler = keyHandler;
     }
     //#endregion
 
-    @Override
-    public void start() {
-        setDefaultValues();
-        super.start();
-    }
+private void setDefaultValues() {
+    lastPosX = posX;
+    lastPosY = posY;
+    movementSpeed = 2.5d;
+    lastState = animState = PlayerAnimState.IDLE_DOWN;
 
-    private void setDefaultValues() {
-        lastPosX = posX;
-        lastPosY = posY;
-        movementSpeed = 2.5d;
-        lastState = animState = PlayerAnimState.IDLE_DOWN;
-
-        currentPowerup = PlayerPowerup.NONE;
-
+    currentPowerup = PlayerPowerup.NONE;
+    
         walkingDownSprite = new BufferedImage[4];
         walkingUpSprite = new BufferedImage[4];
         walkingSideSprite = new BufferedImage[4];
         walkingShootingDownSprite = new BufferedImage[4];
-
+        
         lastShootInputY = 0;
         frameCounter = 0;
 
         collisionBoxWidth = 8 + (GameConstants.ORIGINAL_TILE_SIZE - 16);
         collisionBoxHeight = 8 + (GameConstants.ORIGINAL_TILE_SIZE - 16);
-
+        
         collisionBox = new Rectangle();
         initBoxHelper(4, 8, collisionBoxWidth, collisionBoxHeight);
-
+        
+        // Collision Handler
         collisionHandler = new CollisionHandler();
-
+        
+        // SHOOTING MODE
         currentShootingMode = PlayerShootingMode.NORMAL;
+        
+        damage = 2;
     }
-
+    
     /**
      * From {@link util.Renderable} interface <p>
      * 
@@ -154,19 +157,19 @@ public class Player extends ControllableEntity {
         try {
             idleDownSprite = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_idle1.png"));
             idleUpSprite = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_idle2.png"));
-
+            
             // Walking Down
             walkingDownSprite[0] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_down1.png"));
             walkingDownSprite[1] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_down2.png"));
             walkingDownSprite[2] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_down3.png"));
             walkingDownSprite[3] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_down4.png"));
-
+            
             // Walking Up
             walkingUpSprite[0] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_up1.png"));
             walkingUpSprite[1] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_up2.png"));
             walkingUpSprite[2] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_up3.png"));
             walkingUpSprite[3] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_up4.png"));
-
+            
             // Walking to the Side (shooting included)
             walkingSideSprite[0] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_side1.png"));
             walkingSideSprite[1] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_side2.png"));
@@ -178,12 +181,22 @@ public class Player extends ControllableEntity {
             walkingShootingDownSprite[1] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_shoot_down2.png"));
             walkingShootingDownSprite[2] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_shoot_down3.png"));
             walkingShootingDownSprite[3] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_shoot_down4.png"));
-
+            
         } catch (IOException e) {
             e.getStackTrace();
         }
     }
 
+    //#region START
+        @Override
+        public void start() {
+            setDefaultValues();
+            super.start();
+        }
+    //#endregion
+    
+
+    //#region UPDATE
     @Override
     public void update() {
         // MOVEMENT
@@ -212,15 +225,10 @@ public class Player extends ControllableEntity {
         // Collision
         collisionHandler.checkTile(this, desiredPosX, desiredPosY, desiredAxialDisplacement, keyHandler.getInputMoveX(), keyHandler.getInputMoveY());
         collisionHandler.checkPickable(this);
+        checkEnemy();
         
         // SHOOTING
-        if (shootingFrameCount > 0) 
-            shootingFrameCount--;
-        
-        if (shootingFrameCount == 0 && (keyHandler.getInputShootX() != 0 || keyHandler.getInputShootY() != 0)) {
-            shootBullet();
-            shootingFrameCount = 20;
-        }
+        handleShooting();
 
         // LOGIC
         isMoving = true;
@@ -234,21 +242,21 @@ public class Player extends ControllableEntity {
         lastShootInputY = keyHandler.getInputShootY();
         
         // ANIMATION
-        frameCounter++;
         // Increase the counter every 8 frames
         if (frameCounter >= 8) {
             frameNum++;
             if (frameNum == 4) {
                 frameNum = 0;
             }
-            
             frameCounter = 0;
         }
+        frameCounter++;
         
         /** DEBUGGING **/
         // System.out.println(speedBoostTimer);
         // System.out.printf("x=%.1f, y=%.1f\n", posX, posY);
     }
+    //#endregion
 
     public void draw(Graphics2D g2) {
         switch (animState) {
@@ -442,6 +450,17 @@ public class Player extends ControllableEntity {
         }
     }
 
+    //#region SHOOTING
+
+    private void handleShooting() {
+        if (shootingFrameCount > 0) 
+            shootingFrameCount--;
+        
+        if (shootingFrameCount == 0 && (keyHandler.getInputShootX() != 0 || keyHandler.getInputShootY() != 0)) {
+            shootBullet();
+            shootingFrameCount = GameConstants.Player.BASE_FRAMES_PER_SHOT;
+        }
+    }
 
     private void shootBullet() {
         double directionX = keyHandler.getInputShootX();
@@ -461,24 +480,25 @@ public class Player extends ControllableEntity {
                 if (currentShootingMode == PlayerShootingMode.MIXED)
                     shotGunShot(dx, dy);
                 else
-                    new Bullet(posX, posY, dx, dy);
+                    new Bullet(posX, posY, dx, dy, damage);
             }
         }
         else if (currentShootingMode == PlayerShootingMode.SHOTGUN)
             shotGunShot(directionX, directionY);
         else {
-            new Bullet(posX, posY, directionX, directionY);
+            new Bullet(posX, posY, directionX, directionY, damage);
         }
 
     }
     /** Shot 3 Bullets */
     private void shotGunShot(double directionX, double directionY) {
-        new Bullet(posX, posY, directionX, directionY);
-        new Bullet(posX, posY, directionX, directionY, Math.toRadians(12d));
-        new Bullet(posX, posY, directionX, directionY, Math.toRadians(-12d));
+        new Bullet(posX, posY, directionX, directionY, damage);
+        new Bullet(posX, posY, directionX, directionY, Math.toRadians(12d), damage);
+        new Bullet(posX, posY, directionX, directionY, Math.toRadians(-12d), damage);
     }
+    //#endregion
 
-//#region POWERUPS
+    //#region POWERUPS
     /**
      * Get the current unused Power-up the player is holding
      * 
@@ -506,7 +526,7 @@ public class Player extends ControllableEntity {
     private void useSpeedBoost() {
         speedBoostTimer = GameConstants.Player.SPEED_BOOST_DURATION;
         
-        setMovementSpeed(GameConstants.Player.PLAYER_DEFAULT_SPEED + GameConstants.Player.PLAYER_BOOSTED_SPPED);
+        setMovementSpeed(GameConstants.Player.BASE_SPEED + GameConstants.Player.BOOSTED_SPPED);
     }
     
     private void useShotgun() {
@@ -525,7 +545,7 @@ public class Player extends ControllableEntity {
 
     }
 
-//#endregion
+    //#endregion
 
     /** Handle timers */
     private void handleTimers() {
@@ -541,7 +561,7 @@ public class Player extends ControllableEntity {
 
     private void handleTimersEnd() {
         if (speedBoostTimer <= 0) {
-            setMovementSpeed(GameConstants.Player.PLAYER_DEFAULT_SPEED);
+            setMovementSpeed(GameConstants.Player.BASE_SPEED);
         }
         if (shotgunTimer <= 0) {
             
@@ -551,5 +571,18 @@ public class Player extends ControllableEntity {
     @Override
     public void dispose() {
         // TODO Add die   
+    }
+    @Override
+    public void checkEnemy() {
+        // Get entities
+        var entities = EntityManager.getInstance().instantiatedEntities;
+        // Iterate through the list
+        for (int i = 0; i < entities.size(); i++) {
+            Entity nearbyEntity = entities.get(i);
+            if (nearbyEntity == null || nearbyEntity == this) continue;
+
+            if (nearbyEntity instanceof Enemy && collisionHandler.isColliding(nearbyEntity, this))
+                EntityManager.getInstance().destroyEntity(this);
+        }
     }
 }

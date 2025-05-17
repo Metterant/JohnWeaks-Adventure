@@ -6,54 +6,66 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import util.CollisionHandler;
+import util.EnemyCollidable;
 import util.EntityManager;
 import util.GameConstants;
 
-public class Bullet extends Entity {
+public class Bullet extends Entity implements EnemyCollidable {
 
     private double directionX, directionY;
     private double bulletSpeed = 5.5d;
+    private int damage;
 
     private CollisionHandler collisionHandler = new CollisionHandler();
 
+    public int getDamage() { return damage; }
+    public void setDamage(int damage) { this.damage = damage; } 
+
 //#region CONSTRUCTORS
-    public Bullet() {
+    public Bullet(int damage) {
         super();
+        this.damage = damage;
     }
-    public Bullet(int row, int col) {
+    public Bullet(int row, int col, int damage) {
         super(row, col);
+        this.damage = damage;
     }
-    public Bullet(double posX, double posY) {
+    public Bullet(double posX, double posY, int damage) {
         super(posX, posY);
+        this.damage = damage;
     }
 
     // With initial direction
-    public Bullet(int row, int col, double directionX, double directionY) {
+    public Bullet(int row, int col, double directionX, double directionY, int damage) {
         super(row, col);
         
         this.directionX = directionX;
         this.directionY = directionY;
+        this.damage = damage;
     }
-    public Bullet(double posX, double posY, double directionX, double directionY) {
+    public Bullet(double posX, double posY, double directionX, double directionY, int damage) {
         super(posX, posY);
 
         this.directionX = directionX;
         this.directionY = directionY;
+        this.damage = damage;
     }
     // With rotated angle
-    public Bullet(int row, int col, double directionX, double directionY, double theta) {
+    public Bullet(int row, int col, double directionX, double directionY, double theta, int damage) {
         super(row, col);
         
         this.directionX = directionX;
         this.directionY = directionY;
+        this.damage = damage;
 
         rotateDirectionWithAngle(theta);
     }
-    public Bullet(double posX, double posY, double directionX, double directionY, double theta) {
+    public Bullet(double posX, double posY, double directionX, double directionY, double theta, int damage) {
         super(posX, posY);
 
         this.directionX = directionX;
         this.directionY = directionY;
+        this.damage = damage;
 
         rotateDirectionWithAngle(theta);
     }
@@ -70,6 +82,7 @@ public class Bullet extends Entity {
     @Override
     public void update() {
         updatePosition();
+        checkEnemy();
     }
 
     void updatePosition() {
@@ -116,5 +129,26 @@ public class Bullet extends Entity {
         double x1 = directionX, y1 = directionY;
         directionX = Math.cos(theta) * x1 - Math.sin(theta) * y1;
         directionY = Math.sin(theta) * x1 + Math.cos(theta) * y1;
+    }
+    @Override
+    public void checkEnemy() {
+        // Get entities
+        var entities = EntityManager.getInstance().instantiatedEntities;
+        // Iterate through the list
+        for (int i = 0; i < entities.size(); i++) {
+            Entity nearbyEntity = entities.get(i);
+            if (nearbyEntity == null || nearbyEntity == this) continue;
+
+            if (nearbyEntity instanceof Enemy enemy && collisionHandler.isColliding(nearbyEntity, this)) {
+                int remainingDamage = enemy.applyDamage(damage);
+
+                if (remainingDamage == 0) {
+                    // Destroy the bullet after its damage has depleted
+                    EntityManager.getInstance().destroyEntity(this);
+                }
+                // Otherwise reduce damage after penetration
+                else damage = remainingDamage;
+            }
+        }
     }
 }

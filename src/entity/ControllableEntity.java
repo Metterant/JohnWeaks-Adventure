@@ -1,12 +1,12 @@
 package entity;
 
-import input.KeyHandler;
+import input.InputController;
 
 public abstract class ControllableEntity extends Entity {
-    protected double movementSpeed;  
+    protected double movementSpeed = 0.95f;  
     
     // Input
-    public KeyHandler keyHandler;
+    public InputController keyHandler;
 
     // Getter
     public double getMovementSpeed() { return movementSpeed; }
@@ -27,7 +27,7 @@ public abstract class ControllableEntity extends Entity {
         super(locationX, locationY);
     }
 
-    protected void setKeyHandler(KeyHandler keyHandler) {
+    protected void setKeyHandler(InputController keyHandler) {
         this.keyHandler = keyHandler;
     }
 }
