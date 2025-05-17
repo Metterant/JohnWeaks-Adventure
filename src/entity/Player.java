@@ -82,7 +82,7 @@ public class Player extends ControllableEntity implements EnemyCollidable {
     private int lastShootInputY;
     private boolean isMoving;
     private boolean lastSpaceInput;
-
+    
     // Collison Handler
     CollisionHandler collisionHandler;
 
@@ -116,41 +116,37 @@ public class Player extends ControllableEntity implements EnemyCollidable {
     }
     //#endregion
 
-    @Override
-    public void start() {
-        setDefaultValues();
-        super.start();
-    }
+private void setDefaultValues() {
+    lastPosX = posX;
+    lastPosY = posY;
+    movementSpeed = 2.5d;
+    lastState = animState = PlayerAnimState.IDLE_DOWN;
 
-    private void setDefaultValues() {
-        lastPosX = posX;
-        lastPosY = posY;
-        movementSpeed = 2.5d;
-        lastState = animState = PlayerAnimState.IDLE_DOWN;
-
-        currentPowerup = PlayerPowerup.NONE;
-
+    currentPowerup = PlayerPowerup.NONE;
+    
         walkingDownSprite = new BufferedImage[4];
         walkingUpSprite = new BufferedImage[4];
         walkingSideSprite = new BufferedImage[4];
         walkingShootingDownSprite = new BufferedImage[4];
-
+        
         lastShootInputY = 0;
         frameCounter = 0;
 
         collisionBoxWidth = 8 + (GameConstants.ORIGINAL_TILE_SIZE - 16);
         collisionBoxHeight = 8 + (GameConstants.ORIGINAL_TILE_SIZE - 16);
-
+        
         collisionBox = new Rectangle();
         initBoxHelper(4, 8, collisionBoxWidth, collisionBoxHeight);
-
+        
+        // Collision Handler
         collisionHandler = new CollisionHandler();
-
+        
+        // SHOOTING MODE
         currentShootingMode = PlayerShootingMode.NORMAL;
-
+        
         damage = 2;
     }
-
+    
     /**
      * From {@link util.Renderable} interface <p>
      * 
@@ -161,19 +157,19 @@ public class Player extends ControllableEntity implements EnemyCollidable {
         try {
             idleDownSprite = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_idle1.png"));
             idleUpSprite = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_idle2.png"));
-
+            
             // Walking Down
             walkingDownSprite[0] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_down1.png"));
             walkingDownSprite[1] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_down2.png"));
             walkingDownSprite[2] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_down3.png"));
             walkingDownSprite[3] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_down4.png"));
-
+            
             // Walking Up
             walkingUpSprite[0] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_up1.png"));
             walkingUpSprite[1] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_up2.png"));
             walkingUpSprite[2] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_up3.png"));
             walkingUpSprite[3] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_up4.png"));
-
+            
             // Walking to the Side (shooting included)
             walkingSideSprite[0] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_side1.png"));
             walkingSideSprite[1] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_side2.png"));
@@ -185,12 +181,22 @@ public class Player extends ControllableEntity implements EnemyCollidable {
             walkingShootingDownSprite[1] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_shoot_down2.png"));
             walkingShootingDownSprite[2] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_shoot_down3.png"));
             walkingShootingDownSprite[3] = ImageIO.read(getClass().getResourceAsStream("/resources/player/player_walk_shoot_down4.png"));
-
+            
         } catch (IOException e) {
             e.getStackTrace();
         }
     }
 
+    //#region START
+        @Override
+        public void start() {
+            setDefaultValues();
+            super.start();
+        }
+    //#endregion
+    
+
+    //#region UPDATE
     @Override
     public void update() {
         // MOVEMENT
@@ -222,13 +228,7 @@ public class Player extends ControllableEntity implements EnemyCollidable {
         checkEnemy();
         
         // SHOOTING
-        if (shootingFrameCount > 0) 
-            shootingFrameCount--;
-        
-        if (shootingFrameCount == 0 && (keyHandler.getInputShootX() != 0 || keyHandler.getInputShootY() != 0)) {
-            shootBullet();
-            shootingFrameCount = 20;
-        }
+        handleShooting();
 
         // LOGIC
         isMoving = true;
@@ -256,6 +256,7 @@ public class Player extends ControllableEntity implements EnemyCollidable {
         // System.out.println(speedBoostTimer);
         // System.out.printf("x=%.1f, y=%.1f\n", posX, posY);
     }
+    //#endregion
 
     public void draw(Graphics2D g2) {
         switch (animState) {
@@ -449,6 +450,17 @@ public class Player extends ControllableEntity implements EnemyCollidable {
         }
     }
 
+    //#region SHOOTING
+
+    private void handleShooting() {
+        if (shootingFrameCount > 0) 
+            shootingFrameCount--;
+        
+        if (shootingFrameCount == 0 && (keyHandler.getInputShootX() != 0 || keyHandler.getInputShootY() != 0)) {
+            shootBullet();
+            shootingFrameCount = GameConstants.Player.BASE_FRAMES_PER_SHOT;
+        }
+    }
 
     private void shootBullet() {
         double directionX = keyHandler.getInputShootX();
@@ -484,8 +496,9 @@ public class Player extends ControllableEntity implements EnemyCollidable {
         new Bullet(posX, posY, directionX, directionY, Math.toRadians(12d), damage);
         new Bullet(posX, posY, directionX, directionY, Math.toRadians(-12d), damage);
     }
+    //#endregion
 
-//#region POWERUPS
+    //#region POWERUPS
     /**
      * Get the current unused Power-up the player is holding
      * 
@@ -513,7 +526,7 @@ public class Player extends ControllableEntity implements EnemyCollidable {
     private void useSpeedBoost() {
         speedBoostTimer = GameConstants.Player.SPEED_BOOST_DURATION;
         
-        setMovementSpeed(GameConstants.Player.PLAYER_DEFAULT_SPEED + GameConstants.Player.PLAYER_BOOSTED_SPPED);
+        setMovementSpeed(GameConstants.Player.BASE_SPEED + GameConstants.Player.BOOSTED_SPPED);
     }
     
     private void useShotgun() {
@@ -532,7 +545,7 @@ public class Player extends ControllableEntity implements EnemyCollidable {
 
     }
 
-//#endregion
+    //#endregion
 
     /** Handle timers */
     private void handleTimers() {
@@ -548,7 +561,7 @@ public class Player extends ControllableEntity implements EnemyCollidable {
 
     private void handleTimersEnd() {
         if (speedBoostTimer <= 0) {
-            setMovementSpeed(GameConstants.Player.PLAYER_DEFAULT_SPEED);
+            setMovementSpeed(GameConstants.Player.BASE_SPEED);
         }
         if (shotgunTimer <= 0) {
             
