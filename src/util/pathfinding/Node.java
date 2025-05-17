@@ -18,7 +18,7 @@ public class Node {
     }
 
     public String toString() {
-        String format = "[Row: %d, Col: %d]";
-        return String.format(format, col, row);
+        String format = "[N: %d, %d]";
+        return String.format(format, row, col);
     }
 }
