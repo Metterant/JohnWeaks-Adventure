@@ -111,7 +111,7 @@ public class UI implements Renderable, GameComponent {
     }
 
     private void setPowerupIcon() {
-        switch (gamePanel.player.getPowerup()) {
+        switch (GameManager.getInstance().player.getPowerup()) {
             case NONE:
                 powerupIcon = null;
                 break;
