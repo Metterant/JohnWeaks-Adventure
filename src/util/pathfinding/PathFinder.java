@@ -19,7 +19,8 @@ public class PathFinder {
 
     int[][] gridData;
 
-    void setGridData() {
+    /** Reset gridData */
+    void resetGridData() {
         gridData = new int[noOfRows][noOfCols];
 
         for (int i = 0; i < noOfRows; i++) {
@@ -31,14 +32,14 @@ public class PathFinder {
     }
 
     public PathFinder() {
+        // Init row and col
         noOfRows = GameConstants.MAX_SCREEN_ROW;
         noOfCols = GameConstants.MAX_SCREEN_COL;
-        // reset();
     }
     
     /** Reset all fields */
     private void reset() {
-        setGridData();
+        resetGridData();
         nodes = new Node[noOfRows][noOfCols];
 
         for (int i = 0; i < noOfRows; i++) {
@@ -57,16 +58,16 @@ public class PathFinder {
 
     /**
      * Create a path for the ControllableEntity to follow 
-     * @param entity : The entity that calls the method
-     * @param entity : The target entity that the initEntity is following to
+     * @param startCoords : The starting TileCoords
+     * @param goalCoords : The end TileCoords
      */
-    public void search(ControllableEntity initEntity, Entity targetEntity) {
+    public TileCoords search(TileCoords startCoords, TileCoords goalCoords) {
         reset();
 
-        int startRow = (int)initEntity.getPositionY() / GameConstants.TILE_SIZE;
-        int startCol = (int)initEntity.getPositionX() / GameConstants.TILE_SIZE;
-        int goalRow = (int)targetEntity.getPositionY() / GameConstants.TILE_SIZE;
-        int goalCol = (int)targetEntity.getPositionX() / GameConstants.TILE_SIZE;
+        int startRow = startCoords.getRow();
+        int startCol = startCoords.getCol();
+        int goalRow = goalCoords.getRow();
+        int goalCol = goalCoords.getCol();
 
         // Errors Handling
         if (gridData[startRow][startCol] == 1)
@@ -126,13 +127,27 @@ public class PathFinder {
         }
         if (!goalReached) {
             System.out.println("No path found to the goal.");
+            return null;
         }
+        Node nextNode = findNextNode();
+        
+        return (nextNode != null) ? new TileCoords(nextNode.row, nextNode.col) : null ; 
     }
 
-    public double distance(Node node1, Node node2) {
+    /**
+     * Get the distance between 2 Nodes in Euclidean distance
+     * @param node1 : the first Node
+     * @param node2 : the second Node
+     * @return Distance between the two Nodes
+     */
+    private double distance(Node node1, Node node2) {
         return Math.sqrt((node2.col - node1.col) * (node2.col - node1.col) + (node2.row - node1.row) * (node2.row - node1.row));
     }
 
+    /**
+     * Try opening a Node
+     * @param targetNode : the Node that is intended to be opened
+     */
     private void openNode(Node targetNode) {
         // Do not process if in closedList
         if (closedList.contains(targetNode)) {
@@ -154,27 +169,53 @@ public class PathFinder {
         targetNode.f = targetNode.g + targetNode.h;
     }
 
+    /**
+    * Check if <P>
+    * - the target position coordinates is in-bound <P>
+    * - the target position is not blocked <P>
+    * - the path is the target position is not blocked by either nodes diagonal to each other  <P>
+    */
     private boolean isValidLocation(int targetRow, int targetCol) {
-        /*
-         * Check if
-         * - the target position coordinates is in-bound
-         * - the target position is not blocked
-         * - the path is the target position is not blocked by 2 nodes diagonal to each other 
-         */
-        if ((targetRow < noOfRows && targetCol < noOfCols && targetRow >= 0 && targetCol >= 0) && (!nodes[targetRow][targetCol].isBlocked)) {
-            if (targetRow != currentNode.row && targetCol != currentNode.col)
-                return (!nodes[currentNode.row][targetCol].isBlocked && !nodes[targetRow][currentNode.row].isBlocked);
-            }
-            return true;
+        // Check bounds first
+        if (targetRow < 0 || targetRow >= noOfRows || targetCol < 0 || targetCol >= noOfCols)
+            return false;
+        // Check if the cell is blocked
+        if (nodes[targetRow][targetCol].isBlocked)
+            return false;
+        // Check for diagonal movement and prevent corner cutting
+        if (targetRow != currentNode.row && targetCol != currentNode.col) {
+            if (nodes[currentNode.row][targetCol].isBlocked || nodes[targetRow][currentNode.col].isBlocked)
+                return false;
         }
+        return true;
+    }
 
     public void constructPath() {
         Node pathNode = goalNode;
         while (pathNode != null) {
             pathNode.isPath = true;
-            System.out.println(pathNode.toString());
+            System.out.print(pathNode.toString() + "<-");
             pathNode = pathNode.parent;
         }
+        System.out.println();
+    }
+
+    /**
+     * Retrieve the next Node in the path
+     * @return : The next Node in the path starting from the startNode 
+     */
+    private Node findNextNode() {
+        Node pathNode = goalNode;
+        while (pathNode != null) {
+            if (pathNode.parent == null) {
+                return null;
+            }
+            if (pathNode.parent.parent == null) {
+                return pathNode;
+            }
+            pathNode = pathNode.parent;
+        }
+        return null;
     }
 
     public void printGrid() {
