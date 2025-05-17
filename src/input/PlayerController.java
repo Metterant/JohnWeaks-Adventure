@@ -40,7 +40,7 @@ public class PlayerController extends InputController implements KeyListener {
         if (code == KeyEvent.VK_SPACE)
             spacePressed = true;
 
-        setAxises();
+        calculateInput();
     }
 
     @Override
@@ -70,10 +70,11 @@ public class PlayerController extends InputController implements KeyListener {
         if (code == KeyEvent.VK_SPACE)
             spacePressed = false;
 
-        setAxises();
+        calculateInput();
     }
 
-    private void setAxises() {
+    @Override
+    public void calculateInput() {
         inputMoveX = calculateAxis(isMoveRightPressed, isMoveLeftPressed);
         inputMoveY = calculateAxis(isMoveUpPressed, isMoveDownPressed);
         inputShootX = calculateAxis(isShootRightPressed, isShootLeftPressed);
