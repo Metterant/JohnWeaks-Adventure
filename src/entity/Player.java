@@ -74,7 +74,7 @@ public class Player extends ControllableEntity implements EnemyCollidable {
     private boolean isFlipped;
 
     // Input
-    private int lastInputY = 0;
+    private float lastInputY = 0;
 
     // Logic-related
     private double lastPosX;
