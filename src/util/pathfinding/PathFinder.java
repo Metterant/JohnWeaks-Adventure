@@ -3,8 +3,6 @@ package util.pathfinding;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
-import entity.ControllableEntity;
-import entity.Entity;
 import tile.TileManager;
 import util.GameConstants;
 
@@ -104,7 +102,7 @@ public class PathFinder {
 
             if (currentNode == goalNode) {
                 goalReached = true;
-                constructPath();
+                // constructPath();
                 break;
             }
 

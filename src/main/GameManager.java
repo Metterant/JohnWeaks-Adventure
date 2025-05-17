@@ -18,6 +18,8 @@ public class GameManager implements GameComponent {
     // PLAYER
     public Player player = new Player(playerController);
 
+    public int updateTick = 0;
+
     /**
      * @return the object that register player input
      */
@@ -57,6 +59,7 @@ public class GameManager implements GameComponent {
     @Override
     public void update() {
         roundTimer--;
+        updateTick++;
     }
     //#endregion
 

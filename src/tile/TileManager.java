@@ -39,7 +39,7 @@ public class TileManager implements Renderable {
      * Check if a Tile in the Tile Map is collidable or not
      * @param row : The row in the Tile Map
      * @param col : The column in the Tile Map
-     * @return wether the Tile is collidable or not
+     * @return whether the Tile is collidable or not
      */
     public boolean getIsCollidable(int row, int col) {
         return tile[tileMapNum[col][row]].isCollidable;
