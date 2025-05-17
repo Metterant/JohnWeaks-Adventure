@@ -3,7 +3,7 @@ package entity;
 import input.InputController;
 
 public abstract class ControllableEntity extends Entity {
-    protected double movementSpeed;  
+    protected double movementSpeed = 0.95f;  
     
     // Input
     public InputController keyHandler;
