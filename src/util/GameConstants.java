@@ -28,8 +28,10 @@ public class GameConstants {
     /** Game Constants */
     public class Game {
         /* Total frames = FPS * Seconds */
-        public static final int BASE_ROUND_DURATION = FPS * 60; // 45 seconds
-        public static final int INCREMENT_DURATION = FPS * 10;  // + 10 seconds after each round 
+        public static final int BASE_ROUND_DURATION_FRAMES = FPS * 60; // 45 seconds
+        public static final int INCREMENT_DURATION_FRAMES = FPS * 10;  // + 10 seconds after each round
+
+        public static final int PATHFINDER_PERIOD_FRAMES = FPS / 2; // Half a second
 
         public static final int PLAYER_LIVES = 3;
 
@@ -39,10 +41,10 @@ public class GameConstants {
     /* Player Constants */
     public class Player {
         // Durations
-        public static final int SPEED_BOOST_DURATION = FPS * 15; // 15 seconds
-        public static final int SHOTGUN_DURATION = FPS * 12; // 12 seconds
-        public static final int MACHINE_GUN_DURATION = FPS * 12; // 12 seconds
-        public static final int OCTOSHOT_DURATION = FPS * 10; // 10 seconds
+        public static final int SPEED_BOOST_DURATION_FRAMES = FPS * 15; // 15 seconds
+        public static final int SHOTGUN_DURATION_FRAMES = FPS * 12; // 12 seconds
+        public static final int MACHINE_GUN_DURATION_FRAMES = FPS * 12; // 12 seconds
+        public static final int OCTOSHOT_DURATION_FRAMES = FPS * 10; // 10 seconds
 
         // Stats
         public static final double BASE_SPEED = 2.5d;
