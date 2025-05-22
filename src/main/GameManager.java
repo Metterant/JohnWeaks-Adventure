@@ -1,9 +1,12 @@
 package main;
 
-import entity.Player;
+import entity.enemy.Biker;
+import entity.player.Player;
 import input.PlayerController;
 import util.GameComponent;
 import util.GameConstants;
+import util.Spawner;
+import util.pathfinding.PathFinder;
 
 public class GameManager implements GameComponent {
 
@@ -13,10 +16,16 @@ public class GameManager implements GameComponent {
     private int currentRound = 1; // Default round
 
     private int roundDuration;
-    private int roundTimer = GameConstants.Game.BASE_ROUND_DURATION;
+    private int roundTimer = GameConstants.Game.BASE_ROUND_DURATION_FRAMES;
 
     // PLAYER
     public Player player = new Player(playerController);
+
+    // PATHFINDER
+    public final PathFinder pathFinder = new PathFinder();
+
+    // SPAWNER
+    private Spawner spawner = new Spawner();
 
     public int updateTick = 0;
 
@@ -26,7 +35,7 @@ public class GameManager implements GameComponent {
     public PlayerController getPlayerController() { return playerController; }
 
     /**
-     * Return the number of frames to be counted to end the round
+     * Returns the number of frames to be counted to end the round
      * @return the number of frames
      */
     public int getRoundTimer() {
@@ -34,7 +43,7 @@ public class GameManager implements GameComponent {
     }
     
     /**
-     * Return the number of remaining frames to be counted
+     * Returns the number of remaining frames to be counted
      * @return The amount of frames to be counted left
      */
     public int getRoundDuration() {
@@ -43,23 +52,27 @@ public class GameManager implements GameComponent {
 
     /* UTILS */
 
-    /** Go to next round */
+    /** Goes to next round */
     public void nextRound() {
         currentRound++; 
-        roundTimer = GameConstants.Game.BASE_ROUND_DURATION * (currentRound - 1) * GameConstants.Game.INCREMENT_DURATION;  
+        roundTimer = GameConstants.Game.BASE_ROUND_DURATION_FRAMES * (currentRound - 1) * GameConstants.Game.INCREMENT_DURATION_FRAMES;  
     }
 
     //#region GameComponent
     @Override
     public void start() {
         currentRound = 1;
-        roundTimer = roundDuration = GameConstants.Game.BASE_ROUND_DURATION;
+        roundTimer = roundDuration = GameConstants.Game.BASE_ROUND_DURATION_FRAMES;
     }
     
     @Override
     public void update() {
         roundTimer--;
         updateTick++;
+
+        if (updateTick % (GameConstants.FPS + 30) == 0) {
+            spawner.spawnEnemyHorde();
+        } 
     }
     //#endregion
 
@@ -70,7 +83,7 @@ public class GameManager implements GameComponent {
         return instance;
     }
 
-    // Hide constructor of the singleton Class
+    // Hides constructor of the singleton Class
     private GameManager() { }
     //#endregion
 }
