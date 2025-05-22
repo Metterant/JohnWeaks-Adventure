@@ -6,7 +6,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import entity.Pickable;
-import entity.Player;
+import entity.player.Player;
 import util.GameConstants;
 
 public class Key extends Pickable {

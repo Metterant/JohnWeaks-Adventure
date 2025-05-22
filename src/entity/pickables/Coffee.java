@@ -6,8 +6,8 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import entity.Pickable;
-import entity.Player;
-import entity.Player.PlayerPowerup;
+import entity.player.Player;
+import entity.player.Player.PlayerPowerup;
 import util.GameConstants;
 
 public class Coffee extends Pickable {

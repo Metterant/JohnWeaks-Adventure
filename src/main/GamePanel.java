@@ -40,8 +40,6 @@ public class GamePanel extends JPanel implements Runnable {
 
         new Key(10, 10);
         new Coffee(15, 10);
-        Biker biker = new Biker(15, 15);
-        
         
         // Init Tile Manager
         TileManager.getInstance().loadImages();

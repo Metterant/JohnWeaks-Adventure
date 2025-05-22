@@ -1,5 +1,7 @@
 package entity;
 
+import entity.player.Player;
+
 public abstract class Pickable extends Entity {
 
     /** Name of Pickable item */

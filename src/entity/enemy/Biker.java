@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import entity.Enemy;
-import util.pathfinding.PathFinder;
 
 public class Biker extends Enemy {
 
@@ -41,6 +40,5 @@ public class Biker extends Enemy {
         spriteCount = 2;
 
         super.start();
-        pathFinder = new PathFinder();
     }
 }
