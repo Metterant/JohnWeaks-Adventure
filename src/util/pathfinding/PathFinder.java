@@ -13,7 +13,7 @@ public class PathFinder {
     ArrayList<Node> closedList = new ArrayList<>();
     Node startNode, goalNode, currentNode;
     int noOfRows, noOfCols;
-    public boolean goalReached;
+    boolean goalReached;
 
     int[][] gridData;
 
@@ -67,12 +67,13 @@ public class PathFinder {
         int goalRow = goalCoords.getRow();
         int goalCol = goalCoords.getCol();
 
-        // Errors Handling
+        // Check start and goal Nodes
         if (gridData[startRow][startCol] == 1)
             throw new InvalidParameterException("Start Node is blocked");
         if (gridData[goalRow][goalCol] == 1)
             throw new InvalidParameterException("Goal Node is blocked");
         
+        // Inits
         currentNode = nodes[startRow][startCol];
         startNode = currentNode;
         goalNode = nodes[goalRow][goalCol];
@@ -100,31 +101,22 @@ public class PathFinder {
             }
             currentNode = openList.get(bestNodeIndex);
 
+            // The the goalNode has been found
             if (currentNode == goalNode) {
                 goalReached = true;
-                // constructPath();
                 break;
             }
 
             closedList.add(currentNode);
             openList.remove(currentNode);
 
-            int[] dirX = {0, 1, 0, -1, 1, 1, -1, -1};
-            int[] dirY = {1, 0, -1, 0, 1, -1, 1, -1};
-
-            for (int i = 0; i < 8; i++) {
-                int targetRow = currentNode.row + dirY[i];
-                int targetCol = currentNode.col + dirX[i];
-                // Skip if already in closedList
-                if (isValidLocation(targetRow, targetCol) && !closedList.contains(nodes[targetRow][targetCol])) {
-                    openNode(nodes[targetRow][targetCol]);
-                }
-            }
+            exploreNearbyNodes();
 
             step++;
         }
+
+        // End of the search
         if (!goalReached) {
-            System.out.println("No path found to the goal.");
             return null;
         }
         Node nextNode = findNextNode();
@@ -140,6 +132,23 @@ public class PathFinder {
      */
     private double distance(Node node1, Node node2) {
         return Math.sqrt((node2.col - node1.col) * (node2.col - node1.col) + (node2.row - node1.row) * (node2.row - node1.row));
+    }
+
+    /**
+     * Explore all nearby Nodes and try adding the them in the openList
+     */
+    private void exploreNearbyNodes() {
+        int[] dirX = {0, 1, 0, -1, 1, 1, -1, -1};
+        int[] dirY = {1, 0, -1, 0, 1, -1, 1, -1};
+
+        for (int i = 0; i < 8; i++) {
+            int targetRow = currentNode.row + dirY[i];
+            int targetCol = currentNode.col + dirX[i];
+            // Skip if already in closedList
+            if (isValidLocation(targetRow, targetCol) && !closedList.contains(nodes[targetRow][targetCol])) {
+                openNode(nodes[targetRow][targetCol]);
+            }
+        }
     }
 
     /**
