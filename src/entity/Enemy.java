@@ -7,7 +7,6 @@ import input.AIController;
 import main.GameManager;
 import util.EntityManager;
 import util.GameConstants;
-import util.pathfinding.PathFinder;
 import util.pathfinding.TileCoords;
 
 public abstract class Enemy extends ControllableEntity {
@@ -19,6 +18,7 @@ public abstract class Enemy extends ControllableEntity {
     // Animation
     protected int frameCount = 0;
     protected int spriteFrame = 0; 
+    protected int damageFrameCount = 0;
 
     // TileCoords
     private TileCoords currentTileCoords; // The TileCoords the enemy is standing on
@@ -28,15 +28,14 @@ public abstract class Enemy extends ControllableEntity {
     private Entity targetEntity = GameManager.getInstance().player;
 
     // PathFinding
-    public PathFinder pathFinder;
-    private int pathFindingCounter = GameConstants.FPS + 1;
+    private int pathFindingCounter = Integer.MAX_VALUE;
 
     public int getHealth() { return health; }
     public void setHealth(int health) { this.health = health; }
 
     public TileCoords getCurrTileCoords() { return currentTileCoords; }
     /**
-     * Retrieve the TileCoords the Enemy is heading to
+     * Retrieves the TileCoords the Enemy is heading to
      * @return TileCoords which is returned from a pathFinder search
      */
     public TileCoords getNextTileCoords() { return nextTileCoords; }
@@ -72,6 +71,8 @@ public abstract class Enemy extends ControllableEntity {
             spriteFrame = (spriteFrame < spriteCount) ? spriteFrame + 1 : 0; 
             frameCount = 0;
         }
+        if (damageFrameCount > 0)
+            damageFrameCount--;
         
         // TILE COORDS
         TileCoords targetTileCoords = getTileCoords(targetEntity);
@@ -79,10 +80,10 @@ public abstract class Enemy extends ControllableEntity {
         
         // PATH FINDING
         // perform a search if the Enemy has reached the next Tile or an amount of time has passed after the last search 
-        if (pathFindingCounter > GameConstants.FPS || checkPosition(nextTileCoords)) {
+        if (pathFindingCounter > (GameConstants.Game.PATHFINDER_PERIOD_FRAMES) || checkIfReachedPosition(nextTileCoords)) {
             pathFindingCounter = 0;
             try {
-                nextTileCoords = pathFinder.search(getTileCoords(this), targetTileCoords);
+                nextTileCoords = GameManager.getInstance().pathFinder.search(getTileCoords(this), targetTileCoords);
             } 
             catch (IllegalArgumentException e) {
                 logger.warning(e.getMessage());
@@ -97,7 +98,22 @@ public abstract class Enemy extends ControllableEntity {
 
     @Override
     public void draw(Graphics2D g2) {
-        g2.drawImage(sprites[spriteFrame], (int)posX, (int)posY, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);
+
+        // Apply a tint to the sprite before drawing
+        BufferedImage tintedSprite = new BufferedImage(GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, BufferedImage.TYPE_INT_ARGB);
+        // Create a seperate tint for tintedSprite
+        Graphics2D tg2 = tintedSprite.createGraphics();
+        tg2.drawImage(sprites[spriteFrame], 0, 0, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);
+        
+        if (damageFrameCount > 0)
+            tg2.setComposite(java.awt.AlphaComposite.SrcAtop.derive(1f)); // 100% opacity
+        else
+            tg2.setComposite(java.awt.AlphaComposite.SrcAtop.derive(0f)); // 100% opacity
+
+        tg2.fillRect(0, 0, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE);
+        tg2.dispose();
+
+        g2.drawImage(tintedSprite, (int)posX, (int)posY, null);
 
         // Draw PathFinding
         // TileCoords test = getTileCoords(this);
@@ -128,6 +144,7 @@ public abstract class Enemy extends ControllableEntity {
 
         health -= damage;
 
+        damageFrameCount = 10;
         if (health <= 0) {
             EntityManager.getInstance().destroyEntity(this);
             return -health;
@@ -161,11 +178,11 @@ public abstract class Enemy extends ControllableEntity {
     }
     
     /**
-     * The TileCoords to be checked
+     * Checks if the Enemy is currently standing on the specified TileCoords
      * @param targetTile : the TileCoords
-     * @return Whether the Enemy is being very close to the targetTile
+     * @return a boolean determined by checking whether the Enemy is being very close to the targetTile
      */
-    private boolean checkPosition(TileCoords targetTile) {
+    private boolean checkIfReachedPosition(TileCoords targetTile) {
         double delta = (double)GameConstants.TILE_SIZE / 20;
         int targetX = GameConstants.TILE_SIZE * targetTile.getCol();
         int targetY = GameConstants.TILE_SIZE * targetTile.getRow();
