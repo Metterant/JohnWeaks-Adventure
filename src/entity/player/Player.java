@@ -1,4 +1,4 @@
-package entity;
+package entity.player;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -7,6 +7,10 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import entity.Bullet;
+import entity.ControllableEntity;
+import entity.Enemy;
+import entity.Entity;
 import input.InputController;
 import util.CollisionHandler;
 import util.EnemyCollidable;
@@ -132,8 +136,8 @@ private void setDefaultValues() {
         lastShootInputY = 0;
         frameCounter = 0;
 
-        collisionBoxWidth = 8 + (GameConstants.ORIGINAL_TILE_SIZE - 16);
-        collisionBoxHeight = 8 + (GameConstants.ORIGINAL_TILE_SIZE - 16);
+        collisionBoxWidth = 9 + (GameConstants.ORIGINAL_TILE_SIZE - 16) / 2;
+        collisionBoxHeight = 9 + (GameConstants.ORIGINAL_TILE_SIZE - 16) / 2;
         
         collisionBox = new Rectangle();
         initBoxHelper(4, 8, collisionBoxWidth, collisionBoxHeight);
@@ -144,7 +148,8 @@ private void setDefaultValues() {
         // SHOOTING MODE
         currentShootingMode = PlayerShootingMode.NORMAL;
         
-        damage = 2;
+        // TODO: Implement damage
+        damage = 1;
     }
     
     /**
@@ -312,7 +317,8 @@ private void setDefaultValues() {
             
         }
         // Draw collision Box
-        // g2.fillRect(collisionBox.x, collisionBox.y, collisionBoxWidth, collisionBoxHeight);
+        // g2.setColor(java.awt.Color.red);
+        // g2.drawRect(collisionBox.x, collisionBox.y, collisionBoxWidth, collisionBoxHeight);
     }
 
     /**
@@ -524,21 +530,21 @@ private void setDefaultValues() {
 
     /** Use speed bost */
     private void useSpeedBoost() {
-        speedBoostTimer = GameConstants.Player.SPEED_BOOST_DURATION;
+        speedBoostTimer = GameConstants.Player.SPEED_BOOST_DURATION_FRAMES;
         
         setMovementSpeed(GameConstants.Player.BASE_SPEED + GameConstants.Player.BOOSTED_SPPED);
     }
     
     private void useShotgun() {
-        shotgunTimer = GameConstants.Player.SHOTGUN_DURATION;
+        shotgunTimer = GameConstants.Player.SHOTGUN_DURATION_FRAMES;
     }
 
     private void useMachineGunTimer() {
-        machineGunTimer = GameConstants.Player.MACHINE_GUN_DURATION;
+        machineGunTimer = GameConstants.Player.MACHINE_GUN_DURATION_FRAMES;
     }
 
     private void useOctoshot() {
-        octoshotTimer = GameConstants.Player.OCTOSHOT_DURATION;
+        octoshotTimer = GameConstants.Player.OCTOSHOT_DURATION_FRAMES;
     }
 
     private void useDetonation() {
