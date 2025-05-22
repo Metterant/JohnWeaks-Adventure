@@ -16,7 +16,7 @@ import util.Renderable;
  */
 public class TileManager implements Renderable {
     // Loaded Tiles
-    public Tile[] tile;
+    public Tile[] tiles;
     // Tile Map that stores number (id) of a Tile
     public int[][] tileMapNum;
 
@@ -31,35 +31,30 @@ public class TileManager implements Renderable {
     }
 
     public TileManager() {
-        tile = new Tile[10];
+        // Set the amount of unique tiles equal to the amount of tiles defined (has valid resources) in game constants 
+        tiles = new Tile[TileConstants.TILE_RESOURCES_MAP.size()];
         tileMapNum = new int[GameConstants.MAX_SCREEN_COL][GameConstants.MAX_SCREEN_ROW];
     }
     
     /**
-     * Check if a Tile in the Tile Map is collidable or not
+     * Checks if a Tile in the Tile Map is collidable or not
      * @param row : The row in the Tile Map
      * @param col : The column in the Tile Map
      * @return whether the Tile is collidable or not
      */
     public boolean getIsCollidable(int row, int col) {
-        return tile[tileMapNum[col][row]].isCollidable;
+        return tiles[tileMapNum[col][row]].isCollidable;
     }
 
     @Override
     public void loadImages() {
         try {
-            // ASPALT
-            tile[0] = new Tile();
-            tile[0].image = ImageIO.read(getClass().getResourceAsStream("/resources/tiles/aspalt.png"));
+            for (int i = 0; i < TileConstants.TILE_RESOURCES_MAP.size(); i++) {
+                tiles[i] = new Tile();
+                tiles[i].image = ImageIO.read(getClass().getResourceAsStream(TileConstants.TILE_RESOURCES_MAP.get(i)));
+                tiles[i].isCollidable = TileConstants.TILE_COLLIDABLE_MAP.get(i);
+            }
 
-            // GRASS
-            tile[1] = new Tile();
-            tile[1].image = ImageIO.read(getClass().getResourceAsStream("/resources/tiles/grass.png"));
-
-            // WATER
-            tile[2] = new Tile();
-            tile[2].image = ImageIO.read(getClass().getResourceAsStream("/resources/tiles/water.png"));
-            tile[2].isCollidable = true;
         }
         catch (IOException e) {
             e.getStackTrace();
@@ -78,8 +73,17 @@ public class TileManager implements Renderable {
                 String line = br.readLine();
                 String[] numbers = line.split(" ");
 
+                int spriteCount = TileConstants.TILE_RESOURCES_MAP.size();
                 for (int j = 0; j < numbers.length; j++) {
-                    tileMapNum[j][i] = Integer.parseInt(numbers[j]);
+                    int parsedTileNumber = Integer.parseInt(numbers[j]);
+                    if (parsedTileNumber >= spriteCount) {
+                        String format = "Unexpected Tile Number. (%d > %d)";
+
+                        tileMapNum[j][i] = 0;
+                        throw new IllegalStateException(String.format(format, parsedTileNumber, spriteCount));
+                    }
+                    else 
+                        tileMapNum[j][i] = parsedTileNumber;
                 }
             }
 
@@ -101,8 +105,21 @@ public class TileManager implements Renderable {
                 int posX = i * GameConstants.TILE_SIZE;
                 int posY = j * GameConstants.TILE_SIZE;
 
-                g2.drawImage(tile[tileMapNum[i][j]].image, posX, posY, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);
+                g2.drawImage(tiles[tileMapNum[i][j]].image, posX, posY, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);
             }
         }
+    }
+
+    /**
+     * Returns the tile type number at the given world coordinates.
+     * @param positionX The X coordinate in world space.
+     * @param positionY The Y coordinate in world space.
+     * @return The tile number (as defined in TileConstants) at the specified position.
+     */
+    public int getTileNum(double positionX, double positionY) {
+        int row = (int) positionY / GameConstants.TILE_SIZE;
+        int col = (int) positionX / GameConstants.TILE_SIZE;
+
+        return tileMapNum[col][row];
     }
 }
