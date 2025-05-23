@@ -219,10 +219,10 @@ public abstract class Enemy extends ControllableEntity {
         // Choose Pickable Item
         switch (rand.nextInt(2)) {
             case 0:
-                new Coin(posX, posY);
+                new Coffee(posX, posY);
                 break;
             case 1:
-                new Coffee(posX, posY);
+                new Shotgun(posX, posY);
                 break;
             default:
                 break;
