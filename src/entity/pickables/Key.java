@@ -47,9 +47,4 @@ public class Key extends Pickable {
     public void getPickedUp(Player player) {
         System.out.println("Picked up a Key");
     }
-
-    @Override
-    public void dispose() {
-        
-    }
 }

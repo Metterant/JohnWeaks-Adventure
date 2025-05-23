@@ -50,9 +50,4 @@ public class Coffee extends Pickable {
         
         player.setPowerup(PlayerPowerup.SPEED_BOOST);
     }
-
-    @Override
-    public void dispose() {
-        
-    }
 }

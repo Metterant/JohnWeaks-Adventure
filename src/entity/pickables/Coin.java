@@ -49,9 +49,4 @@ public class Coin extends Pickable {
         
         // player.setPowerup(PlayerPowerup.SPEED_BOOST);
     }
-
-    @Override
-    public void dispose() {
-        
-    }
 }
