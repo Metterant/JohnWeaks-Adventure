@@ -56,6 +56,7 @@ public class Player extends ControllableEntity implements EnemyCollidable {
         DETONATION,
     }
     private PlayerPowerup currentPowerup;
+    PlayerStatusEffect statusEffect = new PlayerStatusEffect();
 
     // Shooting mode
     /**
@@ -69,7 +70,9 @@ public class Player extends ControllableEntity implements EnemyCollidable {
         OCTOSHOT,
         MIXED,
     }
+    private int shootFramesPerShot = GameConstants.Player.BASE_FRAMES_PER_SHOT;
     private PlayerShootingMode currentShootingMode;
+    private PlayerShootingMode defauPlayerShootingMode;
 
     // Sprites
     private BufferedImage[] walkingDownSprite, walkingUpSprite, walkingSideSprite, walkingShootingDownSprite;
@@ -96,12 +99,6 @@ public class Player extends ControllableEntity implements EnemyCollidable {
     // Stats
     private int damage;
 
-    // Timers
-    private int speedBoostTimer;
-    private int shotgunTimer;
-    private int machineGunTimer;
-    private int octoshotTimer;
-
     //#region CONSTRUCTORS
     public Player(InputController keyHandler) {
         super();
@@ -120,13 +117,13 @@ public class Player extends ControllableEntity implements EnemyCollidable {
     }
     //#endregion
 
-private void setDefaultValues() {
-    lastPosX = posX;
-    lastPosY = posY;
-    movementSpeed = 2.5d;
-    lastState = animState = PlayerAnimState.IDLE_DOWN;
+    private void setDefaultValues() {
+        lastPosX = posX;
+        lastPosY = posY;
+        movementSpeed = 2.5d;
+        lastState = animState = PlayerAnimState.IDLE_DOWN;
 
-    currentPowerup = PlayerPowerup.NONE;
+        currentPowerup = PlayerPowerup.NONE;
     
         walkingDownSprite = new BufferedImage[4];
         walkingUpSprite = new BufferedImage[4];
@@ -224,8 +221,7 @@ private void setDefaultValues() {
         lastSpaceInput = keyHandler.getSpaceInput();
 
         // TIMERS
-        handleTimers();
-        handleTimersEnd();
+        handleStatusEffect();
         
         // Collision
         collisionHandler.checkTile(this, desiredPosX, desiredPosY, desiredAxialDisplacement, keyHandler.getInputMoveX(), keyHandler.getInputMoveY());
@@ -464,7 +460,7 @@ private void setDefaultValues() {
         
         if (shootingFrameCount == 0 && (keyHandler.getInputShootX() != 0 || keyHandler.getInputShootY() != 0)) {
             shootBullet();
-            shootingFrameCount = GameConstants.Player.BASE_FRAMES_PER_SHOT;
+            shootingFrameCount = shootFramesPerShot;
         }
     }
 
@@ -528,56 +524,62 @@ private void setDefaultValues() {
         currentPowerup = powerup;
     }
 
-    /** Use speed bost */
+    /** Use speed boost power-up */
     private void useSpeedBoost() {
-        speedBoostTimer = GameConstants.Player.SPEED_BOOST_DURATION_FRAMES;
-        
+        statusEffect.setStatusEffectDuration(PlayerStatusEffect.SPEED_BOOST, GameConstants.Player.SPEED_BOOST_DURATION_FRAMES);
         setMovementSpeed(GameConstants.Player.BASE_SPEED + GameConstants.Player.BOOSTED_SPPED);
     }
-    
+
+    /** Use shotgun power-up */
     private void useShotgun() {
-        shotgunTimer = GameConstants.Player.SHOTGUN_DURATION_FRAMES;
+        statusEffect.setStatusEffectDuration(PlayerStatusEffect.SHOTGUN, GameConstants.Player.SHOTGUN_DURATION_FRAMES);
+        currentShootingMode = PlayerShootingMode.SHOTGUN;
     }
 
+    /** Use machine gun power-up */
     private void useMachineGunTimer() {
-        machineGunTimer = GameConstants.Player.MACHINE_GUN_DURATION_FRAMES;
+        statusEffect.setStatusEffectDuration(PlayerStatusEffect.MACHINE_GUN, GameConstants.Player.MACHINE_GUN_DURATION_FRAMES);
+        
+        shootFramesPerShot = GameConstants.Player.BASE_FRAMES_PER_SHOT / 2;
     }
 
+    /** Use octoshot power-up */
     private void useOctoshot() {
-        octoshotTimer = GameConstants.Player.OCTOSHOT_DURATION_FRAMES;
+        statusEffect.setStatusEffectDuration(PlayerStatusEffect.OCTOSHOT, GameConstants.Player.OCTOSHOT_DURATION_FRAMES);
+        currentShootingMode = PlayerShootingMode.OCTOSHOT;
     }
 
     private void useDetonation() {
-
+        // Not implemented yet. Add detonation logic here if needed.
+        // throw new UnsupportedOperationException("Detonation power-up not implemented yet.");
     }
 
     //#endregion
 
-    /** Handle timers */
-    private void handleTimers() {
-        if (speedBoostTimer > 0) 
-            speedBoostTimer--;
-        if (shotgunTimer > 0) 
-            shotgunTimer--;
-        if (machineGunTimer > 0) 
-            shotgunTimer--;
-        if (octoshotTimer > 0) 
-            octoshotTimer--;
-    }
+    private void handleStatusEffect() {
+        // Handle Timer
+        statusEffect.decreaseTimer();
 
-    private void handleTimersEnd() {
-        if (speedBoostTimer <= 0) {
+        if (statusEffect.getStatusEffectDuration(PlayerStatusEffect.SPEED_BOOST) <= 0) {
             setMovementSpeed(GameConstants.Player.BASE_SPEED);
         }
-        if (shotgunTimer <= 0) {
-            
+        if (statusEffect.getStatusEffectDuration(PlayerStatusEffect.SHOTGUN) <= 0 && currentShootingMode == PlayerShootingMode.SHOTGUN) {
+            currentShootingMode = PlayerShootingMode.NORMAL;
+        }
+        if (statusEffect.getStatusEffectDuration(PlayerStatusEffect.OCTOSHOT) <= 0 && currentShootingMode == PlayerShootingMode.OCTOSHOT) {
+            currentShootingMode = PlayerShootingMode.NORMAL;
+        }
+        if (statusEffect.getStatusEffectDuration(PlayerStatusEffect.MACHINE_GUN) <= 0) {
+            shootFramesPerShot = GameConstants.Player.BASE_FRAMES_PER_SHOT;
         }
     }
 
     @Override
     public void dispose() {
-        // TODO Add die   
+        // Player death logic not implemented yet.
+        // Add player death/respawn logic here if needed.
     }
+
     @Override
     public void checkEnemy() {
         // Get entities
