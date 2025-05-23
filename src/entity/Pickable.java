@@ -27,4 +27,9 @@ public abstract class Pickable extends Entity {
      * @param entity Player that is going to pick up this item
      */
     public abstract void getPickedUp(Player player);
+
+    @Override
+    public void dispose() {
+        
+    }
 }
