@@ -10,6 +10,7 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import entity.player.PlayerStatusEffect;
 import util.GameComponent;
 import util.GameConstants;
 import util.Renderable;
@@ -57,8 +58,8 @@ public class UI implements Renderable, GameComponent {
             powerupFrame = ImageIO.read(getClass().getResourceAsStream("/resources/ui/powerup_frame.png"));
             // Powerup Icons
             powerupIcons = new BufferedImage[2];
-            powerupIcons[0] = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/key.png"));
-            powerupIcons[1] = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/coffee.png"));
+            powerupIcons[PlayerStatusEffect.SPEED_BOOST] = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/coffee.png"));
+            powerupIcons[PlayerStatusEffect.SHOTGUN] = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/shotgun.png"));
 
 
             // Lives
@@ -116,9 +117,11 @@ public class UI implements Renderable, GameComponent {
                 powerupIcon = null;
                 break;
             case SPEED_BOOST:
-                powerupIcon = powerupIcons[1];
+                powerupIcon = powerupIcons[PlayerStatusEffect.SPEED_BOOST];
                 break;
-        
+            case SHOTGUN:
+                powerupIcon = powerupIcons[PlayerStatusEffect.SHOTGUN];
+                break;
             default:
                 break;
         }
