@@ -25,7 +25,7 @@ public class PlayerStatusEffect {
      * @param effect The effect ID
      * @return duration in frames of the specified effect
      */
-    public int getStatusEffectDuration(int effect) {
+    public int getEffectDuration(int effect) {
         return effectTimerFrames[effect];
     }
 
@@ -34,7 +34,7 @@ public class PlayerStatusEffect {
      * @param effect The effect ID
      * @param duration New duration of the effect (in game frames) 
      */
-    public void setStatusEffectDuration(int effect, int duration) {
+    public void setEffectDuration(int effect, int duration) {
         effectTimerFrames[effect] = duration;
     }
 

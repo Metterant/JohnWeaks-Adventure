@@ -526,26 +526,26 @@ public class Player extends ControllableEntity implements EnemyCollidable {
 
     /** Use speed boost power-up */
     private void useSpeedBoost() {
-        statusEffect.setStatusEffectDuration(PlayerStatusEffect.SPEED_BOOST, GameConstants.Player.SPEED_BOOST_DURATION_FRAMES);
+        statusEffect.setEffectDuration(PlayerStatusEffect.SPEED_BOOST, GameConstants.Player.SPEED_BOOST_DURATION_FRAMES);
         setMovementSpeed(GameConstants.Player.BASE_SPEED + GameConstants.Player.BOOSTED_SPPED);
     }
 
     /** Use shotgun power-up */
     private void useShotgun() {
-        statusEffect.setStatusEffectDuration(PlayerStatusEffect.SHOTGUN, GameConstants.Player.SHOTGUN_DURATION_FRAMES);
+        statusEffect.setEffectDuration(PlayerStatusEffect.SHOTGUN, GameConstants.Player.SHOTGUN_DURATION_FRAMES);
         currentShootingMode = PlayerShootingMode.SHOTGUN;
     }
 
     /** Use machine gun power-up */
     private void useMachineGunTimer() {
-        statusEffect.setStatusEffectDuration(PlayerStatusEffect.MACHINE_GUN, GameConstants.Player.MACHINE_GUN_DURATION_FRAMES);
+        statusEffect.setEffectDuration(PlayerStatusEffect.MACHINE_GUN, GameConstants.Player.MACHINE_GUN_DURATION_FRAMES);
         
         shootFramesPerShot = GameConstants.Player.BASE_FRAMES_PER_SHOT / 2;
     }
 
     /** Use octoshot power-up */
     private void useOctoshot() {
-        statusEffect.setStatusEffectDuration(PlayerStatusEffect.OCTOSHOT, GameConstants.Player.OCTOSHOT_DURATION_FRAMES);
+        statusEffect.setEffectDuration(PlayerStatusEffect.OCTOSHOT, GameConstants.Player.OCTOSHOT_DURATION_FRAMES);
         currentShootingMode = PlayerShootingMode.OCTOSHOT;
     }
 
@@ -560,16 +560,16 @@ public class Player extends ControllableEntity implements EnemyCollidable {
         // Handle Timer
         statusEffect.decreaseTimer();
 
-        if (statusEffect.getStatusEffectDuration(PlayerStatusEffect.SPEED_BOOST) <= 0) {
+        if (statusEffect.getEffectDuration(PlayerStatusEffect.SPEED_BOOST) <= 0) {
             setMovementSpeed(GameConstants.Player.BASE_SPEED);
         }
-        if (statusEffect.getStatusEffectDuration(PlayerStatusEffect.SHOTGUN) <= 0 && currentShootingMode == PlayerShootingMode.SHOTGUN) {
+        if (statusEffect.getEffectDuration(PlayerStatusEffect.SHOTGUN) <= 0 && currentShootingMode == PlayerShootingMode.SHOTGUN) {
             currentShootingMode = PlayerShootingMode.NORMAL;
         }
-        if (statusEffect.getStatusEffectDuration(PlayerStatusEffect.OCTOSHOT) <= 0 && currentShootingMode == PlayerShootingMode.OCTOSHOT) {
+        if (statusEffect.getEffectDuration(PlayerStatusEffect.OCTOSHOT) <= 0 && currentShootingMode == PlayerShootingMode.OCTOSHOT) {
             currentShootingMode = PlayerShootingMode.NORMAL;
         }
-        if (statusEffect.getStatusEffectDuration(PlayerStatusEffect.MACHINE_GUN) <= 0) {
+        if (statusEffect.getEffectDuration(PlayerStatusEffect.MACHINE_GUN) <= 0) {
             shootFramesPerShot = GameConstants.Player.BASE_FRAMES_PER_SHOT;
         }
     }
