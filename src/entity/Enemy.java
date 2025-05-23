@@ -1,5 +1,9 @@
 package entity;
 
+import java.util.Random;
+
+import entity.pickables.*;
+
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -32,6 +36,9 @@ public abstract class Enemy extends ControllableEntity {
 
     public int getHealth() { return health; }
     public void setHealth(int health) { this.health = health; }
+
+    // RNG
+    Random rand = new Random();
 
     public TileCoords getCurrTileCoords() { return currentTileCoords; }
     /**
@@ -188,5 +195,37 @@ public abstract class Enemy extends ControllableEntity {
         int targetY = GameConstants.TILE_SIZE * targetTile.getRow();
 
         return ((posX > targetX - delta) && (posX < targetX + delta) && (posY > targetY - delta) && (posY < targetY + delta));
+    }
+
+    @Override
+    public void dispose() {
+        dropItem();
+    }
+
+    private void dropItem() {
+        float rolledResult = rand.nextFloat();
+
+        // Try to drop Power-ups. If fails, then try to drop coin instead
+        if (rolledResult <= GameConstants.Game.POWERUP_DROP_RATE) {
+            dropRandomPickable();
+        }
+        else {
+            if (rand.nextFloat() <= GameConstants.Game.COIN_DROP_RATE)
+                new Coin(posX, posY);   
+        }
+    }
+
+    private void dropRandomPickable() {
+        // Choose Pickable Item
+        switch (rand.nextInt(2)) {
+            case 0:
+                new Coin(posX, posY);
+                break;
+            case 1:
+                new Coffee(posX, posY);
+                break;
+            default:
+                break;
+        }
     }
 }
