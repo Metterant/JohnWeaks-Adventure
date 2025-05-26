@@ -24,20 +24,6 @@ public class Player extends ControllableEntity implements EnemyCollidable {
      * 
      * Enum for determining the state of an animmation of a Player 
      */
-    public enum PlayerAnimState {
-        IDLE_DOWN,
-        IDLE_UP,
-        WALKING_DOWN,
-        WALKING_RIGHT,
-        WALKING_LEFT,
-        WALKING_UP,
-        SHOOTING_DOWN_WALKING,
-        SHOOTING_UP_WALKING,
-        SHOOTING_DOWN_STILL,
-        SHOOTING_RIGHT_STILL,
-        SHOOTING_LEFT_STILL,
-        SHOOTING_UP_STILL,
-    }
     private PlayerAnimState animState;
     private PlayerAnimState lastState;
 
@@ -47,14 +33,6 @@ public class Player extends ControllableEntity implements EnemyCollidable {
      * 
      * Enum for determining what powerup the player is holding
      */
-    public enum PlayerPowerup {
-        NONE,
-        SPEED_BOOST,
-        SHOTGUN,
-        MACHINE_GUN,
-        OCTOSHOT,
-        DETONATION,
-    }
     private PlayerPowerup currentPowerup;
     PlayerStatusEffect statusEffect = new PlayerStatusEffect();
 
@@ -64,12 +42,6 @@ public class Player extends ControllableEntity implements EnemyCollidable {
      * 
      * Enum for determining what shooting mode the player is using
      */
-    public enum PlayerShootingMode {
-        NORMAL,
-        SHOTGUN,
-        OCTOSHOT,
-        MIXED,
-    }
     private int shootFramesPerShot = GameConstants.Player.BASE_FRAMES_PER_SHOT;
     private PlayerShootingMode currentShootingMode;
     private PlayerShootingMode defauPlayerShootingMode;
@@ -438,7 +410,7 @@ public class Player extends ControllableEntity implements EnemyCollidable {
                 useShotgun();
                 break;
             case MACHINE_GUN:
-                useMachineGunTimer();
+                useMachineGun();
                 break;
             case OCTOSHOT:
                 useOctoshot();
@@ -537,7 +509,7 @@ public class Player extends ControllableEntity implements EnemyCollidable {
     }
 
     /** Use machine gun power-up */
-    private void useMachineGunTimer() {
+    private void useMachineGun() {
         statusEffect.setEffectDuration(PlayerStatusEffect.MACHINE_GUN, GameConstants.Player.MACHINE_GUN_DURATION_FRAMES);
         
         shootFramesPerShot = GameConstants.Player.BASE_FRAMES_PER_SHOT / 2;
