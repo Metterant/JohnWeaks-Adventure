@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 
 import entity.Pickable;
 import entity.player.Player;
+import entity.player.PlayerStats;
 import util.GameConstants;
 
 public class Coin extends Pickable {
@@ -45,8 +46,7 @@ public class Coin extends Pickable {
 
     @Override
     public void getPickedUp(Player player) {
-        logger.info("Picked up Coin");
-        
-        // player.setPowerup(PlayerPowerup.SPEED_BOOST);
+        // logger.info("Picked up Coin");
+        PlayerStats.addCoins(1);        
     }
 }
