@@ -2,12 +2,18 @@ package util;
 
 import entity.*;
 import entity.player.Player;
+import main.GameManager;
+import tile.TileConstants;
 import tile.TileManager;
+import util.pathfinding.TileCoords;
 
 /**
  * Handle collision for entities that have collision boxes 
  */
 public class CollisionHandler {
+
+    private TileCoords collidedTile;
+
     /**
      * Check if an entity going to be displaced will collide with a Collidable Tile. <p>
      * After that, properly adjust entity's position
@@ -18,9 +24,9 @@ public class CollisionHandler {
      * @param moveX : Direction on the X axis
      * @param moveY : Direction on the Y axis
      * 
-     * @return: true if the entity get stopped by a tile, otherwise false 
+     * @return: a TileCoords that points the location of collided tile
      */
-    public boolean checkTile(Entity entity, double desiredPosX, double desiredPosY, double desiredAxialDisplacement, double moveX, double moveY) {
+    public TileCoords checkTile(Entity entity, double desiredPosX, double desiredPosY, double desiredAxialDisplacement, double moveX, double moveY) {
         // Calculate collision box world coordinates
         double leftX   = desiredPosX + entity.offsetX;
         double rightX  = leftX + entity.collisionBox.width;
@@ -44,7 +50,7 @@ public class CollisionHandler {
 
         // Helper lambda to check tile collision to make it less verbose
         java.util.function.BiPredicate<Integer, Integer> isCollidable = (col, row) ->
-            tm.tiles[tm.tileMapNum[col][row]].isCollidable;
+            tm.tiles[tm.tileMapNum[col][row]].isCollidable;        
 
         // Use helper to check for collisions
         int[][] leftCols = { {leftCol, topOriginRow}, {leftCol, bottomOriginRow} };
@@ -62,6 +68,7 @@ public class CollisionHandler {
          * this method will prevent the player from moving into the wrong position.
          */
 
+        collidedTile = null;
 
         // Horizontal collision
         if (anyCollidable(isCollidable, leftCols)) {
@@ -71,8 +78,6 @@ public class CollisionHandler {
                 entity.setPositionY(desiredPosY + moveY * desiredAxialDisplacement);
             if (anyCollidable(isCollidable, vertTop))
                 entity.setPositionY(desiredPosY + moveY * desiredAxialDisplacement);
-
-            return true;
         }
         if (anyCollidable(isCollidable, rightCols)) {
             entity.setPositionX(desiredPosX - moveX * desiredAxialDisplacement);
@@ -81,20 +86,16 @@ public class CollisionHandler {
                 entity.setPositionY(desiredPosY + moveY * desiredAxialDisplacement);
             if (anyCollidable(isCollidable, vertTop))
                 entity.setPositionY(desiredPosY + moveY * desiredAxialDisplacement);
-
-            return true;
         }
         // Vertical collision
         if (anyCollidable(isCollidable, vertBottom)) {
             entity.setPositionY(desiredPosY + moveY * desiredAxialDisplacement);
-            return true;
         }
         if (anyCollidable(isCollidable, vertTop)) {
             entity.setPositionY(desiredPosY + moveY * desiredAxialDisplacement);
-            return true;
         }
 
-        return false;
+        return collidedTile;
     }
 
     /**
@@ -127,8 +128,15 @@ public class CollisionHandler {
      */
     private boolean anyCollidable(java.util.function.BiPredicate<Integer, Integer> isCollidable, int[][] positions) {
         for (int[] pos : positions) {
-            if (isCollidable.test(pos[0], pos[1])) return true;
+            if (isCollidable.test(pos[0], pos[1])) { 
+                // pos[0] is col and pos[1] is row
+                collidedTile = new TileCoords(pos[1], pos[0]);
+                
+                // Collided
+                return true;
+            }
         }
+        // Not collided
         return false;
     }
 }

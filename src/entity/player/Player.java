@@ -13,10 +13,13 @@ import entity.Enemy;
 import entity.Entity;
 import input.InputController;
 import main.GameManager;
+import tile.TileConstants;
+import tile.TileManager;
 import util.CollisionHandler;
 import util.EnemyCollidable;
 import util.EntityManager;
 import util.GameConstants;
+import util.pathfinding.TileCoords;
 
 public class Player extends ControllableEntity implements EnemyCollidable {
     // State
@@ -196,9 +199,14 @@ public class Player extends ControllableEntity implements EnemyCollidable {
         handleStatusEffect();
         
         // Collision
-        collisionHandler.checkTile(this, desiredPosX, desiredPosY, desiredAxialDisplacement, keyHandler.getInputMoveX(), keyHandler.getInputMoveY());
+        TileCoords collidedTile = collisionHandler.checkTile(this, desiredPosX, desiredPosY, desiredAxialDisplacement, keyHandler.getInputMoveX(), keyHandler.getInputMoveY());
         collisionHandler.checkPickable(this);
         checkEnemy();
+
+        // If the collided Tile is Next Round Tile, then move onto next round
+        if (collidedTile != null && TileManager.getInstance().tileMapNum[collidedTile.getCol()][collidedTile.getRow()] == TileConstants.NEXT_ROUND_TILE && GameManager.getInstance().getRoundTimerFrames() <= 0)
+            GameManager.getInstance().nextRound();
+        
         
         // SHOOTING
         handleShooting();

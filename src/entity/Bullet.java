@@ -91,7 +91,7 @@ public class Bullet extends Entity implements EnemyCollidable {
         setPositionX(posX + directionX * bulletSpeed);
         setPositionY(posY - directionY * bulletSpeed);
         
-        if (collisionHandler.checkTile(this, posX, posY, bulletSpeed, directionX, directionY)) {
+        if (collisionHandler.checkTile(this, posX, posY, bulletSpeed, directionX, directionY) != null) {
             EntityManager.getInstance().destroyEntity(this);
         }
     }
