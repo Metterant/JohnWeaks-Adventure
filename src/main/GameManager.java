@@ -9,27 +9,26 @@ import util.pathfinding.PathFinder;
 
 public class GameManager implements GameComponent {
 
-    // KeyHandler
-    PlayerController playerController = new PlayerController();
+    // Player input controller
+    private final PlayerController playerController = new PlayerController();
 
-    private int currentRound = 1; // Default round
-
+    // Game round state
+    private int currentRound = 1;
     private int roundDurationFrames;
     private int roundTimerFrames = GameConstants.Game.BASE_ROUND_DURATION_FRAMES;
 
-    // PLAYER
+    // Player state
     public Player player = new Player(playerController);
     private boolean playerDied = false;
+    private int respawnTimerFrames = 0;
 
-    /// Player Respawn Timer
-    private int respawnFrameTimer = 0;
-
-    // PATHFINDER
+    // Pathfinding utility
     public final PathFinder pathFinder = new PathFinder();
 
-    // SPAWNER
-    private Spawner spawner = new Spawner();
+    // Enemy spawner
+    private final Spawner spawner = new Spawner();
 
+    // Update tick counter
     public int updateTick = 0;
 
     /**
@@ -66,7 +65,7 @@ public class GameManager implements GameComponent {
      * @param playerDied : a boolean indicates that Player has died
      */
     public void setPlayerDied(boolean playerDied) {
-        respawnFrameTimer = GameConstants.Game.RESPAWN_DURATION_FRAMES;
+        respawnTimerFrames = GameConstants.Game.RESPAWN_DURATION_FRAMES;
         GameManager.getInstance().playerDied = playerDied;
     }
 
@@ -89,11 +88,11 @@ public class GameManager implements GameComponent {
     public void update() {
 
         if (playerDied) {
-            if (respawnFrameTimer == 0)
+            if (respawnTimerFrames == 0)
                 respawnPlayer();
 
-            if (respawnFrameTimer > 0)
-                respawnFrameTimer--;
+            if (respawnTimerFrames > 0)
+                respawnTimerFrames--;
         
         } else {
             if (roundTimerFrames > 0)
