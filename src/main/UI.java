@@ -57,9 +57,10 @@ public class UI implements Renderable, GameComponent {
         try {
             powerupFrame = ImageIO.read(getClass().getResourceAsStream("/resources/ui/powerup_frame.png"));
             // Powerup Icons
-            powerupIcons = new BufferedImage[2];
+            powerupIcons = new BufferedImage[3];
             powerupIcons[PlayerStatusEffect.SPEED_BOOST] = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/coffee.png"));
             powerupIcons[PlayerStatusEffect.SHOTGUN] = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/shotgun.png"));
+            powerupIcons[PlayerStatusEffect.MACHINE_GUN] = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/machine_gun.png"));
 
 
             // Lives
@@ -100,6 +101,9 @@ public class UI implements Renderable, GameComponent {
      * @param scale : The size scale of the whole Powerup Frame 
      */
     private void drawPowerup(Graphics2D g2,int posX, int posY, int offsetX, int offsetY, int scale) {
+        g2.setColor(java.awt.Color.gray);
+        g2.fillRect(posX, posY, GameConstants.UI.POWERUP_FRAME_SIDE * scale, (GameConstants.UI.POWERUP_FRAME_SIDE + 3) * scale);
+
         g2.drawImage(powerupFrame, posX, posY, GameConstants.UI.POWERUP_FRAME_SIDE * scale, (GameConstants.UI.POWERUP_FRAME_SIDE + 3) * scale, null);
 
         if (powerupIcon != null)
@@ -121,6 +125,9 @@ public class UI implements Renderable, GameComponent {
                 break;
             case SHOTGUN:
                 powerupIcon = powerupIcons[PlayerStatusEffect.SHOTGUN];
+                break;
+            case MACHINE_GUN:
+                powerupIcon = powerupIcons[PlayerStatusEffect.MACHINE_GUN];
                 break;
             default:
                 break;
