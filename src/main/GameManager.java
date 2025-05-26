@@ -90,8 +90,11 @@ public class GameManager implements GameComponent {
         // Load map
         if (currentRound == 1) {
             TileManager.getInstance().loadMap("/resources/maps/map_0.txt");
-        } else {
+        } else if (currentRound == 2) {
             TileManager.getInstance().loadMap("/resources/maps/map_1.txt");
+        }
+        else {
+            TileManager.getInstance().loadMap("/resources/maps/map_2.txt");
         }
     }
 
@@ -124,7 +127,8 @@ public class GameManager implements GameComponent {
 
         
         // Spawner
-        if (preroundTimerFrames == 0 && roundTimerFrames > 0 && !playerDied && player != null && updateTick % (GameConstants.FPS + 30) == 0) {
+        if (preroundTimerFrames == 0 && roundTimerFrames > 0 && !playerDied && player != null 
+            && updateTick % Math.max(GameConstants.FPS + 30 - currentRound * 10, 40) == 0) {
             spawner.spawnEnemyHorde();
         }
     }
