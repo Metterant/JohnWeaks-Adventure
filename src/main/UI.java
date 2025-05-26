@@ -10,6 +10,7 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import entity.player.PlayerStats;
 import entity.player.PlayerStatusEffect;
 import util.GameComponent;
 import util.GameConstants;
@@ -28,7 +29,6 @@ public class UI implements Renderable, GameComponent {
 
     // Lives
     private BufferedImage playerLivesIcon;
-    private int numberOfLivesLeft = 3;
 
     // Timer
     private BufferedImage timerIcon;
@@ -142,7 +142,7 @@ public class UI implements Renderable, GameComponent {
      * @param height : Height of the timer in screen pixels
      */
     private void drawTimer(Graphics2D g2, int posY, int height) {
-        float remainingRatio = (float) GameManager.getInstance().getRoundTimer() / GameManager.getInstance().getRoundDuration();
+        float remainingRatio = (float) GameManager.getInstance().getRoundTimerFrames() / GameManager.getInstance().getRoundDurationFrames();
         // System.out.println(remainingRatio);
         
         int width = GameConstants.TILE_SIZE * 17; // 17 Tiles wide
@@ -159,7 +159,7 @@ public class UI implements Renderable, GameComponent {
         g2.drawImage(playerLivesIcon, posX, posY, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);
         
         String toDrawTextFormat = "x%d";
-        String toDrawText = String.format(toDrawTextFormat, numberOfLivesLeft);
+        String toDrawText = String.format(toDrawTextFormat, PlayerStats.getLivesLeft());
         g2.drawString(toDrawText, posX + 35, posY + 27);
     }
 
