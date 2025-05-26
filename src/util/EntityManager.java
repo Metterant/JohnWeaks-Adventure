@@ -12,9 +12,9 @@ import entity.Pickable;
 /** Manage all Entity instances in the world */
 public class EntityManager implements RenewableSingleton, GameComponent {
     public List<Entity> instantiatedEntities = new ArrayList<>();
+    private int enemyCount = 0;
 
     private static EntityManager instance = new EntityManager();
-
     private EntityManager() {
         instantiatedEntities = new ArrayList<>();
     }
@@ -23,6 +23,12 @@ public class EntityManager implements RenewableSingleton, GameComponent {
     public static synchronized EntityManager getInstance() {
         return instance;
     }
+
+    /**
+     * Returns the current count of enemies
+     * @return the amount of enemies currently roaming
+     */
+    public int getEnemyCount() { return enemyCount; }
 
     /** Remove all null references in the list */
     public void removeNull() {
@@ -37,12 +43,20 @@ public class EntityManager implements RenewableSingleton, GameComponent {
     /** Run all update methods from all entities in the world */
     private void entitiesUpdate() { 
         List<Entity> entitiesCopy = new ArrayList<>(instantiatedEntities);
+        int currentEntityCount = 0; // Enemy Count
 
         for (Entity entity : entitiesCopy) {
             if (entity == null) 
                 continue;
+
+            // Add enemy count
+            if (entity instanceof Enemy)
+                currentEntityCount++;
+
             entity.update();
         }
+        
+        enemyCount = currentEntityCount;
     }
 
     /** Run all draw methods from all entities in the world */
