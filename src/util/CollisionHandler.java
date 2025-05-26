@@ -1,6 +1,7 @@
 package util;
 
 import entity.*;
+import entity.player.Player;
 import tile.TileManager;
 
 /**
@@ -43,7 +44,7 @@ public class CollisionHandler {
 
         // Helper lambda to check tile collision to make it less verbose
         java.util.function.BiPredicate<Integer, Integer> isCollidable = (col, row) ->
-            tm.tile[tm.tileMapNum[col][row]].isCollidable;
+            tm.tiles[tm.tileMapNum[col][row]].isCollidable;
 
         // Use helper to check for collisions
         int[][] leftCols = { {leftCol, topOriginRow}, {leftCol, bottomOriginRow} };

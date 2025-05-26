@@ -10,6 +10,8 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
+import entity.player.PlayerStats;
+import entity.player.PlayerStatusEffect;
 import util.GameComponent;
 import util.GameConstants;
 import util.Renderable;
@@ -27,10 +29,12 @@ public class UI implements Renderable, GameComponent {
 
     // Lives
     private BufferedImage playerLivesIcon;
-    private int numberOfLivesLeft = 3;
 
     // Timer
     private BufferedImage timerIcon;
+
+    // Coin
+    private BufferedImage coinIcon;
 
     public UI(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
@@ -43,7 +47,7 @@ public class UI implements Renderable, GameComponent {
         try {
             InputStream is = getClass().getResourceAsStream("/resources/fonts/RobotoRemix.ttf");
             robotoRemixFont = Font.createFont(Font.TRUETYPE_FONT, is);
-            robotoRemixSizedFont = robotoRemixFont.deriveFont(35f);
+            robotoRemixSizedFont = robotoRemixFont.deriveFont(28f);
 
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
@@ -56,9 +60,10 @@ public class UI implements Renderable, GameComponent {
         try {
             powerupFrame = ImageIO.read(getClass().getResourceAsStream("/resources/ui/powerup_frame.png"));
             // Powerup Icons
-            powerupIcons = new BufferedImage[2];
-            powerupIcons[0] = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/key.png"));
-            powerupIcons[1] = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/coffee.png"));
+            powerupIcons = new BufferedImage[3];
+            powerupIcons[PlayerStatusEffect.SPEED_BOOST] = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/coffee.png"));
+            powerupIcons[PlayerStatusEffect.SHOTGUN] = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/shotgun.png"));
+            powerupIcons[PlayerStatusEffect.MACHINE_GUN] = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/machine_gun.png"));
 
 
             // Lives
@@ -66,6 +71,9 @@ public class UI implements Renderable, GameComponent {
 
             // Timer
             timerIcon = ImageIO.read(getClass().getResourceAsStream("/resources/ui/clock.png"));
+
+            // Coin
+            coinIcon = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/coin.png"));
 
         }
         catch (IOException e) {
@@ -80,13 +88,16 @@ public class UI implements Renderable, GameComponent {
         // g2.drawString("Hello there!", 50, 50);
 
         // Draw Powerup
-        drawPowerup(g2, 190, 140, 3, 3, 1);
+        drawPowerup(g2, 190, 90, 3, 3, 1);
         
         // Draw Timer
         drawTimer(g2, 30, 13);
 
         // Draw Lives
-        drawLives(g2, 190, 90);
+        drawLives(g2, 190, 140);
+
+        // Draw Coins
+        drawCoin(g2, 190, 180);
     }
     /**
      * Draw Powerup Frame
@@ -99,6 +110,9 @@ public class UI implements Renderable, GameComponent {
      * @param scale : The size scale of the whole Powerup Frame 
      */
     private void drawPowerup(Graphics2D g2,int posX, int posY, int offsetX, int offsetY, int scale) {
+        g2.setColor(java.awt.Color.gray);
+        g2.fillRect(posX, posY, GameConstants.UI.POWERUP_FRAME_SIDE * scale, (GameConstants.UI.POWERUP_FRAME_SIDE + 3) * scale);
+
         g2.drawImage(powerupFrame, posX, posY, GameConstants.UI.POWERUP_FRAME_SIDE * scale, (GameConstants.UI.POWERUP_FRAME_SIDE + 3) * scale, null);
 
         if (powerupIcon != null)
@@ -116,9 +130,14 @@ public class UI implements Renderable, GameComponent {
                 powerupIcon = null;
                 break;
             case SPEED_BOOST:
-                powerupIcon = powerupIcons[1];
+                powerupIcon = powerupIcons[PlayerStatusEffect.SPEED_BOOST];
                 break;
-        
+            case SHOTGUN:
+                powerupIcon = powerupIcons[PlayerStatusEffect.SHOTGUN];
+                break;
+            case MACHINE_GUN:
+                powerupIcon = powerupIcons[PlayerStatusEffect.MACHINE_GUN];
+                break;
             default:
                 break;
         }
@@ -132,7 +151,7 @@ public class UI implements Renderable, GameComponent {
      * @param height : Height of the timer in screen pixels
      */
     private void drawTimer(Graphics2D g2, int posY, int height) {
-        float remainingRatio = (float) GameManager.getInstance().getRoundTimer() / GameManager.getInstance().getRoundDuration();
+        float remainingRatio = (float) GameManager.getInstance().getRoundTimerFrames() / GameManager.getInstance().getRoundDurationFrames();
         // System.out.println(remainingRatio);
         
         int width = GameConstants.TILE_SIZE * 17; // 17 Tiles wide
@@ -149,8 +168,16 @@ public class UI implements Renderable, GameComponent {
         g2.drawImage(playerLivesIcon, posX, posY, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);
         
         String toDrawTextFormat = "x%d";
-        String toDrawText = String.format(toDrawTextFormat, numberOfLivesLeft);
-        g2.drawString(toDrawText, posX + 35, posY + 27);
+        String toDrawText = String.format(toDrawTextFormat, PlayerStats.getLivesLeft());
+        g2.drawString(toDrawText, posX + 38, posY + 24);
+    }
+
+    private void drawCoin(Graphics2D g2, int posX, int posY) {
+        g2.drawImage(coinIcon, posX, posY, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);
+
+        String toDrawTextFormat = "x%d";
+        String toDrawText = String.format(toDrawTextFormat, PlayerStats.getCoins());
+        g2.drawString(toDrawText, posX + 38, posY + 24);
     }
 
     @Override

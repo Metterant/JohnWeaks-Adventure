@@ -6,7 +6,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import entity.Pickable;
-import entity.Player;
+import entity.player.Player;
 import util.GameConstants;
 
 public class Key extends Pickable {
@@ -46,10 +46,5 @@ public class Key extends Pickable {
     @Override
     public void getPickedUp(Player player) {
         System.out.println("Picked up a Key");
-    }
-
-    @Override
-    public void dispose() {
-        
     }
 }

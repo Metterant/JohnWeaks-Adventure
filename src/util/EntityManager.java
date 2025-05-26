@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import entity.Enemy;
 import entity.Entity;
+import entity.Pickable;
 
 /** Manage all Entity instances in the world */
 public class EntityManager implements RenewableSingleton, GameComponent {
@@ -87,4 +89,21 @@ public class EntityManager implements RenewableSingleton, GameComponent {
         removeNull();
     }
 
+    /** Remove all current Enemy instances */
+    public void removeAllEnemies() {
+        for (int i = 0; i < instantiatedEntities.size(); i++) {
+            if (instantiatedEntities.get(i) instanceof Enemy) {
+                destroyEntity(instantiatedEntities.get(i));
+            }
+        }
+    }
+
+    /** Remove all current Pickable instances */
+    public void removeAllPickables() {
+        for (int i = 0; i < instantiatedEntities.size(); i++) {
+            if (instantiatedEntities.get(i) instanceof Pickable) {
+                destroyEntity(instantiatedEntities.get(i));
+            }
+        }
+    }
 }

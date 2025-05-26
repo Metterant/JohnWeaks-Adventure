@@ -13,7 +13,7 @@ import util.GameConstants;
 public class Bullet extends Entity implements EnemyCollidable {
 
     private double directionX, directionY;
-    private double bulletSpeed = 5.5d;
+    private double bulletSpeed = 7.5d;
     private int damage;
 
     private CollisionHandler collisionHandler = new CollisionHandler();
@@ -75,8 +75,7 @@ public class Bullet extends Entity implements EnemyCollidable {
     @Override
     public void start() {
         super.start();
-        // System.out.println("hi");
-        initBoxHelper(7, 7, 4, 4);
+        initBoxHelper(8, 8, 2, 2);
     }
 
     @Override
@@ -111,8 +110,8 @@ public class Bullet extends Entity implements EnemyCollidable {
         g2.drawImage(image, (int)posX, (int)posY, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);
 
         // Draw Collision Box
-        // g2.setColor(Color.red);
-        // g2.fillRect(collisionBox.x, collisionBox.y, collisionBoxWidth, collisionBoxHeight);
+        // g2.setColor(java.awt.Color.red);
+        // g2.drawRect(collisionBox.x, collisionBox.y, collisionBoxWidth, collisionBoxHeight);
     }
 
     @Override
@@ -130,6 +129,7 @@ public class Bullet extends Entity implements EnemyCollidable {
         directionX = Math.cos(theta) * x1 - Math.sin(theta) * y1;
         directionY = Math.sin(theta) * x1 + Math.cos(theta) * y1;
     }
+    
     @Override
     public void checkEnemy() {
         // Get entities
@@ -143,6 +143,7 @@ public class Bullet extends Entity implements EnemyCollidable {
                 int remainingDamage = enemy.applyDamage(damage);
 
                 if (remainingDamage == 0) {
+                    setPositionToNowhere();
                     // Destroy the bullet after its damage has depleted
                     EntityManager.getInstance().destroyEntity(this);
                 }
@@ -150,5 +151,11 @@ public class Bullet extends Entity implements EnemyCollidable {
                 else damage = remainingDamage;
             }
         }
+    }
+
+    /** Sets the Bullet's position outside of the screen to prevent further collisions */
+    private void setPositionToNowhere() {
+        setPositionX(-100.0);
+        setPositionY(-100.0);
     }
 }

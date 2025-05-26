@@ -1,5 +1,7 @@
 package entity;
 
+import entity.player.Player;
+
 public abstract class Pickable extends Entity {
 
     /** Name of Pickable item */
@@ -25,4 +27,9 @@ public abstract class Pickable extends Entity {
      * @param entity Player that is going to pick up this item
      */
     public abstract void getPickedUp(Player player);
+
+    @Override
+    public void dispose() {
+        
+    }
 }

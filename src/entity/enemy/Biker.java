@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import entity.Enemy;
-import util.pathfinding.PathFinder;
 
 public class Biker extends Enemy {
 
@@ -31,16 +30,10 @@ public class Biker extends Enemy {
     }
 
     @Override
-    public void dispose() {
-        logger.info("Biker died");
-    }
-    
-    @Override
     public void start() {
         health = 2; 
         spriteCount = 2;
 
         super.start();
-        pathFinder = new PathFinder();
     }
 }
