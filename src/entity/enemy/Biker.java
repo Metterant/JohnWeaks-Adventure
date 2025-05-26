@@ -31,7 +31,7 @@ public class Biker extends Enemy {
 
     @Override
     public void start() {
-        health = 2; 
+        health = 1; 
         spriteCount = 2;
 
         super.start();
