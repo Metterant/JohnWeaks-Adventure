@@ -33,6 +33,9 @@ public class UI implements Renderable, GameComponent {
     // Timer
     private BufferedImage timerIcon;
 
+    // Coin
+    private BufferedImage coinIcon;
+
     public UI(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
     }
@@ -44,7 +47,7 @@ public class UI implements Renderable, GameComponent {
         try {
             InputStream is = getClass().getResourceAsStream("/resources/fonts/RobotoRemix.ttf");
             robotoRemixFont = Font.createFont(Font.TRUETYPE_FONT, is);
-            robotoRemixSizedFont = robotoRemixFont.deriveFont(35f);
+            robotoRemixSizedFont = robotoRemixFont.deriveFont(28f);
 
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
@@ -69,6 +72,9 @@ public class UI implements Renderable, GameComponent {
             // Timer
             timerIcon = ImageIO.read(getClass().getResourceAsStream("/resources/ui/clock.png"));
 
+            // Coin
+            coinIcon = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/coin.png"));
+
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -82,13 +88,16 @@ public class UI implements Renderable, GameComponent {
         // g2.drawString("Hello there!", 50, 50);
 
         // Draw Powerup
-        drawPowerup(g2, 190, 140, 3, 3, 1);
+        drawPowerup(g2, 190, 90, 3, 3, 1);
         
         // Draw Timer
         drawTimer(g2, 30, 13);
 
         // Draw Lives
-        drawLives(g2, 190, 90);
+        drawLives(g2, 190, 140);
+
+        // Draw Coins
+        drawCoin(g2, 190, 180);
     }
     /**
      * Draw Powerup Frame
@@ -160,7 +169,15 @@ public class UI implements Renderable, GameComponent {
         
         String toDrawTextFormat = "x%d";
         String toDrawText = String.format(toDrawTextFormat, PlayerStats.getLivesLeft());
-        g2.drawString(toDrawText, posX + 35, posY + 27);
+        g2.drawString(toDrawText, posX + 38, posY + 24);
+    }
+
+    private void drawCoin(Graphics2D g2, int posX, int posY) {
+        g2.drawImage(coinIcon, posX, posY, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);
+
+        String toDrawTextFormat = "x%d";
+        String toDrawText = String.format(toDrawTextFormat, PlayerStats.getCoins());
+        g2.drawString(toDrawText, posX + 38, posY + 24);
     }
 
     @Override
