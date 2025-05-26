@@ -30,7 +30,8 @@ public class GameConstants {
         /* Total frames = FPS * Seconds */
         public static final int BASE_ROUND_DURATION_FRAMES = FPS * 60; // 45 seconds
         public static final int INCREMENT_DURATION_FRAMES = FPS * 10;  // + 10 seconds after each round
-        public static final int RESPAWN_DURATION_FRAMES = FPS * 2; // 3 seconds
+        public static final int RESPAWN_DURATION_FRAMES = FPS * 4; // 4 seconds
+        public static final int PREROUND_DURATION_FRAMES = FPS * 5; // 8 seconds
 
         public static final int PATHFINDER_PERIOD_FRAMES = FPS / 2; // Half a second
 
