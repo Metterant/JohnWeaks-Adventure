@@ -12,6 +12,7 @@ import entity.ControllableEntity;
 import entity.Enemy;
 import entity.Entity;
 import input.InputController;
+import main.GameManager;
 import util.CollisionHandler;
 import util.EnemyCollidable;
 import util.EntityManager;
@@ -117,8 +118,7 @@ public class Player extends ControllableEntity implements EnemyCollidable {
         // SHOOTING MODE
         currentShootingMode = PlayerShootingMode.NORMAL;
         
-        // TODO: Implement damage
-        damage = 1;
+        damage = PlayerStats.getDamage();
     }
     
     /**
@@ -533,7 +533,7 @@ public class Player extends ControllableEntity implements EnemyCollidable {
         statusEffect.decreaseTimer();
 
         if (statusEffect.getEffectDuration(PlayerStatusEffect.SPEED_BOOST) <= 0) {
-            setMovementSpeed(GameConstants.Player.BASE_SPEED);
+            setMovementSpeed(PlayerStats.getCurrentBaseSpeed());
         }
         if (statusEffect.getEffectDuration(PlayerStatusEffect.SHOTGUN) <= 0 && currentShootingMode == PlayerShootingMode.SHOTGUN) {
             currentShootingMode = PlayerShootingMode.NORMAL;
@@ -548,8 +548,17 @@ public class Player extends ControllableEntity implements EnemyCollidable {
 
     @Override
     public void dispose() {
-        // Player death logic not implemented yet.
-        // Add player death/respawn logic here if needed.
+        currentPowerup = PlayerPowerup.NONE;
+        playerDied();
+        GameManager.getInstance().setPlayerDied(true);
+
+        PlayerStats.removeLife();
+    }
+
+    private void playerDied() {
+        // Remove all Pickables and Enemies
+        EntityManager.getInstance().removeAllEnemies();
+        EntityManager.getInstance().removeAllPickables();
     }
 
     @Override
