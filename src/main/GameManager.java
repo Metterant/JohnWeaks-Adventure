@@ -103,7 +103,7 @@ public class GameManager implements GameComponent {
         updateTick++;
         
         // Spawner
-        if (!playerDied && player != null && updateTick % (GameConstants.FPS + 30) == 0) {
+        if (roundTimerFrames > 0 && !playerDied && player != null && updateTick % (GameConstants.FPS + 30) == 0) {
             spawner.spawnEnemyHorde();
         }
     }
