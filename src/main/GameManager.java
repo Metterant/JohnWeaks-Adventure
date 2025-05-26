@@ -2,6 +2,7 @@ package main;
 
 import entity.player.Player;
 import input.PlayerController;
+import tile.TileManager;
 import util.GameComponent;
 import util.GameConstants;
 import util.Spawner;
@@ -13,6 +14,7 @@ public class GameManager implements GameComponent {
     private final PlayerController playerController = new PlayerController();
 
     // Game round state
+    private int preroundTimerFrames; 
     private int currentRound = 1;
     private int roundDurationFrames;
     private int roundTimerFrames = GameConstants.Game.BASE_ROUND_DURATION_FRAMES;
@@ -55,14 +57,14 @@ public class GameManager implements GameComponent {
     /**
      * Returns a boolean that indicates that the Player is living <p>
      * 
-     * @return A boolean that indicates that the Player is living
+     * @return true if the player has died and hasn't respawned, otherwise false 
      */
     public boolean getPlayerDied() { return playerDied; }
 
     /**
      * Sets the boolean that determines if the player is still kicking butts,
      * and activate respawn timer
-     * @param playerDied : a boolean indicates that Player has died
+     * @param playerDied : true if the player has died and hasn't respawned, otherwise false 
      */
     public void setPlayerDied(boolean playerDied) {
         respawnTimerFrames = GameConstants.Game.RESPAWN_DURATION_FRAMES;
@@ -73,19 +75,38 @@ public class GameManager implements GameComponent {
 
     /** Goes to next round */
     public void nextRound() {
+        // Init Timers
         currentRound++; 
-        roundTimerFrames = GameConstants.Game.BASE_ROUND_DURATION_FRAMES * (currentRound - 1) * GameConstants.Game.INCREMENT_DURATION_FRAMES;  
+        roundDurationFrames += GameConstants.Game.INCREMENT_DURATION_FRAMES;  
+        roundTimerFrames    = roundDurationFrames;  
+        preroundTimerFrames = GameConstants.Game.PREROUND_DURATION_FRAMES;
+
+        System.out.println("lmao");
+
+        // Reset player position
+        player.setPositionX(GameConstants.DEFAULT_SPAWN_X);
+        player.setPositionY(GameConstants.DEFAULT_SPAWN_Y);
+
+        // Load map
+        if (currentRound == 1) {
+            TileManager.getInstance().loadMap("/resources/maps/map_0.txt");
+        } else {
+            TileManager.getInstance().loadMap("/resources/maps/map_1.txt");
+        }
     }
 
     //#region GameComponent
     @Override
     public void start() {
         currentRound = 1;
+        preroundTimerFrames = GameConstants.Game.PREROUND_DURATION_FRAMES;
         roundTimerFrames = roundDurationFrames = GameConstants.Game.BASE_ROUND_DURATION_FRAMES;
     }
     
     @Override
     public void update() {
+        if (preroundTimerFrames > 0)
+            preroundTimerFrames--;
 
         if (playerDied) {
             if (respawnTimerFrames == 0)
@@ -95,14 +116,15 @@ public class GameManager implements GameComponent {
                 respawnTimerFrames--;
         
         } else {
-            if (roundTimerFrames > 0)
+            if (roundTimerFrames > 0 && preroundTimerFrames == 0)
                 roundTimerFrames--;
         }
 
         updateTick++;
+
         
         // Spawner
-        if (roundTimerFrames > 0 && !playerDied && player != null && updateTick % (GameConstants.FPS + 30) == 0) {
+        if (preroundTimerFrames == 0 && roundTimerFrames > 0 && !playerDied && player != null && updateTick % (GameConstants.FPS + 30) == 0) {
             spawner.spawnEnemyHorde();
         }
     }
