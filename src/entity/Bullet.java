@@ -13,7 +13,7 @@ import util.GameConstants;
 public class Bullet extends Entity implements EnemyCollidable {
 
     private double directionX, directionY;
-    private double bulletSpeed = 5.5d;
+    private double bulletSpeed = 7.5d;
     private int damage;
 
     private CollisionHandler collisionHandler = new CollisionHandler();
