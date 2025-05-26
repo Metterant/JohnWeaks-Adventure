@@ -42,7 +42,7 @@ public class GamePanel extends JPanel implements Runnable {
         
         // Init Tile Manager
         TileManager.getInstance().loadImages();
-        TileManager.getInstance().loadMap("/resources/maps/map_test.txt");
+        TileManager.getInstance().loadMap("/resources/maps/map_1.txt");
         
         GameManager.getInstance().start();
         // EntityManager.getInstance().entitiesStart();
