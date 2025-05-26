@@ -2,7 +2,6 @@ package main;
 
 import javax.swing.JPanel;
 
-import entity.enemy.*;
 import entity.pickables.*;
 
 import tile.TileManager;
@@ -38,8 +37,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void startGameThread() {
 
-        new Key(10, 10);
-        new Coffee(15, 10);
+        // new Key(10, 10);
+        // new Coffee(15, 10);
         
         // Init Tile Manager
         TileManager.getInstance().loadImages();
@@ -60,7 +59,7 @@ public class GamePanel extends JPanel implements Runnable {
     // Runnable implementation
     @Override
     public void run() {
-        double drawInterval = 1000000000.0/GameConstants.FPS;
+        double drawInterval = 1000000000.0 / GameConstants.FPS;
         long lastTime = System.nanoTime();
         long currentTime;
 
