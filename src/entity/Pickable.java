@@ -1,11 +1,17 @@
 package entity;
 
+import java.awt.Graphics2D;
+
 import entity.player.Player;
+import util.EntityManager;
+import util.GameConstants;
 
 public abstract class Pickable extends Entity {
 
     /** Name of Pickable item */
     protected String name;
+
+    private int timeToLive = GameConstants.Game.PICKABLE_TTL;
 
     public String getPickable() { return name; }
 
@@ -29,7 +35,30 @@ public abstract class Pickable extends Entity {
     public abstract void getPickedUp(Player player);
 
     @Override
-    public void dispose() {
-        
+    public void update() {
+        // If TTL ends, the item perishes
+        if (timeToLive <= 0)
+            EntityManager.getInstance().destroyEntity(this);
+
+        if (timeToLive > 0)
+            timeToLive--;
+
+        super.update();
     }
+
+    @Override
+    public void draw(Graphics2D g2) {
+        
+        // If TTL is less than 5 seconds, then the sprite starts blipping 
+        if (timeToLive <= GameConstants.FPS * 5) {
+            if (timeToLive % GameConstants.FPS / 2 <= GameConstants.FPS / 4) {
+                g2.drawImage(image, (int)posX, (int)posY, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);
+            }
+        } else {
+            g2.drawImage(image, (int)posX, (int)posY, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);
+        }
+    }
+
+    @Override
+    public void dispose() { }
 }
