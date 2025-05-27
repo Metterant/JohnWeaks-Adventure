@@ -203,19 +203,58 @@ public abstract class Enemy extends ControllableEntity {
     }
 
     private void dropItem() {
-        float rolledResult = rand.nextFloat();
+        boolean dropResult = false;
+        /**
+         * Drop Order
+         * Try: Drop Life -> Drop Coin -> Drop Power-up
+         */
+        dropResult = tryDropLife();
 
-        // Try to drop Power-ups. If fails, then try to drop coin instead
-        if (rolledResult <= GameConstants.Game.POWERUP_DROP_RATE) {
-            dropRandomPickable();
-        }
-        else {
-            if (rand.nextFloat() <= GameConstants.Game.COIN_DROP_RATE)
-                new Coin(posX, posY);   
-        }
+        if (!dropResult)
+            dropResult = tryDropCoin();
+            
+        if (!dropResult)
+            dropResult = tryDropRandomPickable();
     }
 
-    private void dropRandomPickable() {
+    /**
+     * Try Dropping a Coin
+     * @return a boolean that indicates the drop is successful
+     */
+    private boolean tryDropLife() {
+        float rolledResult = rand.nextFloat();
+
+        if (rolledResult > GameConstants.Game.LIFE_DROP_RATE)
+            return false;
+
+        new Life(posX, posY);   
+        return true;
+    }
+
+    /**
+     * Try Dropping a Coin
+     * @return a boolean that indicates the drop is successful
+     */
+    private boolean tryDropCoin() {
+        float rolledResult = rand.nextFloat();
+
+        if (rolledResult > GameConstants.Game.COIN_DROP_RATE)
+            return false;
+
+        new Coin(posX, posY);   
+        return true;
+    }
+
+    /**
+     * Try Dropping a Randon Pickable
+     * @return a boolean that indicates the drop is successful
+     */
+    private boolean tryDropRandomPickable() {
+        float rolledResult = rand.nextFloat();
+
+        if (rolledResult > GameConstants.Game.POWERUP_DROP_RATE)
+            return false;
+
         // Choose Pickable Item
         switch (rand.nextInt(3)) {
             case 0:
@@ -230,5 +269,6 @@ public abstract class Enemy extends ControllableEntity {
             default:
                 break;
         }
+        return true;
     }
 }
