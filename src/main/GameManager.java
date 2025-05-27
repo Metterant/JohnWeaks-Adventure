@@ -3,6 +3,7 @@ package main;
 import entity.player.Player;
 import input.PlayerController;
 import tile.TileManager;
+import util.EntityManager;
 import util.GameComponent;
 import util.GameConstants;
 import util.Spawner;
@@ -81,11 +82,12 @@ public class GameManager implements GameComponent {
         roundTimerFrames    = roundDurationFrames;  
         preroundTimerFrames = GameConstants.Game.PREROUND_DURATION_FRAMES;
 
-        System.out.println("lmao");
-
         // Reset player position
         player.setPositionX(GameConstants.DEFAULT_SPAWN_X);
-        player.setPositionY(GameConstants.DEFAULT_SPAWN_Y);
+        player.setPositionY((double)GameConstants.TILE_SIZE * 2); // Hard-coded
+
+        // Clear items
+        EntityManager.getInstance().removeAllPickables();
 
         // Load map
         if (currentRound == 1) {
