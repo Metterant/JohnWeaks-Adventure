@@ -51,7 +51,7 @@ public abstract class Pickable extends Entity {
         
         // If TTL is less than 5 seconds, then the sprite starts blipping 
         if (timeToLive <= GameConstants.FPS * 5) {
-            if (timeToLive % GameConstants.FPS / 2 <= GameConstants.FPS / 4) {
+            if (timeToLive % (GameConstants.FPS / 2) <= (GameConstants.FPS / 4)) {
                 g2.drawImage(image, (int)posX, (int)posY, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);
             }
         } else {
