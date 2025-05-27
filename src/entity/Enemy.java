@@ -190,8 +190,10 @@ public abstract class Enemy extends ControllableEntity {
      * @return a boolean determined by checking whether the Enemy is being very close to the targetTile
      */
     private boolean checkIfReachedPosition(TileCoords targetTile) {
-        if (targetTile == null) 
+        if (targetTile == null) {
+            logger.warning("targetTile was passed a null reference!");
             return false;
+        }
 
         double delta = (double)GameConstants.TILE_SIZE / 20;
         int targetX = GameConstants.TILE_SIZE * targetTile.getCol();
