@@ -35,6 +35,8 @@ public class GameConstants {
 
         public static final int PATHFINDER_PERIOD_FRAMES = FPS / 2; // Half a second
 
+        public static final int PICKABLE_TTL = FPS * 12; // 12 seconds
+
         public static final int PLAYER_LIVES = 3;
 
         // DROP RATES
