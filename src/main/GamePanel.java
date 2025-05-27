@@ -38,7 +38,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void startGameThread() {
 
         // new Key(10, 10);
-        // new Coffee(15, 10);
+        // new Life(15, 10);
         
         // Init Tile Manager
         TileManager.getInstance().loadImages();
