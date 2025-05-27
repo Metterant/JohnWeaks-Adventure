@@ -45,9 +45,7 @@ public class Shotgun extends Pickable {
     }
 
     @Override
-    public void getPickedUp(Player player) {
-        System.out.println("Picked up Shotgun");
-        
+    public void getPickedUp(Player player) {        
         player.setPowerup(PlayerPowerup.SHOTGUN);
     }
 

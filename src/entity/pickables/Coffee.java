@@ -46,9 +46,7 @@ public class Coffee extends Pickable {
     }
 
     @Override
-    public void getPickedUp(Player player) {
-        System.out.println("Picked up Coffee");
-        
+    public void getPickedUp(Player player) {        
         player.setPowerup(PlayerPowerup.SPEED_BOOST);
     }
 }

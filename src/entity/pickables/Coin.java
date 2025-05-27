@@ -46,7 +46,6 @@ public class Coin extends Pickable {
 
     @Override
     public void getPickedUp(Player player) {
-        // logger.info("Picked up Coin");
         PlayerStats.addCoins(1);        
     }
 }

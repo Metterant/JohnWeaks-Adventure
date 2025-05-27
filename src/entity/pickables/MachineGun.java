@@ -45,9 +45,7 @@ public class MachineGun extends Pickable {
     }
 
     @Override
-    public void getPickedUp(Player player) {
-        System.out.println("Picked up MachineGun");
-        
+    public void getPickedUp(Player player) {        
         player.setPowerup(PlayerPowerup.MACHINE_GUN);
     }
 
