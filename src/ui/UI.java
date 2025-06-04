@@ -1,4 +1,4 @@
-package main;
+package ui;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -12,6 +12,8 @@ import javax.imageio.ImageIO;
 
 import entity.player.PlayerStats;
 import entity.player.PlayerStatusEffect;
+import main.GameManager;
+import main.GamePanel;
 import util.GameComponent;
 import util.GameConstants;
 import util.Renderable;
