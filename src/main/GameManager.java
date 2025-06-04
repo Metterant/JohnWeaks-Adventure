@@ -6,10 +6,11 @@ import tile.TileManager;
 import util.EntityManager;
 import util.GameComponent;
 import util.GameConstants;
+import util.RenewableSingleton;
 import util.Spawner;
 import util.pathfinding.PathFinder;
 
-public class GameManager implements GameComponent {
+public class GameManager implements GameComponent, RenewableSingleton {
 
     // Player input controller
     private final PlayerController playerController = new PlayerController();
@@ -152,4 +153,8 @@ public class GameManager implements GameComponent {
     // Hides constructor of the singleton Class
     private GameManager() { }
     //#endregion
+
+    public static void resetSingleton() {
+        instance = new GameManager();
+    }
 }

@@ -78,8 +78,8 @@ public class EntityManager implements RenewableSingleton, GameComponent {
     }
     
     /** Reset fields of the Singleton */
-    public void resetSingleton() {
-        instantiatedEntities = new ArrayList<>();
+    public static void resetSingleton() {
+        instance = new EntityManager();
     }
 
     /** Call an entity's dispose method and remove it from the list */
