@@ -36,6 +36,10 @@ public class Paused implements Renderable, GameComponent {
     // Font
     Font robotoRemixFont, robotoRemixSizedFont;
 
+    /**
+     * Returns a boolean that determines if the the Paused screen is currently visible
+     * @return whether current state of Paused screen visible or not 
+     */
     public boolean isVisible() { return isVisible; }
 
     public Paused (GamePanel gamePanel) {
@@ -91,6 +95,7 @@ public class Paused implements Renderable, GameComponent {
     public void loadImages() {
         // Test
     }
+
     @Override
     public void draw(Graphics2D g2) {
         g2.setFont(robotoRemixSizedFont);
@@ -99,11 +104,13 @@ public class Paused implements Renderable, GameComponent {
         drawPausedScreen(g2);
     }
 
-    public void switchVisible() { 
+    /** Change the visible state boolean */
+    private void switchVisible() { 
         isVisible = !isVisible; 
     }
 
-    public void switchCurrentButton() {
+    /** Change the current selected option in paused menu using up and down keys */
+    private void switchCurrentButton() {
         if ((playerController.getInputShootY() < 0 || playerController.getInputMoveY() < 0) && !lastDownPressed) {
             if (currentButton == QUIT)
                 currentButton = RESUME;
@@ -116,6 +123,7 @@ public class Paused implements Renderable, GameComponent {
         }
     }
 
+    /** Handle last inputs which can be used for the next frame */
     private void handlePostInput() {
         lastEscapePressed = playerController.escapePressed;
 
@@ -123,15 +131,17 @@ public class Paused implements Renderable, GameComponent {
         lastDownPressed = (playerController.getInputShootY() < 0 || playerController.getInputMoveY() < 0);
     }
 
+    /** Activate resume */
     private void resume() {
         isVisible = false;
     }
 
+    /** Activate restart */
     private void restart() {
         gamePanel.restartGame();
     }
 
-    /** */
+    /** Activate quit game */
     private void quitGame() {
         gamePanel.terminateGame();
     }
@@ -148,6 +158,10 @@ public class Paused implements Renderable, GameComponent {
         } 
     }
 
+    /**
+     * Draw all components of the Paused screen
+     * @param g2 Graphics2D used to draw the gamePanel
+     */
     private void drawPausedScreen(Graphics2D g2) {
         drawBackground(g2);
 
@@ -179,6 +193,7 @@ public class Paused implements Renderable, GameComponent {
         }
     }
 
+    /** Draw the opaque black background */
     private void drawBackground(Graphics2D g2) {
         // Draw a semi-opaque gray rectangle covering the whole screen
         Color oldColor = g2.getColor();
@@ -189,6 +204,14 @@ public class Paused implements Renderable, GameComponent {
         g2.setComposite(oldComposite);
     }
 
+    /**
+     * Draw a colored centered text which pivots on specified position
+     * @param g2 Graphics2D used to draw the text
+     * @param posX horizontal position
+     * @param posY vertical position
+     * @param text text to be written
+     * @param color the color of the text
+     */
     private void drawText(Graphics2D g2, int posX, int posY, String text, Color color) {
         // Retrive old color
         Color oldColor = g2.getColor();
