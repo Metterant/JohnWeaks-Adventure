@@ -89,8 +89,8 @@ public class Paused implements Renderable, GameComponent {
         }
 
         handlePostInput();
+        
     }
-
     @Override
     public void loadImages() {
         // Test
@@ -143,7 +143,7 @@ public class Paused implements Renderable, GameComponent {
 
     /** Activate quit game */
     private void quitGame() {
-        gamePanel.terminateGame();
+        // gamePanel.();
     }
 
     /** Load all the fonts */

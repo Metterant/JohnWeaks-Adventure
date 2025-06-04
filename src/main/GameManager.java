@@ -156,5 +156,6 @@ public class GameManager implements GameComponent, RenewableSingleton {
 
     public static void resetSingleton() {
         instance = new GameManager();
+        // instance.respawnPlayer();
     }
 }
