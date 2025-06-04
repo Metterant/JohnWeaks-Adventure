@@ -123,4 +123,12 @@ public class PlayerStats {
     }
 
     private PlayerStats() { }
+
+    /** Reset Player's Stats */
+    public static void resetStats() {
+        lives            = GameConstants.Game.PLAYER_LIVES;
+        damage           = GameConstants.Player.BASE_DAMAGE;
+        currentBaseSpeed = GameConstants.Player.BASE_SPEED; 
+        coins            = 0;
+    }
 }
