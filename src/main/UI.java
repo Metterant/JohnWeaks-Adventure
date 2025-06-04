@@ -19,7 +19,6 @@ import util.Renderable;
 public class UI implements Renderable, GameComponent {
     GamePanel gamePanel;
 
-    Font arial40;
     Font robotoRemixFont, robotoRemixSizedFont;
 
     // Powerup
@@ -42,8 +41,6 @@ public class UI implements Renderable, GameComponent {
 
     /** Load all the fonts */
     private void loadFonts() {
-        arial40 = new Font("Arial", Font.PLAIN, 40);
-
         try {
             InputStream is = getClass().getResourceAsStream("/resources/fonts/RobotoRemix.ttf");
             robotoRemixFont = Font.createFont(Font.TRUETYPE_FONT, is);
