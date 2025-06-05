@@ -160,7 +160,7 @@ public class PlayerStats {
     //#endregion
 
     //#region BURST SHOT
-    public static boolean hasBurstShot() { return hasRunnerBoots; }
+    public static boolean hasBurstShot() { return hasBurstShot; }
  
     public static void setHasBurstShot(boolean hasBurstShot) {
         PlayerStats.hasBurstShot = hasBurstShot; 
