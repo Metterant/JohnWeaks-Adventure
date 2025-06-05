@@ -34,6 +34,14 @@ public abstract class Pickable extends Entity {
      */
     public abstract void getPickedUp(Player player);
 
+    /**
+     * Performs checks to determine if the Pickable can be picked up
+     * @return whether a condition is met for the item to be picked up
+     */
+    public boolean checkPickupConditions() {
+        return true;
+    }
+
     @Override
     public void update() {
         // If TTL ends, the item perishes
