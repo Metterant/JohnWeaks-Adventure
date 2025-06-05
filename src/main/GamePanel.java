@@ -2,9 +2,9 @@ package main;
 
 import javax.swing.JPanel;
 
-import entity.pickables.*;
-
+import entity.player.PlayerStats;
 import tile.TileManager;
+import ui.*;
 import util.EntityManager;
 import util.GameConstants;
 
@@ -17,6 +17,11 @@ public class GamePanel extends JPanel implements Runnable {
 
     // Thread
     transient Thread gameThread;
+    transient Thread oldThread;
+    
+    // UI
+    transient Paused pausedUI;
+    transient UI gameUI;
 
     // Constructor
     public GamePanel() {
@@ -27,30 +32,8 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(GameManager.getInstance().getPlayerController());
     }
 
-    // UI
-    transient UI ui = new UI(this);
-
-    /*
-     * Orders:
-     * TileManager -> GameManager -> EntityManager -> UI
-     */
-
     public void startGameThread() {
-
-        // new Key(10, 10);
-        // new Life(15, 10);
-        
-        // Init Tile Manager
-        TileManager.getInstance().loadImages();
-        TileManager.getInstance().loadMap("/resources/maps/map_0.txt");
-        
-        GameManager.getInstance().start();
-        // EntityManager.getInstance().entitiesStart();
-
-        // Init UI
-        ui.start();
-
-        // System.out.println(biker.pathFinder.search(biker, GameManager.getInstance().player));
+        initGame();
 
         gameThread = new Thread(this);
         gameThread.start();
@@ -59,6 +42,15 @@ public class GamePanel extends JPanel implements Runnable {
     // Runnable implementation
     @Override
     public void run() {
+        // Wait for the old Thread to die before running
+        if (oldThread != null && oldThread.isAlive() && Thread.currentThread() != oldThread) {
+            try {
+                oldThread.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
         double drawInterval = 1000000000.0 / GameConstants.FPS;
         long lastTime = System.nanoTime();
         long currentTime;
@@ -67,7 +59,9 @@ public class GamePanel extends JPanel implements Runnable {
             currentTime = System.nanoTime();
 
             if (currentTime - lastTime >= drawInterval) {
-                update();            
+                pausedUI.update();
+                if (!pausedUI.isVisible())
+                    update(); 
                 repaint();
                 lastTime = currentTime;
             }
@@ -78,7 +72,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void update() {
         GameManager.getInstance().update();
         EntityManager.getInstance().update();
-        ui.update();
+        gameUI.update();
     }
 
     /** Implementation of paintComponent inherited from JPanel */
@@ -91,8 +85,57 @@ public class GamePanel extends JPanel implements Runnable {
         TileManager.getInstance().draw(g2);
         EntityManager.getInstance().entitiesDraw(g2);
 
-        ui.draw(g2);
+        gameUI.draw(g2);
+        if (pausedUI.isVisible()) 
+            pausedUI.draw(g2);
 
         g2.dispose();
+    }
+
+    /** Initialize Game Components */
+    public void initGame() {
+        /*
+        * Orders:
+        * TileManager -> GameManager -> EntityManager -> UI
+        */
+
+        // Init Tile Manager
+        TileManager.getInstance().loadImages();
+        TileManager.getInstance().loadMap("/resources/maps/map_0.txt");
+        
+        GameManager.getInstance().start();
+        // EntityManager.getInstance().entitiesStart();
+    
+        // Init UI
+        gameUI = new UI(this);
+        pausedUI = new Paused(this);
+    
+        gameUI.start();
+        pausedUI.start();
+    }
+
+    /** Restart the Game */
+    public void restartGame() {
+        /*
+         * - Remove the current keyListener
+         * - Reset Singletons and PlayerStats
+         * - Create a new Thread
+         * - Assign the new keyListener
+         */
+        this.removeKeyListener(GameManager.getInstance().getPlayerController());
+        EntityManager.resetSingleton();
+        GameManager.resetSingleton();
+        PlayerStats.resetStats();
+            
+        createNewGameThread();
+        this.addKeyListener(GameManager.getInstance().getPlayerController());
+    }
+
+    /** Restart the game by terminating the old Thread and creating a new one */
+    public void createNewGameThread() {
+        oldThread = gameThread;
+        gameThread = null;
+
+        startGameThread();
     }
 }
