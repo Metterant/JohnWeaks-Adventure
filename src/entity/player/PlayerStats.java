@@ -3,17 +3,69 @@ package entity.player;
 import util.GameConstants;
 
 public class PlayerStats {
+    private static int coins;
     private static int lives;
     private static int damage;
     private static double currentBaseSpeed;
-    private static int coins;
+    private static int gunLevel;
+    private static boolean hasRunnerBoots;
+    private static boolean hasBurstShot;
 
     // Static fields init
     static {
         lives            = GameConstants.Game.PLAYER_LIVES;
-        damage           = GameConstants.Player.BASE_DAMAGE;
+        damage           = GameConstants.Player.DAMAGE_BASE;
         currentBaseSpeed = GameConstants.Player.BASE_SPEED; 
         coins            = 0;
+        gunLevel         = 1;
+        hasRunnerBoots   = false;
+        hasBurstShot     = false;
+    }
+
+    private PlayerStats() { }
+    
+    //#region COINS
+
+    /** Returns the amount of coins the Plaeyr is having
+     * @return the amount of coins the Player is having
+     */
+    public static int getCoins() { return coins; }
+
+    /**
+     * Set amonut of coins of the Player
+     * @param coins new amount of coins
+     */
+    public static void setCoins(int coins) {
+        if (coins <= 0)
+            throw new IllegalArgumentException("The player can't go into debt."); 
+        PlayerStats.coins = coins;
+    }
+
+    /**
+     * Takes away an amount of coins of the Player
+     * @param amount The amount of coins to be taken away
+     * @return a booleans that indicates the amount of coins is sufficient to be taken away
+     */
+    public static boolean removeCoins(int amount) {
+        if (amount <= 0)
+            throw new IllegalArgumentException("Can't take non-positive amount of coins.");
+        if (amount > coins)
+            return false;
+
+        // Successfully remove coins
+        coins -= amount;
+
+        return true; 
+    }
+
+    /**
+     * Gives an amount of coins of the Player
+     * @param amount The amount of coins we wanna add
+     */
+    public static void addCoins(int amount) {
+        if (amount <= 0)
+            throw new IllegalArgumentException("Can't give non-positive amount of coins.");
+        coins += amount; 
     }
 
     //#region LIVES
@@ -78,57 +130,51 @@ public class PlayerStats {
         currentBaseSpeed = newBaseSpeed;
     }
 
-    //#region COINS
-
-    /** Returns the amount of coins the Plaeyr is having
-     * @return the amount of coins the Player is having
-     */
-    public static int getCoins() { return coins; }
+    //#region GUN LEVEL
 
     /**
-     * Set amonut of coins of the Player
-     * @param coins new amount of coins
+     * Returns the Level of Player's currently used Gun in the interval from 1 to 3 
+     * @return the current level of the Gun the Player is using
      */
-    public static void setCoins(int coins) {
-        if (coins <= 0)
-            throw new IllegalArgumentException("The player can't go into debt."); 
-        PlayerStats.coins = coins;
-    }
-
+    public static int getGunLevel() { return gunLevel; }
+    
     /**
-     * Takes away an amount of coins of the Player
-     * @param amount The amount of coins we wanna take away
-     * @return a booleans that indicates the removal is successful
+     * Set Player's Gun Level to the specified gunLevel value
+     * @param gunLevel new Gun Level
+     * @throws IllegalArgumentException when gunLevel is not in the interval from 1 to 3
      */
-    public static boolean removeCoins(int amount) {
-        if (amount <= 0)
-            throw new IllegalArgumentException("Can't take non-positive amount of coins.");
-        if (amount > coins)
-            return false;
-
-        // Successfully remove coins
-        coins -= amount;
-
-        return true; 
+    public static void setGunLevel(int gunLevel) throws IllegalArgumentException {
+        if (gunLevel <= 0 || gunLevel >= 4)
+            throw new IllegalArgumentException("test");
+        PlayerStats.gunLevel = gunLevel;
     }
 
-    /**
-     * Gives an amount of coins of the Player
-     * @param amount The amount of coins we wanna add
-     */
-    public static void addCoins(int amount) {
-        if (amount <= 0)
-            throw new IllegalArgumentException("Can't give non-positive amount of coins.");
-        coins += amount; 
-    }
+    //#endregion
 
-    private PlayerStats() { }
+    //#region RUNNER BOOTS
+    public static boolean hasRunnerBoots() { return hasRunnerBoots; }
+ 
+    public static void setHasRunnerBoots(boolean hasRunnerBoots) {
+        PlayerStats.hasRunnerBoots = hasRunnerBoots; 
+    }
+    //#endregion
+
+    //#region BURST SHOT
+    public static boolean hasBurstShot() { return hasRunnerBoots; }
+ 
+    public static void setHasBurstShot(boolean hasBurstShot) {
+        PlayerStats.hasBurstShot = hasBurstShot; 
+    }
+    //#endregion
 
     /** Reset Player's Stats */
     public static void resetStats() {
-        lives            = GameConstants.Game.PLAYER_LIVES;
-        damage           = GameConstants.Player.BASE_DAMAGE;
-        currentBaseSpeed = GameConstants.Player.BASE_SPEED; 
         coins            = 0;
+        lives            = GameConstants.Game.PLAYER_LIVES;
+        damage           = GameConstants.Player.DAMAGE_BASE;
+        currentBaseSpeed = GameConstants.Player.BASE_SPEED; 
+        gunLevel         = 1;
+        hasRunnerBoots   = false;
+        hasBurstShot     = false;
     }
 }
