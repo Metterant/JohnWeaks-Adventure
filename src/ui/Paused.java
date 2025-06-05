@@ -143,7 +143,7 @@ public class Paused implements Renderable, GameComponent {
 
     /** Activate quit game */
     private void quitGame() {
-        // gamePanel.();
+        // gamePanel.(); 
     }
 
     /** Load all the fonts */
