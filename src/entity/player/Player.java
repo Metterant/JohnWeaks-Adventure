@@ -72,9 +72,6 @@ public class Player extends ControllableEntity implements EnemyCollidable {
     // Shooting Logic
     private int shootingFrameCount = 0;
 
-    // Stats
-    private int damage;
-
     //#region CONSTRUCTORS
     public Player(InputController keyHandler) {
         super();
@@ -120,8 +117,6 @@ public class Player extends ControllableEntity implements EnemyCollidable {
         
         // SHOOTING MODE
         currentShootingMode = PlayerShootingMode.NORMAL;
-        
-        damage = PlayerStats.getDamage();
     }
     
     /**
@@ -165,11 +160,11 @@ public class Player extends ControllableEntity implements EnemyCollidable {
     }
 
     //#region START
-        @Override
-        public void start() {
-            setDefaultValues();
-            super.start();
-        }
+    @Override
+    public void start() {
+        setDefaultValues();
+        super.start();
+    }
     //#endregion
     
 
@@ -462,21 +457,21 @@ public class Player extends ControllableEntity implements EnemyCollidable {
                 if (currentShootingMode == PlayerShootingMode.MIXED)
                     shotGunShot(dx, dy);
                 else
-                    new Bullet(posX, posY, dx, dy, damage);
+                    new Bullet(posX, posY, dx, dy, PlayerStats.getDamage());
             }
         }
         else if (currentShootingMode == PlayerShootingMode.SHOTGUN)
             shotGunShot(directionX, directionY);
         else {
-            new Bullet(posX, posY, directionX, directionY, damage);
+            new Bullet(posX, posY, directionX, directionY, PlayerStats.getDamage());
         }
 
     }
     /** Shot 3 Bullets */
     private void shotGunShot(double directionX, double directionY) {
-        new Bullet(posX, posY, directionX, directionY, damage);
-        new Bullet(posX, posY, directionX, directionY, Math.toRadians(12d), damage);
-        new Bullet(posX, posY, directionX, directionY, Math.toRadians(-12d), damage);
+        new Bullet(posX, posY, directionX, directionY, PlayerStats.getDamage());
+        new Bullet(posX, posY, directionX, directionY, Math.toRadians(12d), PlayerStats.getDamage());
+        new Bullet(posX, posY, directionX, directionY, Math.toRadians(-12d), PlayerStats.getDamage());
     }
     //#endregion
 
