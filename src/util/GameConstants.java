@@ -40,9 +40,34 @@ public class GameConstants {
         public static final int PLAYER_LIVES = 3;
 
         // DROP RATES
-        public static final float COIN_DROP_RATE    = 0.050f; // 5%
-        public static final float POWERUP_DROP_RATE = 0.050f; // 5%
-        public static final float LIFE_DROP_RATE    = 0.005f; // 0.5%
+        public static final float COIN_DROP_RATE    = 0.100f; // 10.0%
+        public static final float POWERUP_DROP_RATE = 0.050f; // 5.0 %
+        public static final float LIFE_DROP_RATE    = 0.005f; // 0.5 %
+
+        // MAP RESOURCES
+        public static final int      MAPS_COUNT  = 3;
+        protected static final String[] MAP_STRINGS = new String[10]; 
+        protected static final String[] MAP_POOL = new String[MAPS_COUNT]; 
+        static {
+            MAP_STRINGS[0] = "/resources/maps/map_0.txt";
+            MAP_STRINGS[1] = "/resources/maps/map_1.txt";
+            MAP_STRINGS[2] = "/resources/maps/shop.txt";
+            MAP_STRINGS[3] = "/resources/maps/map_2.txt";
+            MAP_STRINGS[4] = "/resources/maps/map_2.txt";
+            MAP_STRINGS[5] = "/resources/maps/shop.txt";
+            MAP_STRINGS[6] = "/resources/maps/map_2.txt";
+            MAP_STRINGS[7] = "/resources/maps/map_2.txt";
+            MAP_STRINGS[8] = "/resources/maps/shop.txt";
+            MAP_STRINGS[9] = "/resources/maps/map_2.txt";
+
+            MAP_POOL[0] = "/resources/maps/map_0.txt";
+            MAP_POOL[1] = "/resources/maps/map_1.txt";
+            MAP_POOL[2] = "/resources/maps/map_2.txt";
+        }
+
+        // MAP RESOURCES Getters
+        public static String[] getMapStrings() { return MAP_STRINGS; }
+        public static String[] getMapPool()    { return MAP_POOL; }
 
         private Game() { }
     }
@@ -59,8 +84,11 @@ public class GameConstants {
         public static final double BASE_SPEED = 2.5d;
         public static final double BOOSTED_SPPED = 1.0d;
 
-        public static final int BASE_DAMAGE = 1;
+        public static final int DAMAGE_BASE = 1;
+        public static final int DAMAGE_LEVEL_2 = 2;
+        public static final int DAMAGE_LEVEL_3 = 4;
         public static final int BASE_FRAMES_PER_SHOT = 25;
+        
 
         private Player() { }
     }
