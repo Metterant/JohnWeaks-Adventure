@@ -77,11 +77,14 @@ public class GameManager implements GameComponent, RenewableSingleton {
 
     /** Goes to next round */
     public void nextRound() {
-        // Init Timers
         currentRound++; 
-        roundDurationFrames += GameConstants.Game.INCREMENT_DURATION_FRAMES;  
-        roundTimerFrames    = roundDurationFrames;  
-        preroundTimerFrames = GameConstants.Game.PREROUND_DURATION_FRAMES;
+        
+        if (currentRound % 3 == 0) {
+            // Init Timers
+            roundDurationFrames += GameConstants.Game.INCREMENT_DURATION_FRAMES;  
+            roundTimerFrames    = roundDurationFrames;  
+            preroundTimerFrames = GameConstants.Game.PREROUND_DURATION_FRAMES;
+        }
 
         // Reset player position
         player.setPositionX(GameConstants.DEFAULT_SPAWN_X);
@@ -91,14 +94,7 @@ public class GameManager implements GameComponent, RenewableSingleton {
         EntityManager.getInstance().removeAllPickables();
 
         // Load map
-        if (currentRound == 1) {
-            TileManager.getInstance().loadMap("/resources/maps/map_0.txt");
-        } else if (currentRound == 2) {
-            TileManager.getInstance().loadMap("/resources/maps/map_1.txt");
-        }
-        else {
-            TileManager.getInstance().loadMap("/resources/maps/map_2.txt");
-        }
+        TileManager.getInstance().loadMap(GameConstants.Game.getMapStrings()[currentRound - 1]);
     }
 
     //#region GameComponent
