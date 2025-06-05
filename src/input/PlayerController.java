@@ -10,12 +10,20 @@ public class PlayerController extends InputController implements KeyListener {
     // Booleans for shooting input
     private boolean isShootUpPressed, isShootDownPressed, isShootLeftPressed, isShootRightPressed;
 
+    public boolean escapePressed, enterPressed;
+
     @Override
     public void keyTyped(KeyEvent e) { }
 
     @Override
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
+
+        // UI Input
+        if (code == KeyEvent.VK_ESCAPE) 
+            escapePressed = true;
+        if (code == KeyEvent.VK_ENTER)
+            enterPressed = true;
 
         // Moving Input
         if (code == KeyEvent.VK_W)
@@ -46,6 +54,12 @@ public class PlayerController extends InputController implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         int code = e.getKeyCode();
+
+        // UI Input
+        if (code == KeyEvent.VK_ESCAPE)
+            escapePressed = false;
+        if (code == KeyEvent.VK_ENTER)
+            enterPressed = false;
 
         // Moving Input
         if (code == KeyEvent.VK_W)
