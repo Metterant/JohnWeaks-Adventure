@@ -3,8 +3,6 @@ package tile;
 import java.util.HashMap;
 import java.util.Map;
 
-import util.pathfinding.TileCoords;
-
 public class TileConstants {
     // TILE NAMES
     public static final int BLACK_TILE   = 0;
