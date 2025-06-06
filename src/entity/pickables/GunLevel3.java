@@ -7,7 +7,9 @@ import javax.imageio.ImageIO;
 import entity.Pickable;
 import entity.player.Player;
 import entity.player.PlayerStats;
+import main.GameManager;
 import util.GameConstants;
+import util.Shop;
 
 public class GunLevel3 extends Pickable {
     //#region CONSTRUCTORS
@@ -47,7 +49,7 @@ public class GunLevel3 extends Pickable {
 
     @Override
     public void getPickedUp(Player player) {
-        // Hard-coded Values   
+        GameManager.getInstance().shop.removePickableFromItemPool(Shop.GUN_LEVEL_UP);
         PlayerStats.setDamage(GameConstants.Player.DAMAGE_LEVEL_3);
         PlayerStats.setGunLevel(3);
     }

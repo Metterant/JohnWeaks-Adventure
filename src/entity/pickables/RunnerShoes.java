@@ -7,7 +7,9 @@ import javax.imageio.ImageIO;
 import entity.Pickable;
 import entity.player.Player;
 import entity.player.PlayerStats;
+import main.GameManager;
 import util.GameConstants;
+import util.Shop;
 
 public class RunnerShoes extends Pickable {
     //#region CONSTRUCTORS
@@ -47,6 +49,7 @@ public class RunnerShoes extends Pickable {
 
     @Override
     public void getPickedUp(Player player) {
+        GameManager.getInstance().shop.removePickableFromItemPool(Shop.RUNNER_SHOES);
         PlayerStats.setCurrentBaseSpeed(GameConstants.Player.SPEED_RUNNER);
         PlayerStats.setHasRunnerBoots(true);
     }
