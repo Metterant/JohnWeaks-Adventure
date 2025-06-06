@@ -48,7 +48,7 @@ public class Player extends ControllableEntity implements EnemyCollidable {
      */
     private int shootFramesPerShot = GameConstants.Player.BASE_FRAMES_PER_SHOT;
     private PlayerShootingMode currentShootingMode;
-    private PlayerShootingMode defauPlayerShootingMode;
+    private PlayerShootingMode defaultShootingMode;
 
     // Sprites
     private BufferedImage[] walkingDownSprite, walkingUpSprite, walkingSideSprite, walkingShootingDownSprite;
@@ -204,6 +204,7 @@ public class Player extends ControllableEntity implements EnemyCollidable {
         
         
         // SHOOTING
+        handleCurrentShootingMode();
         handleShooting();
 
         // LOGIC
@@ -441,6 +442,12 @@ public class Player extends ControllableEntity implements EnemyCollidable {
             shootBullet();
             shootingFrameCount = shootFramesPerShot;
         }
+    }
+
+    private void handleCurrentShootingMode() {
+        defaultShootingMode = ((PlayerStats.hasBurstShot()) ? PlayerShootingMode.SHOTGUN : PlayerShootingMode.NORMAL); 
+        if (currentShootingMode == PlayerShootingMode.NORMAL && defaultShootingMode != PlayerShootingMode.NORMAL)
+            currentShootingMode = defaultShootingMode;
     }
 
     private void shootBullet() {
