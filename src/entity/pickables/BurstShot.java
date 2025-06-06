@@ -7,7 +7,8 @@ import javax.imageio.ImageIO;
 import entity.Pickable;
 import entity.player.Player;
 import entity.player.PlayerStats;
-import util.GameConstants;
+import main.GameManager;
+import util.Shop;
 
 public class BurstShot extends Pickable {
     //#region CONSTRUCTORS
@@ -47,6 +48,7 @@ public class BurstShot extends Pickable {
 
     @Override
     public void getPickedUp(Player player) {
+        GameManager.getInstance().shop.removePickableFromItemPool(Shop.BURST_SHOT);
         PlayerStats.setHasBurstShot(true);
     }
 }
