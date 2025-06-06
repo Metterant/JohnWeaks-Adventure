@@ -7,16 +7,17 @@ import javax.imageio.ImageIO;
 import entity.Pickable;
 import entity.player.Player;
 import entity.player.PlayerStats;
+import util.GameConstants;
 
-public class Coin extends Pickable {
+public class RunnerShoes extends Pickable {
     //#region CONSTRUCTORS
-    public Coin() {
+    public RunnerShoes() {
         super();
     }
-    public Coin(int row, int col) {
+    public RunnerShoes(int row, int col) {
         super(row, col);
     }
-    public Coin(double positionX, double positionY) {
+    public RunnerShoes(double positionX, double positionY) {
         super(positionX, positionY);
     }
     //#endregion
@@ -24,22 +25,28 @@ public class Coin extends Pickable {
     @Override
     public void start() {
         super.start();
+        timeToLive = -1; // imperishable
 
-        name = "Coin";
+        name = "RunnerShoes";
     }
 
     @Override
     public void loadImages() {
         try {
-            image = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/coin.png"));
+            image = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/runner_shoes.png"));
         }
         catch (IOException e) {
             e.getStackTrace();
         }
     }
+    
+    @Override
+    public boolean checkPickupConditions() {
+        return (PlayerStats.removeCoins(12));
+    }
 
     @Override
     public void getPickedUp(Player player) {
-        PlayerStats.addCoins(1);        
+        PlayerStats.setCurrentBaseSpeed(GameConstants.Player.SPEED_RUNNER);
     }
 }

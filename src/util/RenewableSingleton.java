@@ -2,5 +2,5 @@ package util;
 
 public interface RenewableSingleton {
     /** Renew Instance for next round or next level */
-    public void resetSingleton();
+    public static void resetSingleton() { }
 }

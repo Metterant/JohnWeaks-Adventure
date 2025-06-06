@@ -111,7 +111,8 @@ public class CollisionHandler {
             Entity nearbyEntity = entities.get(i);
             if (nearbyEntity == null || nearbyEntity == player) continue;
 
-            if (nearbyEntity instanceof Pickable pickable && isColliding(nearbyEntity, player)) {
+            if (nearbyEntity instanceof Pickable pickable && isColliding(nearbyEntity, player) 
+                && pickable.checkPickupConditions()) {
                 pickable.getPickedUp(player);
 
                 EntityManager.getInstance().destroyEntity(nearbyEntity);

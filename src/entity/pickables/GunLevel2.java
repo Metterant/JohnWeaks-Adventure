@@ -7,16 +7,17 @@ import javax.imageio.ImageIO;
 import entity.Pickable;
 import entity.player.Player;
 import entity.player.PlayerStats;
+import util.GameConstants;
 
-public class Coin extends Pickable {
+public class GunLevel2 extends Pickable {
     //#region CONSTRUCTORS
-    public Coin() {
+    public GunLevel2() {
         super();
     }
-    public Coin(int row, int col) {
+    public GunLevel2(int row, int col) {
         super(row, col);
     }
-    public Coin(double positionX, double positionY) {
+    public GunLevel2(double positionX, double positionY) {
         super(positionX, positionY);
     }
     //#endregion
@@ -24,22 +25,29 @@ public class Coin extends Pickable {
     @Override
     public void start() {
         super.start();
+        timeToLive = -1; // imperishable
 
-        name = "Coin";
+        name = "GunLevel2";
     }
 
     @Override
     public void loadImages() {
         try {
-            image = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/coin.png"));
+            image = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/gun_level_2.png"));
         }
         catch (IOException e) {
             e.getStackTrace();
         }
     }
+    
+    @Override
+    public boolean checkPickupConditions() {
+        return (PlayerStats.removeCoins(10));
+    }
 
     @Override
     public void getPickedUp(Player player) {
-        PlayerStats.addCoins(1);        
+        PlayerStats.setDamage(GameConstants.Player.DAMAGE_LEVEL_2);
+        PlayerStats.setGunLevel(2);
     }
 }

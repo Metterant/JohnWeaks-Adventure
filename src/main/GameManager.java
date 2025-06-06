@@ -3,12 +3,14 @@ package main;
 import entity.player.Player;
 import input.PlayerController;
 import tile.TileManager;
+import util.EntityManager;
 import util.GameComponent;
 import util.GameConstants;
+import util.RenewableSingleton;
 import util.Spawner;
 import util.pathfinding.PathFinder;
 
-public class GameManager implements GameComponent {
+public class GameManager implements GameComponent, RenewableSingleton {
 
     // Player input controller
     private final PlayerController playerController = new PlayerController();
@@ -75,27 +77,24 @@ public class GameManager implements GameComponent {
 
     /** Goes to next round */
     public void nextRound() {
-        // Init Timers
         currentRound++; 
-        roundDurationFrames += GameConstants.Game.INCREMENT_DURATION_FRAMES;  
-        roundTimerFrames    = roundDurationFrames;  
-        preroundTimerFrames = GameConstants.Game.PREROUND_DURATION_FRAMES;
-
-        System.out.println("lmao");
+        
+        if (currentRound % 3 == 0) {
+            // Init Timers
+            roundDurationFrames += GameConstants.Game.INCREMENT_DURATION_FRAMES;  
+            roundTimerFrames    = roundDurationFrames;  
+            preroundTimerFrames = GameConstants.Game.PREROUND_DURATION_FRAMES;
+        }
 
         // Reset player position
         player.setPositionX(GameConstants.DEFAULT_SPAWN_X);
-        player.setPositionY(GameConstants.DEFAULT_SPAWN_Y);
+        player.setPositionY((double)GameConstants.TILE_SIZE * 2); // Hard-coded
+
+        // Clear items
+        EntityManager.getInstance().removeAllPickables();
 
         // Load map
-        if (currentRound == 1) {
-            TileManager.getInstance().loadMap("/resources/maps/map_0.txt");
-        } else if (currentRound == 2) {
-            TileManager.getInstance().loadMap("/resources/maps/map_1.txt");
-        }
-        else {
-            TileManager.getInstance().loadMap("/resources/maps/map_2.txt");
-        }
+        TileManager.getInstance().loadMap(GameConstants.Game.getMapStrings()[currentRound - 1]);
     }
 
     //#region GameComponent
@@ -150,4 +149,9 @@ public class GameManager implements GameComponent {
     // Hides constructor of the singleton Class
     private GameManager() { }
     //#endregion
+
+    public static void resetSingleton() {
+        instance = new GameManager();
+        // instance.respawnPlayer();
+    }
 }

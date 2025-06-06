@@ -1,6 +1,5 @@
 package entity.pickables;
 
-import java.awt.Graphics2D;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -8,7 +7,6 @@ import javax.imageio.ImageIO;
 import entity.Pickable;
 import entity.player.Player;
 import entity.player.PlayerPowerup;
-import util.GameConstants;
 
 public class MachineGun extends Pickable {
     //#region CONSTRUCTORS
@@ -40,14 +38,8 @@ public class MachineGun extends Pickable {
         }
     }
 
-    public void draw(Graphics2D g2) {
-        g2.drawImage(image, (int)posX, (int)posY, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);
-    }
-
     @Override
-    public void getPickedUp(Player player) {
-        System.out.println("Picked up MachineGun");
-        
+    public void getPickedUp(Player player) {        
         player.setPowerup(PlayerPowerup.MACHINE_GUN);
     }
 

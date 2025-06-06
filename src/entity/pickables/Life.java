@@ -7,16 +7,17 @@ import javax.imageio.ImageIO;
 import entity.Pickable;
 import entity.player.Player;
 import entity.player.PlayerPowerup;
+import entity.player.PlayerStats;
 
-public class Shotgun extends Pickable {
+public class Life extends Pickable {
     //#region CONSTRUCTORS
-    public Shotgun() {
+    public Life() {
         super();
     }
-    public Shotgun(int row, int col) {
+    public Life(int row, int col) {
         super(row, col);
     }
-    public Shotgun(double positionX, double positionY) {
+    public Life(double positionX, double positionY) {
         super(positionX, positionY);
     }
     //#endregion
@@ -25,13 +26,13 @@ public class Shotgun extends Pickable {
     public void start() {
         super.start();
 
-        name = "Shotgun";
+        name = "Life";
     }
 
     @Override
     public void loadImages() {
         try {
-            image = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/shotgun.png"));
+            image = ImageIO.read(getClass().getResourceAsStream("/resources/ui/lives_icon.png"));
         }
         catch (IOException e) {
             e.getStackTrace();
@@ -40,7 +41,7 @@ public class Shotgun extends Pickable {
 
     @Override
     public void getPickedUp(Player player) {        
-        player.setPowerup(PlayerPowerup.SHOTGUN);
+        PlayerStats.addLife();
     }
 
     
