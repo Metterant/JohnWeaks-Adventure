@@ -33,7 +33,7 @@ public class GameManager implements GameComponent, RenewableSingleton {
     private final Spawner spawner = new Spawner();
 
     // Update tick counter
-    public int updateTick = 0;
+    private int updateTick = 0;
 
     /**
      * @return the object that register player input
@@ -79,10 +79,11 @@ public class GameManager implements GameComponent, RenewableSingleton {
     public void nextRound() {
         currentRound++; 
         
-        if (currentRound % 3 == 0) {
+        if (currentRound % 3 != 0) {
             // Init Timers
             roundDurationFrames += GameConstants.Game.INCREMENT_DURATION_FRAMES;  
             roundTimerFrames    = roundDurationFrames;  
+            // roundTimerFrames    = 10;  
             preroundTimerFrames = GameConstants.Game.PREROUND_DURATION_FRAMES;
         }
 
@@ -102,7 +103,8 @@ public class GameManager implements GameComponent, RenewableSingleton {
     public void start() {
         currentRound = 1;
         preroundTimerFrames = GameConstants.Game.PREROUND_DURATION_FRAMES;
-        roundTimerFrames = roundDurationFrames = GameConstants.Game.BASE_ROUND_DURATION_FRAMES;
+        roundTimerFrames    = roundDurationFrames = GameConstants.Game.BASE_ROUND_DURATION_FRAMES;
+        // roundTimerFrames = 10;
     }
     
     @Override
