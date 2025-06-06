@@ -7,6 +7,7 @@ import util.EntityManager;
 import util.GameComponent;
 import util.GameConstants;
 import util.RenewableSingleton;
+import util.Shop;
 import util.Spawner;
 import util.pathfinding.PathFinder;
 
@@ -32,6 +33,9 @@ public class GameManager implements GameComponent, RenewableSingleton {
     // Enemy spawner
     private final Spawner spawner = new Spawner();
 
+    // Shop
+    public final Shop shop = new Shop();
+    
     // Update tick counter
     private int updateTick = 0;
 
@@ -73,31 +77,6 @@ public class GameManager implements GameComponent, RenewableSingleton {
         GameManager.getInstance().playerDied = playerDied;
     }
 
-    /* UTILS */
-
-    /** Goes to next round */
-    public void nextRound() {
-        currentRound++; 
-        
-        if (currentRound % 3 != 0) {
-            // Init Timers
-            roundDurationFrames += GameConstants.Game.INCREMENT_DURATION_FRAMES;  
-            roundTimerFrames    = roundDurationFrames;  
-            // roundTimerFrames    = 10;  
-            preroundTimerFrames = GameConstants.Game.PREROUND_DURATION_FRAMES;
-        }
-
-        // Reset player position
-        player.setPositionX(GameConstants.DEFAULT_SPAWN_X);
-        player.setPositionY((double)GameConstants.TILE_SIZE * 2); // Hard-coded
-
-        // Clear items
-        EntityManager.getInstance().removeAllPickables();
-
-        // Load map
-        TileManager.getInstance().loadMap(GameConstants.Game.getMapStrings()[currentRound - 1]);
-    }
-
     //#region GameComponent
     @Override
     public void start() {
@@ -126,7 +105,6 @@ public class GameManager implements GameComponent, RenewableSingleton {
 
         updateTick++;
 
-        
         // Spawner
         if (preroundTimerFrames == 0 && roundTimerFrames > 0 && !playerDied && player != null 
             && updateTick % Math.max(GameConstants.FPS + 30 - currentRound * 10, 40) == 0) {
@@ -142,10 +120,43 @@ public class GameManager implements GameComponent, RenewableSingleton {
         return instance;
     }
 
+    /* UTILS */
+
+    /** Goes to next round */
+    public void nextRound() {
+        /* CLEAN UP */
+        // Clear items
+        EntityManager.getInstance().removeAllPickables();
+
+        currentRound++; 
+        
+        if (currentRound % 3 != 0) {
+            // Init Timers
+            roundDurationFrames += GameConstants.Game.INCREMENT_DURATION_FRAMES;  
+            roundTimerFrames    = roundDurationFrames;  
+            // roundTimerFrames    = 10;  
+            preroundTimerFrames = GameConstants.Game.PREROUND_DURATION_FRAMES;
+        }
+        else {
+            enterShop();
+        }
+
+        // Reset player position
+        player.setPositionX(GameConstants.DEFAULT_SPAWN_X);
+        player.setPositionY((double)GameConstants.TILE_SIZE * 2); // Hard-coded
+
+        // Load map
+        TileManager.getInstance().loadMap(GameConstants.Game.getMapStrings()[currentRound - 1]);
+    }
+
     /** Change Player instance */
     private void respawnPlayer() {
         player = new Player(playerController);
         playerDied = false;
+    }
+
+    private void enterShop() {
+        shop.spawnItems();
     }
 
     // Hides constructor of the singleton Class
