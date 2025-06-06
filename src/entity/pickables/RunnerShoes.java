@@ -48,5 +48,6 @@ public class RunnerShoes extends Pickable {
     @Override
     public void getPickedUp(Player player) {
         PlayerStats.setCurrentBaseSpeed(GameConstants.Player.SPEED_RUNNER);
+        PlayerStats.setHasRunnerBoots(true);
     }
 }
