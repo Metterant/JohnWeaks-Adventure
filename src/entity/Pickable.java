@@ -11,7 +11,7 @@ public abstract class Pickable extends Entity {
     /** Name of Pickable item */
     protected String name;
 
-    protected int timeToLive = GameConstants.Game.PICKABLE_TTL;
+    protected int timeToLive;
 
     public String getPickable() { return name; }
 
@@ -43,6 +43,12 @@ public abstract class Pickable extends Entity {
     }
 
     @Override
+    public void start() {
+        timeToLive = GameConstants.Game.PICKABLE_TTL;
+        super.start();
+    }
+
+    @Override
     public void update() {
         /* If TTL ends, the item perishes.
          * However, if TTL is less than 0 (i.e, -1), the item will not disappear.
@@ -59,7 +65,7 @@ public abstract class Pickable extends Entity {
     @Override
     public void draw(Graphics2D g2) {
         
-        // If TTL is less than 5 seconds, then the sprite starts blipping 
+        // If TTL is greater or equal to 0 and less than or equal to 5 seconds, then the sprite starts blipping 
         if (timeToLive >= 0 && timeToLive <= GameConstants.FPS * 5) {
             if (timeToLive % (GameConstants.FPS / 2) <= (GameConstants.FPS / 4)) {
                 g2.drawImage(image, (int)posX, (int)posY, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);
