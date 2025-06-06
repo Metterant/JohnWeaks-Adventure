@@ -234,6 +234,8 @@ public class Player extends ControllableEntity implements EnemyCollidable {
     }
     //#endregion
 
+    //#region ANIMATION
+
     public void draw(Graphics2D g2) {
         switch (animState) {
             case IDLE_UP:
@@ -401,6 +403,8 @@ public class Player extends ControllableEntity implements EnemyCollidable {
         }
     }
 
+    //#endregion
+
     private void usePowerup(PlayerPowerup powerup) {
         switch (powerup) {
             case NONE:
@@ -502,7 +506,7 @@ public class Player extends ControllableEntity implements EnemyCollidable {
     /** Use speed boost power-up */
     private void useSpeedBoost() {
         statusEffect.setEffectDuration(PlayerStatusEffect.SPEED_BOOST, GameConstants.Player.SPEED_BOOST_DURATION_FRAMES);
-        setMovementSpeed(GameConstants.Player.BASE_SPEED + GameConstants.Player.BOOSTED_SPPED);
+        setMovementSpeed(PlayerStats.getCurrentBaseSpeed() + GameConstants.Player.BOOSTED_SPPED);
     }
 
     /** Use shotgun power-up */
