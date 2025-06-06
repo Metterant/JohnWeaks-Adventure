@@ -15,7 +15,7 @@ public class PlayerStats {
     static {
         lives            = GameConstants.Game.PLAYER_LIVES;
         damage           = GameConstants.Player.DAMAGE_BASE;
-        currentBaseSpeed = GameConstants.Player.BASE_SPEED; 
+        currentBaseSpeed = GameConstants.Player.SPEED_BASE; 
         coins            = 0;
         gunLevel         = 1;
         hasRunnerBoots   = false;
@@ -169,10 +169,10 @@ public class PlayerStats {
 
     /** Reset Player's Stats */
     public static void resetStats() {
-        coins            = 0;
         lives            = GameConstants.Game.PLAYER_LIVES;
         damage           = GameConstants.Player.DAMAGE_BASE;
-        currentBaseSpeed = GameConstants.Player.BASE_SPEED; 
+        currentBaseSpeed = GameConstants.Player.SPEED_BASE; 
+        coins            = 0;
         gunLevel         = 1;
         hasRunnerBoots   = false;
         hasBurstShot     = false;
