@@ -42,7 +42,7 @@ public class GunLevel2 extends Pickable {
     
     @Override
     public boolean checkPickupConditions() {
-        return (PlayerStats.removeCoins(10));
+        return (PlayerStats.getGunLevel() < 2 && PlayerStats.removeCoins(10));
     }
 
     @Override
