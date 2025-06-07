@@ -113,8 +113,8 @@ public class Player extends ControllableEntity implements EnemyCollidable {
         // Collision Handler
         collisionHandler = new CollisionHandler();
         
-        // SHOOTING MODE
-        handleShootingMode();
+        // Shooting mode
+        currentShootingMode = PlayerShootingMode.NORMAL;
     }
     
     /**
