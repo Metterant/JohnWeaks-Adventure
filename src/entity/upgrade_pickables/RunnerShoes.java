@@ -27,7 +27,7 @@ public class RunnerShoes extends UpgradePickable {
     @Override
     public void start() {
         super.start();
-        itemCost = 12;
+        itemCost = 15;
 
         name = "RunnerShoes";
     }

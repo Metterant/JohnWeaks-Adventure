@@ -26,7 +26,7 @@ public class BurstShot extends UpgradePickable {
     @Override
     public void start() {
         super.start();
-        itemCost = 15;
+        itemCost = 22;
 
         name = "BurstShot";
     }

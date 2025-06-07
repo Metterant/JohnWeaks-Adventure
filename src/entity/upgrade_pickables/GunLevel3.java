@@ -27,7 +27,7 @@ public class GunLevel3 extends UpgradePickable {
     @Override
     public void start() {
         super.start();
-        itemCost = 15;
+        itemCost = 20;
 
         name = "GunLevel3";
     }
