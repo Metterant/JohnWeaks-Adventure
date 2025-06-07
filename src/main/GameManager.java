@@ -35,6 +35,7 @@ public class GameManager implements GameComponent, RenewableSingleton {
 
     // Shop
     public final Shop shop = new Shop();
+    private boolean isInShop = false;
     
     // Update tick counter
     private int updateTick = 0;
@@ -109,7 +110,7 @@ public class GameManager implements GameComponent, RenewableSingleton {
         updateTick++;
 
         // Spawner
-        if (preroundTimerFrames == 0 && roundTimerFrames > 0 && !playerDied && player != null 
+        if (!isInShop && preroundTimerFrames == 0 && roundTimerFrames > 0 && !playerDied && player != null 
             && updateTick % Math.max(GameConstants.FPS + 30 - currentRound * 10, 40) == 0) {
             spawner.spawnEnemyHorde();
         }
@@ -134,13 +135,14 @@ public class GameManager implements GameComponent, RenewableSingleton {
         currentRound++; 
         
         if (currentRound % 3 != 0) {
-            // Init Timers
+            isInShop = false;
             roundDurationFrames += GameConstants.Game.INCREMENT_DURATION_FRAMES;  
             roundTimerFrames    = roundDurationFrames;  
             // roundTimerFrames    = 10;  
             preroundTimerFrames = GameConstants.Game.PREROUND_DURATION_FRAMES;
         }
         else {
+            isInShop = true;
             enterShop();
         }
 
