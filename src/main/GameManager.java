@@ -39,6 +39,9 @@ public class GameManager implements GameComponent, RenewableSingleton {
     // Update tick counter
     private int updateTick = 0;
 
+    // Debugs
+    public boolean debugMode = true;
+
     /**
      * @return the object that register player input
      */
