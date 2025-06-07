@@ -146,6 +146,7 @@ public class GameManager implements GameComponent, RenewableSingleton {
         // Clear items
         EntityManager.getInstance().removeAllEnemies();
         EntityManager.getInstance().removeAllPickables();
+        EntityManager.getInstance().removeAllBullets();
 
         currentRound++; 
         
