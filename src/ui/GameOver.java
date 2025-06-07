@@ -173,8 +173,10 @@ public class GameOver implements Renderable, GameComponent {
         // Draw a semi-opaque gray rectangle covering the whole screen
         Color oldColor = g2.getColor();
         Composite oldComposite = g2.getComposite();
+        
         g2.setColor(new Color(30, 30, 30, 235)); // RGBA, alpha for opacity
         g2.fillRect(0, 0, util.GameConstants.SCREEN_WIDTH, util.GameConstants.SCREEN_HEIGHT);
+
         g2.setColor(oldColor);
         g2.setComposite(oldComposite);
     }

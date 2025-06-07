@@ -123,6 +123,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         gameUI.start();
         pausedUI.start();
+        gameOverUI.start();
     }
 
     /** Restart the Game */
