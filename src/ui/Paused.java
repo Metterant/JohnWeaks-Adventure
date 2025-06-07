@@ -41,6 +41,11 @@ public class Paused implements Renderable, GameComponent {
      * @return whether current state of Paused screen visible or not 
      */
     public boolean isVisible() { return isVisible; }
+    /**
+     * Set current state of the Paused Screen
+     * @param value desired value
+     */
+    public void setVisible(boolean value) { isVisible = value; }
 
     public Paused (GamePanel gamePanel) {
         playerController = GameManager.getInstance().getPlayerController();
