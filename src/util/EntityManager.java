@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import entity.Bullet;
 import entity.Enemy;
 import entity.Entity;
 import entity.Pickable;
@@ -116,6 +117,15 @@ public class EntityManager implements RenewableSingleton, GameComponent {
     public void removeAllPickables() {
         for (int i = 0; i < instantiatedEntities.size(); i++) {
             if (instantiatedEntities.get(i) instanceof Pickable) {
+                destroyEntity(instantiatedEntities.get(i));
+            }
+        }
+    }
+
+    /** Remove all current Bullet instances */
+    public void removeAllBullets() {
+        for (int i = 0; i < instantiatedEntities.size(); i++) {
+            if (instantiatedEntities.get(i) instanceof Bullet) {
                 destroyEntity(instantiatedEntities.get(i));
             }
         }

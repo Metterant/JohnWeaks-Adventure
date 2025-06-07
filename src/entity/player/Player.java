@@ -48,7 +48,6 @@ public class Player extends ControllableEntity implements EnemyCollidable {
      */
     private int shootFramesPerShot = GameConstants.Player.BASE_FRAMES_PER_SHOT;
     private PlayerShootingMode currentShootingMode;
-    private PlayerShootingMode defauPlayerShootingMode;
 
     // Sprites
     private BufferedImage[] walkingDownSprite, walkingUpSprite, walkingSideSprite, walkingShootingDownSprite;
@@ -108,14 +107,13 @@ public class Player extends ControllableEntity implements EnemyCollidable {
 
         collisionBoxWidth = 9 + (GameConstants.ORIGINAL_TILE_SIZE - 16) / 2;
         collisionBoxHeight = 9 + (GameConstants.ORIGINAL_TILE_SIZE - 16) / 2;
-        
         collisionBox = new Rectangle();
         initBoxHelper(4, 8, collisionBoxWidth, collisionBoxHeight);
         
         // Collision Handler
         collisionHandler = new CollisionHandler();
         
-        // SHOOTING MODE
+        // Shooting mode
         currentShootingMode = PlayerShootingMode.NORMAL;
     }
     
@@ -199,11 +197,15 @@ public class Player extends ControllableEntity implements EnemyCollidable {
         checkEnemy();
 
         // If the collided Tile is Next Round Tile, then move onto next round
-        if (EntityManager.getInstance().getEnemyCount() == 0 && collidedTile != null && TileManager.getInstance().tileMapNum[collidedTile.getCol()][collidedTile.getRow()] == TileConstants.NEXT_ROUND_TILE && GameManager.getInstance().getRoundTimerFrames() <= 0)
-            GameManager.getInstance().nextRound();
+        if (collidedTile != null && 
+            TileManager.getInstance().tileMapNum[collidedTile.getCol()][collidedTile.getRow()] == TileConstants.NEXT_ROUND_TILE && 
+            ((EntityManager.getInstance().getEnemyCount() == 0 && GameManager.getInstance().getRoundTimerFrames() <= 0) || GameManager.getInstance().debugMode)) {
+                GameManager.getInstance().nextRound();
+            }
         
         
         // SHOOTING
+        handleShootingMode();
         handleShooting();
 
         // LOGIC
@@ -441,6 +443,12 @@ public class Player extends ControllableEntity implements EnemyCollidable {
             shootBullet();
             shootingFrameCount = shootFramesPerShot;
         }
+    }
+
+    private void handleShootingMode() {
+        PlayerShootingMode defaultShootingMode = ((PlayerStats.hasBurstShot()) ? PlayerShootingMode.SHOTGUN : PlayerShootingMode.NORMAL); 
+        if (currentShootingMode == PlayerShootingMode.NORMAL && defaultShootingMode != PlayerShootingMode.NORMAL)
+            currentShootingMode = defaultShootingMode;
     }
 
     private void shootBullet() {

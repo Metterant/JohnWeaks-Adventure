@@ -40,12 +40,12 @@ public class GameConstants {
         public static final int PLAYER_LIVES = 3;
 
         // DROP RATES
-        public static final float COIN_DROP_RATE    = 0.100f; // 10.0%
+        public static final float COIN_DROP_RATE    = 0.075f; // 7.5%
         public static final float POWERUP_DROP_RATE = 0.050f; // 5.0 %
         public static final float LIFE_DROP_RATE    = 0.005f; // 0.5 %
 
         // MAP RESOURCES
-        public static final int      MAPS_COUNT  = 3;
+        public static final int MAPS_COUNT  = 3;
         protected static final String[] MAP_STRINGS = new String[10]; 
         protected static final String[] MAP_POOL = new String[MAPS_COUNT]; 
 

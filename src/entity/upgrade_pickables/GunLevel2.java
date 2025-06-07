@@ -1,23 +1,23 @@
-package entity.pickables;
+package entity.upgrade_pickables;
 
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import entity.Pickable;
+import entity.UpgradePickable;
 import entity.player.Player;
 import entity.player.PlayerStats;
 import util.GameConstants;
 
-public class RunnerShoes extends Pickable {
+public class GunLevel2 extends UpgradePickable {
     //#region CONSTRUCTORS
-    public RunnerShoes() {
+    public GunLevel2() {
         super();
     }
-    public RunnerShoes(int row, int col) {
+    public GunLevel2(int row, int col) {
         super(row, col);
     }
-    public RunnerShoes(double positionX, double positionY) {
+    public GunLevel2(double positionX, double positionY) {
         super(positionX, positionY);
     }
     //#endregion
@@ -25,15 +25,15 @@ public class RunnerShoes extends Pickable {
     @Override
     public void start() {
         super.start();
-        timeToLive = -1; // imperishable
+        itemCost = 12;
 
-        name = "RunnerShoes";
+        name = "GunLevel2";
     }
 
     @Override
     public void loadImages() {
         try {
-            image = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/runner_shoes.png"));
+            image = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/gun_level_2.png"));
         }
         catch (IOException e) {
             e.getStackTrace();
@@ -42,11 +42,13 @@ public class RunnerShoes extends Pickable {
     
     @Override
     public boolean checkPickupConditions() {
-        return (PlayerStats.removeCoins(12));
+        return (PlayerStats.getGunLevel() < 2 && PlayerStats.removeCoins(itemCost));
     }
 
     @Override
     public void getPickedUp(Player player) {
-        PlayerStats.setCurrentBaseSpeed(GameConstants.Player.SPEED_RUNNER);
+        super.getPickedUp(player);
+        PlayerStats.setDamage(GameConstants.Player.DAMAGE_LEVEL_2);
+        PlayerStats.setGunLevel(2);
     }
 }

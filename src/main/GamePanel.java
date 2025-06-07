@@ -22,6 +22,7 @@ public class GamePanel extends JPanel implements Runnable {
     // UI
     transient Paused pausedUI;
     transient UI gameUI;
+    transient GameOver gameOverUI;
 
     // Constructor
     public GamePanel() {
@@ -59,10 +60,17 @@ public class GamePanel extends JPanel implements Runnable {
             currentTime = System.nanoTime();
 
             if (currentTime - lastTime >= drawInterval) {
+                if (GameManager.getInstance().isGameOver()) {
+                    pausedUI.setVisible(false);
+                    gameOverUI.setVisible(true);
+                }
+
                 pausedUI.update();
-                if (!pausedUI.isVisible())
-                    update(); 
+                gameOverUI.update();
+                if (!pausedUI.isVisible() && !gameOverUI.isVisible())
+                    update();
                 repaint();
+                
                 lastTime = currentTime;
             }
         }
@@ -88,6 +96,8 @@ public class GamePanel extends JPanel implements Runnable {
         gameUI.draw(g2);
         if (pausedUI.isVisible()) 
             pausedUI.draw(g2);
+        if (gameOverUI.isVisible())
+            gameOverUI.draw(g2);
 
         g2.dispose();
     }
@@ -107,11 +117,13 @@ public class GamePanel extends JPanel implements Runnable {
         // EntityManager.getInstance().entitiesStart();
     
         // Init UI
-        gameUI = new UI(this);
-        pausedUI = new Paused(this);
-    
+        gameUI     = new UI(this);
+        pausedUI   = new Paused(this);
+        gameOverUI = new GameOver(this);
+
         gameUI.start();
         pausedUI.start();
+        gameOverUI.start();
     }
 
     /** Restart the Game */

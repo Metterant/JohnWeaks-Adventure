@@ -1,5 +1,6 @@
 package entity.player;
 
+import main.GameManager;
 import util.GameConstants;
 
 public class PlayerStats {
@@ -16,7 +17,7 @@ public class PlayerStats {
         lives            = GameConstants.Game.PLAYER_LIVES;
         damage           = GameConstants.Player.DAMAGE_BASE;
         currentBaseSpeed = GameConstants.Player.SPEED_BASE; 
-        coins            = 0;
+        coins            = (GameManager.getInstance().debugMode) ? 1000 : 0;
         gunLevel         = 1;
         hasRunnerBoots   = false;
         hasBurstShot     = false;
@@ -172,7 +173,7 @@ public class PlayerStats {
         lives            = GameConstants.Game.PLAYER_LIVES;
         damage           = GameConstants.Player.DAMAGE_BASE;
         currentBaseSpeed = GameConstants.Player.SPEED_BASE; 
-        coins            = 0;
+        coins            = (GameManager.getInstance().debugMode) ? 1000 : 0;
         gunLevel         = 1;
         hasRunnerBoots   = false;
         hasBurstShot     = false;

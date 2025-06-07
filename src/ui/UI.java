@@ -28,14 +28,12 @@ public class UI implements Renderable, GameComponent {
     private BufferedImage powerupIcon;
     private BufferedImage[] powerupIcons;
 
-    // Lives
     private BufferedImage playerLivesIcon;
-
-    // Timer
     private BufferedImage timerIcon;
-
-    // Coin
     private BufferedImage coinIcon;
+    private BufferedImage runnerShoesIcon;
+    private BufferedImage gunIcon2, gunIcon3;
+    private BufferedImage burstShotIcon;
 
     public UI(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
@@ -65,14 +63,13 @@ public class UI implements Renderable, GameComponent {
             powerupIcons[PlayerStatusEffect.MACHINE_GUN] = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/machine_gun.png"));
 
 
-            // Lives
             playerLivesIcon = ImageIO.read(getClass().getResourceAsStream("/resources/ui/lives_icon.png"));
-
-            // Timer
             timerIcon = ImageIO.read(getClass().getResourceAsStream("/resources/ui/clock.png"));
-
-            // Coin
             coinIcon = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/coin.png"));
+            runnerShoesIcon = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/runner_shoes.png"));
+            gunIcon2 = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/gun_level_2.png"));
+            gunIcon3 = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/gun_level_3.png"));
+            burstShotIcon = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/burst_shot.png"));
 
         }
         catch (IOException e) {
@@ -86,17 +83,11 @@ public class UI implements Renderable, GameComponent {
         g2.setColor(Color.white);
         // g2.drawString("Hello there!", 50, 50);
 
-        // Draw Powerup
         drawPowerup(g2, 190, 90, 3, 3, 1);
-        
-        // Draw Timer
         drawTimer(g2, 30, 13);
-
-        // Draw Lives
         drawLives(g2, 190, 140);
-
-        // Draw Coins
         drawCoin(g2, 190, 180);
+        drawUpgrades(g2);
     }
     /**
      * Draw Powerup Frame
@@ -177,6 +168,21 @@ public class UI implements Renderable, GameComponent {
         String toDrawTextFormat = "x%d";
         String toDrawText = String.format(toDrawTextFormat, PlayerStats.getCoins());
         g2.drawString(toDrawText, posX + 38, posY + 24);
+    }
+
+    private void drawUpgrades(Graphics2D g2) {
+        if (PlayerStats.hasRunnerBoots())
+            drawIcon(g2, runnerShoesIcon, 230, 570);
+        if (PlayerStats.getGunLevel() == 2)
+            drawIcon(g2, gunIcon2, 230, 610);
+        if (PlayerStats.getGunLevel() == 3)
+            drawIcon(g2, gunIcon3, 230, 610);
+        if (PlayerStats.hasBurstShot())
+            drawIcon(g2, burstShotIcon, 230, 650);
+    }
+
+    private void drawIcon(Graphics2D g2, BufferedImage iconImage, int posX, int posY) {
+        g2.drawImage(iconImage, posX, posY, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);        
     }
 
     @Override

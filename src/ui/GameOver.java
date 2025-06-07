@@ -15,18 +15,16 @@ import util.GameComponent;
 import util.GameConstants;
 import util.Renderable;
 
-public class Paused implements Renderable, GameComponent {
+public class GameOver implements Renderable, GameComponent {
     
-    public static final int RESUME = 0;
-    public static final int RESTART = 1;
-    public static final int QUIT = 2;
+    public static final int RESTART = 0;
+    public static final int QUIT = 1;
 
     private boolean isVisible = false;
-    private boolean lastEscapePressed, lastUpPressed, lastDownPressed;
-    private int currentButton = RESUME;
+    private boolean lastUpPressed, lastDownPressed;
+    private int currentButton;
 
     // String Constants
-    private static final String RESUME_TEXT  = "Resume";
     private static final String RESTART_TEXT = "Restart";
     private static final String QUIT_TEXT    = "Quit";
 
@@ -47,7 +45,7 @@ public class Paused implements Renderable, GameComponent {
      */
     public void setVisible(boolean value) { isVisible = value; }
 
-    public Paused (GamePanel gamePanel) {
+    public GameOver (GamePanel gamePanel) {
         playerController = GameManager.getInstance().getPlayerController();
         this.gamePanel = gamePanel;
     }
@@ -57,9 +55,6 @@ public class Paused implements Renderable, GameComponent {
      */
     private void chooseCurrentOption() {
         switch (currentButton) {
-            case RESUME:
-                resume();
-                break;
             case RESTART:
                 restart();
                 break;
@@ -71,7 +66,7 @@ public class Paused implements Renderable, GameComponent {
         }
 
         isVisible = false;
-        currentButton = RESUME;
+        currentButton = RESTART;
     }
 
     @Override
@@ -82,10 +77,6 @@ public class Paused implements Renderable, GameComponent {
 
     @Override
     public void update() {
-        // Handle Entering Paused State
-        if (playerController.escapePressed && !lastEscapePressed) {
-            switchVisible();
-        }
         if (isVisible) {
             switchCurrentButton();
 
@@ -93,8 +84,7 @@ public class Paused implements Renderable, GameComponent {
                 chooseCurrentOption();
         }
 
-        handlePostInput();
-        
+        handlePostInput();   
     }
     @Override
     public void loadImages() {
@@ -106,23 +96,18 @@ public class Paused implements Renderable, GameComponent {
         g2.setFont(robotoRemixSizedFont);
         g2.setColor(Color.white);
         
-        drawPausedScreen(g2);
-    }
-
-    /** Change the visible state boolean */
-    private void switchVisible() { 
-        isVisible = !isVisible; 
+        drawGameOverScreen(g2);
     }
 
     /** Change the current selected option in paused menu using up and down keys */
     private void switchCurrentButton() {
         if ((playerController.getInputShootY() < 0 || playerController.getInputMoveY() < 0) && !lastDownPressed) {
             if (currentButton == QUIT)
-                currentButton = RESUME;
+                currentButton = RESTART;
             else currentButton++;
         }
         if ((playerController.getInputShootY() > 0 || playerController.getInputMoveY() > 0) && !lastUpPressed) {
-            if (currentButton == RESUME)
+            if (currentButton == RESTART)
                 currentButton = QUIT;
             else currentButton--;
         }
@@ -130,15 +115,8 @@ public class Paused implements Renderable, GameComponent {
 
     /** Handle last inputs which can be used for the next frame */
     private void handlePostInput() {
-        lastEscapePressed = playerController.escapePressed;
-
         lastUpPressed = (playerController.getInputShootY() > 0 || playerController.getInputMoveY() > 0);
         lastDownPressed = (playerController.getInputShootY() < 0 || playerController.getInputMoveY() < 0);
-    }
-
-    /** Activate resume */
-    private void resume() {
-        isVisible = false;
     }
 
     /** Activate restart */
@@ -164,32 +142,24 @@ public class Paused implements Renderable, GameComponent {
     }
 
     /**
-     * Draw all components of the Paused screen
+     * Draw all components of the GameOver screen
      * @param g2 Graphics2D used to draw the gamePanel
      */
-    private void drawPausedScreen(Graphics2D g2) {
+    private void drawGameOverScreen(Graphics2D g2) {
         drawBackground(g2);
 
         int horizontalMid = GameConstants.SCREEN_WIDTH / 2;
-        int resumePosY = (int)(GameConstants.SCREEN_HEIGHT * 0.45);
-        int restartPosY = (int)(GameConstants.SCREEN_HEIGHT * 0.5);
-        int quitPosY = (int)(GameConstants.SCREEN_HEIGHT * 0.55);
+        int restartPosY = (int)(GameConstants.SCREEN_HEIGHT * 0.475);
+        int quitPosY = (int)(GameConstants.SCREEN_HEIGHT * 0.525);
 
-        drawText(g2, horizontalMid, (int)(GameConstants.SCREEN_HEIGHT * 0.1) , "Game Paused", Color.white);
+        drawText(g2, horizontalMid, (int)(GameConstants.SCREEN_HEIGHT * 0.1) , "Game Over!", Color.white);
 
         switch (currentButton) {
-            case RESUME:
-                drawText(g2, horizontalMid, resumePosY,  RESUME_TEXT,  Color.yellow);
-                drawText(g2, horizontalMid, restartPosY, RESTART_TEXT, Color.white);
-                drawText(g2, horizontalMid, quitPosY,    QUIT_TEXT,    Color.white);
-                break;
             case RESTART:
-                drawText(g2, horizontalMid, resumePosY,  RESUME_TEXT,  Color.white);
                 drawText(g2, horizontalMid, restartPosY, RESTART_TEXT, Color.yellow);
                 drawText(g2, horizontalMid, quitPosY,    QUIT_TEXT,    Color.white);
                 break;
             case QUIT:
-                drawText(g2, horizontalMid, resumePosY,  RESUME_TEXT,  Color.white);
                 drawText(g2, horizontalMid, restartPosY, RESTART_TEXT, Color.white);
                 drawText(g2, horizontalMid, quitPosY,    QUIT_TEXT,    Color.yellow);
                 break;
@@ -203,8 +173,10 @@ public class Paused implements Renderable, GameComponent {
         // Draw a semi-opaque gray rectangle covering the whole screen
         Color oldColor = g2.getColor();
         Composite oldComposite = g2.getComposite();
-        g2.setColor(new Color(30, 30, 30, 200)); // RGBA, alpha for opacity
+        
+        g2.setColor(new Color(30, 30, 30, 235)); // RGBA, alpha for opacity
         g2.fillRect(0, 0, util.GameConstants.SCREEN_WIDTH, util.GameConstants.SCREEN_HEIGHT);
+
         g2.setColor(oldColor);
         g2.setComposite(oldComposite);
     }
