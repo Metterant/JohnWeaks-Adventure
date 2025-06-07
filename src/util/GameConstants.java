@@ -40,7 +40,7 @@ public class GameConstants {
         public static final int PLAYER_LIVES = 3;
 
         // DROP RATES
-        public static final float COIN_DROP_RATE    = 0.100f; // 10.0%
+        public static final float COIN_DROP_RATE    = 0.075f; // 7.5%
         public static final float POWERUP_DROP_RATE = 0.050f; // 5.0 %
         public static final float LIFE_DROP_RATE    = 0.005f; // 0.5 %
 
