@@ -45,7 +45,7 @@ public class GameConstants {
         public static final float LIFE_DROP_RATE    = 0.005f; // 0.5 %
 
         // MAP RESOURCES
-        public static final int      MAPS_COUNT  = 3;
+        public static final int MAPS_COUNT  = 3;
         protected static final String[] MAP_STRINGS = new String[10]; 
         protected static final String[] MAP_POOL = new String[MAPS_COUNT]; 
 
