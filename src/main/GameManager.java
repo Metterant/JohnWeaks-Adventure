@@ -187,7 +187,7 @@ public class GameManager implements GameComponent, RenewableSingleton {
     }
 
     private void enterShop() {
-        shop.spawnItems();
+        shop.enterShop();
     }
     
     /** Handle Game End */
