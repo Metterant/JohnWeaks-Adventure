@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
-import entity.pickables.*;
 import entity.player.PlayerStats;
+import entity.upgrade_pickables.*;
 
 public class Shop {
     public static final int RUNNER_SHOES = 0;
