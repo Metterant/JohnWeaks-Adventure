@@ -1,5 +1,7 @@
 package main;
 
+import java.util.Random;
+
 import entity.player.Player;
 import input.PlayerController;
 import tile.TileManager;
@@ -15,6 +17,9 @@ public class GameManager implements GameComponent, RenewableSingleton {
 
     // Player input controller
     private final PlayerController playerController = new PlayerController();
+
+    // Random instance for reuse
+    private final Random random = new Random();
 
     // Game round state
     private int preroundTimerFrames; 
@@ -87,7 +92,6 @@ public class GameManager implements GameComponent, RenewableSingleton {
         currentRound = 1;
         preroundTimerFrames = GameConstants.Game.PREROUND_DURATION_FRAMES;
         roundTimerFrames    = roundDurationFrames = GameConstants.Game.BASE_ROUND_DURATION_FRAMES;
-        // roundTimerFrames = 10;
     }
     
     @Override
@@ -130,6 +134,7 @@ public class GameManager implements GameComponent, RenewableSingleton {
     public void nextRound() {
         /* CLEAN UP */
         // Clear items
+        EntityManager.getInstance().removeAllEnemies();
         EntityManager.getInstance().removeAllPickables();
 
         currentRound++; 
@@ -138,7 +143,6 @@ public class GameManager implements GameComponent, RenewableSingleton {
             isInShop = false;
             roundDurationFrames += GameConstants.Game.INCREMENT_DURATION_FRAMES;  
             roundTimerFrames    = roundDurationFrames;  
-            // roundTimerFrames    = 10;  
             preroundTimerFrames = GameConstants.Game.PREROUND_DURATION_FRAMES;
         }
         else {
@@ -150,8 +154,10 @@ public class GameManager implements GameComponent, RenewableSingleton {
         player.setPositionX(GameConstants.DEFAULT_SPAWN_X);
         player.setPositionY((double)GameConstants.TILE_SIZE * 2); // Hard-coded
 
-        // Load map
-        TileManager.getInstance().loadMap(GameConstants.Game.getMapStrings()[currentRound - 1]);
+        if (currentRound < 10)
+            TileManager.getInstance().loadMap(GameConstants.Game.getMapStrings()[currentRound - 1]);
+        else 
+            TileManager.getInstance().loadMap(GameConstants.Game.getMapPool()[random.nextInt(GameConstants.Game.MAPS_COUNT)]);
     }
 
     /** Change Player instance */
