@@ -61,7 +61,7 @@ public abstract class UpgradePickable extends Pickable {
         g2.drawImage(image, (int)posX, (int)posY, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);
 
         if (itemCost != 0) {
-            String format = "%d Gold";
+            String format = "%d Coins";
             String text = String.format(format, itemCost);
 
             popUpText.drawText(text, g2);
