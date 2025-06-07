@@ -48,7 +48,6 @@ public class Player extends ControllableEntity implements EnemyCollidable {
      */
     private int shootFramesPerShot = GameConstants.Player.BASE_FRAMES_PER_SHOT;
     private PlayerShootingMode currentShootingMode;
-    private PlayerShootingMode defaultShootingMode;
 
     // Sprites
     private BufferedImage[] walkingDownSprite, walkingUpSprite, walkingSideSprite, walkingShootingDownSprite;
@@ -108,7 +107,6 @@ public class Player extends ControllableEntity implements EnemyCollidable {
 
         collisionBoxWidth = 9 + (GameConstants.ORIGINAL_TILE_SIZE - 16) / 2;
         collisionBoxHeight = 9 + (GameConstants.ORIGINAL_TILE_SIZE - 16) / 2;
-        
         collisionBox = new Rectangle();
         initBoxHelper(4, 8, collisionBoxWidth, collisionBoxHeight);
         
@@ -116,7 +114,7 @@ public class Player extends ControllableEntity implements EnemyCollidable {
         collisionHandler = new CollisionHandler();
         
         // SHOOTING MODE
-        currentShootingMode = PlayerShootingMode.NORMAL;
+        handleShootingMode();
     }
     
     /**
@@ -207,7 +205,7 @@ public class Player extends ControllableEntity implements EnemyCollidable {
         
         
         // SHOOTING
-        handleCurrentShootingMode();
+        handleShootingMode();
         handleShooting();
 
         // LOGIC
@@ -447,8 +445,8 @@ public class Player extends ControllableEntity implements EnemyCollidable {
         }
     }
 
-    private void handleCurrentShootingMode() {
-        defaultShootingMode = ((PlayerStats.hasBurstShot()) ? PlayerShootingMode.SHOTGUN : PlayerShootingMode.NORMAL); 
+    private void handleShootingMode() {
+        PlayerShootingMode defaultShootingMode = ((PlayerStats.hasBurstShot()) ? PlayerShootingMode.SHOTGUN : PlayerShootingMode.NORMAL); 
         if (currentShootingMode == PlayerShootingMode.NORMAL && defaultShootingMode != PlayerShootingMode.NORMAL)
             currentShootingMode = defaultShootingMode;
     }
