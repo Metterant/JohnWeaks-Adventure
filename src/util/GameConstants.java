@@ -45,7 +45,7 @@ public class GameConstants {
         public static final float LIFE_DROP_RATE    = 0.005f; // 0.5 %
 
         // MAP RESOURCES
-        public static final int MAPS_COUNT  = 3;
+        public static final int MAPS_COUNT = 6;
         protected static final String[] MAP_STRINGS = new String[10]; 
         protected static final String[] MAP_POOL = new String[MAPS_COUNT]; 
 
@@ -56,16 +56,19 @@ public class GameConstants {
             MAP_STRINGS[1] = "/resources/maps/map_1.txt";
             MAP_STRINGS[2] = shopString;
             MAP_STRINGS[3] = "/resources/maps/map_2.txt";
-            MAP_STRINGS[4] = "/resources/maps/map_2.txt";
+            MAP_STRINGS[4] = "/resources/maps/map_3.txt";
             MAP_STRINGS[5] = shopString;
-            MAP_STRINGS[6] = "/resources/maps/map_2.txt";
-            MAP_STRINGS[7] = "/resources/maps/map_2.txt";
+            MAP_STRINGS[6] = "/resources/maps/map_4.txt";
+            MAP_STRINGS[7] = "/resources/maps/map_5.txt";
             MAP_STRINGS[8] = shopString;
-            MAP_STRINGS[9] = "/resources/maps/map_2.txt";
+            MAP_STRINGS[9] = "/resources/maps/map_5.txt";
 
             MAP_POOL[0] = "/resources/maps/map_0.txt";
             MAP_POOL[1] = "/resources/maps/map_1.txt";
             MAP_POOL[2] = "/resources/maps/map_2.txt";
+            MAP_POOL[3] = "/resources/maps/map_3.txt";
+            MAP_POOL[4] = "/resources/maps/map_4.txt";
+            MAP_POOL[5] = "/resources/maps/map_5.txt";
         }
 
         // MAP RESOURCES Getters
