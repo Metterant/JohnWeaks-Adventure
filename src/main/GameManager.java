@@ -27,7 +27,8 @@ public class GameManager implements GameComponent, RenewableSingleton {
     private int currentRound = 1;
     private int roundDurationFrames;
     private int roundTimerFrames = GameConstants.Game.BASE_ROUND_DURATION_FRAMES;
-    private boolean isGameOver = false; 
+    private boolean isRoundOver;
+    private boolean isGameOver; 
 
     // Player state
     public Player player = new Player(playerController);
@@ -78,8 +79,14 @@ public class GameManager implements GameComponent, RenewableSingleton {
     public boolean getPlayerDied() { return playerDied; }
 
     /**
+     * Checks if the current round is over
+     * @return true if the round is over. Otherwise, false
+     */
+    public boolean isRoundOver() { return isRoundOver; }
+
+    /**
      * Checks if the game is over
-     * @return true if the game is over
+     * @return true if the game is over. Otherwise, false
      */
     public boolean isGameOver() { return isGameOver; }
 
@@ -111,6 +118,8 @@ public class GameManager implements GameComponent, RenewableSingleton {
     public void update() {
         if (PlayerStats.getLivesLeft() < 0)
             gameOver();
+
+        isRoundOver = ((EntityManager.getInstance().getEnemyCount() == 0 && roundTimerFrames <= 0) || debugMode);
 
         if (preroundTimerFrames > 0)
             preroundTimerFrames--;
