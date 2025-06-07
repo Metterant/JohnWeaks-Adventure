@@ -35,6 +35,10 @@ public class UI implements Renderable, GameComponent {
     private BufferedImage gunIcon2, gunIcon3;
     private BufferedImage burstShotIcon;
 
+    private BufferedImage[] downArrowSprites;
+    private int downArrowFrameCount = 0;
+    private int downArrowSpriteFrame = 0;
+
     public UI(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
     }
@@ -62,6 +66,7 @@ public class UI implements Renderable, GameComponent {
             powerupIcons[PlayerStatusEffect.SHOTGUN] = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/shotgun.png"));
             powerupIcons[PlayerStatusEffect.MACHINE_GUN] = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/machine_gun.png"));
 
+            loadDownArrowSprites();
 
             playerLivesIcon = ImageIO.read(getClass().getResourceAsStream("/resources/ui/lives_icon.png"));
             timerIcon = ImageIO.read(getClass().getResourceAsStream("/resources/ui/clock.png"));
@@ -88,6 +93,11 @@ public class UI implements Renderable, GameComponent {
         drawLives(g2, 190, 140);
         drawCoin(g2, 190, 180);
         drawUpgrades(g2);
+
+        handleDownArrowFrame();
+        if (GameManager.getInstance().getRoundTimerFrames() <= 0) {
+            drawDownArrow(g2);
+        }
     }
     /**
      * Draw Powerup Frame
@@ -181,8 +191,26 @@ public class UI implements Renderable, GameComponent {
             drawIcon(g2, burstShotIcon, 230, 650);
     }
 
+    /**
+     * Draws a sprite onto the screen
+     * @param g2 Graphics2D provided by GamePanel
+     * @param iconImage the sprite to be drawn
+     * @param posX left-most position of the sprite on the screen (in pixels)
+     * @param posY top position of the sprite on the screen (in pixels)
+     */
     private void drawIcon(Graphics2D g2, BufferedImage iconImage, int posX, int posY) {
         g2.drawImage(iconImage, posX, posY, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);        
+    }
+
+    /**
+     * Draws an animating down arrow that points where the next level is
+     * @param g2 Graphics2D provided by GamePanel
+     */
+    private void drawDownArrow(Graphics2D g2) {
+        int posX = (GameConstants.MAX_SCREEN_COL / 2) * GameConstants.TILE_SIZE;
+        int posY = 16 * GameConstants.TILE_SIZE;
+
+        g2.drawImage(downArrowSprites[downArrowSpriteFrame], posX, posY, GameConstants.TILE_SIZE, GameConstants.TILE_SIZE, null);
     }
 
     @Override
@@ -194,5 +222,34 @@ public class UI implements Renderable, GameComponent {
     @Override
     public void update() {
         setPowerupIcon();
+        handleDownArrowFrame();
+    }
+
+    private void loadDownArrowSprites() {
+        try {
+            downArrowSprites = new BufferedImage[6];
+
+            downArrowSprites[0] = ImageIO.read(getClass().getResourceAsStream("/resources/ui/down_arrow0.png"));
+            downArrowSprites[1] = ImageIO.read(getClass().getResourceAsStream("/resources/ui/down_arrow1.png"));
+            downArrowSprites[2] = ImageIO.read(getClass().getResourceAsStream("/resources/ui/down_arrow2.png"));
+            downArrowSprites[3] = ImageIO.read(getClass().getResourceAsStream("/resources/ui/down_arrow3.png"));
+            downArrowSprites[4] = ImageIO.read(getClass().getResourceAsStream("/resources/ui/down_arrow4.png"));
+            downArrowSprites[5] = ImageIO.read(getClass().getResourceAsStream("/resources/ui/down_arrow5.png"));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } 
+    }
+
+    /** Set Down Arrow Sprite frame */
+    private void handleDownArrowFrame() {
+        downArrowFrameCount++;
+        if (downArrowFrameCount >= GameConstants.FPS / 4) {
+            downArrowFrameCount = 0;
+
+            if (downArrowSpriteFrame == 5)
+                downArrowSpriteFrame = 0;
+            else downArrowSpriteFrame++; 
+        }
     }
 }
