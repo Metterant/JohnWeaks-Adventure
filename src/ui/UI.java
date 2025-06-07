@@ -95,7 +95,7 @@ public class UI implements Renderable, GameComponent {
         drawUpgrades(g2);
 
         handleDownArrowFrame();
-        if (GameManager.getInstance().getRoundTimerFrames() <= 0) {
+        if (GameManager.getInstance().isRoundOver()) {
             drawDownArrow(g2);
         }
     }
