@@ -27,6 +27,22 @@ public class Shop {
         itemPool.add(BURST_SHOT);
     }
 
+    public void enterShop() {
+        if (itemPool.isEmpty())
+            return;
+
+        // Checks if the pool has more than 2 items so that it would make sense to spawn Reroll Pickable            
+        if (itemPool.size() > 2) {
+            int rerollSpawnRow = Math.max(GameConstants.MAX_SCREEN_ROW / 2 - 4, 0);
+            int rerollSpawnCol = Math.max(GameConstants.MAX_SCREEN_COL / 2 - 5, 0);
+
+            new Reroll(rerollSpawnRow, rerollSpawnCol);
+        }
+
+        spawnItems();
+    }
+
+    /** Try spawning items on the floor */
     public void spawnItems() {
         if (itemPool.isEmpty())
             return;
