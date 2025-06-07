@@ -1,15 +1,15 @@
-package entity.pickables;
+package entity.upgrade_pickables;
 
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import entity.Pickable;
+import entity.UpgradePickable;
 import entity.player.Player;
 import entity.player.PlayerStats;
 import util.GameConstants;
 
-public class GunLevel2 extends Pickable {
+public class GunLevel2 extends UpgradePickable {
     //#region CONSTRUCTORS
     public GunLevel2() {
         super();
@@ -25,7 +25,7 @@ public class GunLevel2 extends Pickable {
     @Override
     public void start() {
         super.start();
-        timeToLive = -1; // imperishable
+        itemCost = 12;
 
         name = "GunLevel2";
     }
@@ -42,11 +42,12 @@ public class GunLevel2 extends Pickable {
     
     @Override
     public boolean checkPickupConditions() {
-        return (PlayerStats.getGunLevel() < 2 && PlayerStats.removeCoins(10));
+        return (PlayerStats.getGunLevel() < 2 && PlayerStats.removeCoins(itemCost));
     }
 
     @Override
     public void getPickedUp(Player player) {
+        super.getPickedUp(player);
         PlayerStats.setDamage(GameConstants.Player.DAMAGE_LEVEL_2);
         PlayerStats.setGunLevel(2);
     }

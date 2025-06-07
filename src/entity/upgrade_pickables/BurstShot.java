@@ -1,25 +1,24 @@
-package entity.pickables;
+package entity.upgrade_pickables;
 
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import entity.Pickable;
+import entity.UpgradePickable;
 import entity.player.Player;
 import entity.player.PlayerStats;
 import main.GameManager;
-import util.GameConstants;
 import util.Shop;
 
-public class GunLevel3 extends Pickable {
+public class BurstShot extends UpgradePickable {
     //#region CONSTRUCTORS
-    public GunLevel3() {
+    public BurstShot() {
         super();
     }
-    public GunLevel3(int row, int col) {
+    public BurstShot(int row, int col) {
         super(row, col);
     }
-    public GunLevel3(double positionX, double positionY) {
+    public BurstShot(double positionX, double positionY) {
         super(positionX, positionY);
     }
     //#endregion
@@ -27,15 +26,15 @@ public class GunLevel3 extends Pickable {
     @Override
     public void start() {
         super.start();
-        timeToLive = -1; // imperishable
+        itemCost = 15;
 
-        name = "GunLevel3";
+        name = "BurstShot";
     }
 
     @Override
     public void loadImages() {
         try {
-            image = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/gun_level_3.png"));
+            image = ImageIO.read(getClass().getResourceAsStream("/resources/pickables/burst_shot.png"));
         }
         catch (IOException e) {
             e.getStackTrace();
@@ -44,13 +43,13 @@ public class GunLevel3 extends Pickable {
     
     @Override
     public boolean checkPickupConditions() {
-        return (PlayerStats.removeCoins(15));
+        return (PlayerStats.removeCoins(itemCost));
     }
 
     @Override
     public void getPickedUp(Player player) {
-        GameManager.getInstance().shop.removePickableFromItemPool(Shop.GUN_LEVEL_UP);
-        PlayerStats.setDamage(GameConstants.Player.DAMAGE_LEVEL_3);
-        PlayerStats.setGunLevel(3);
+        super.getPickedUp(player);
+        GameManager.getInstance().shop.removePickableFromItemPool(Shop.BURST_SHOT);
+        PlayerStats.setHasBurstShot(true);
     }
 }
