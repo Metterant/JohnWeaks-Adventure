@@ -156,6 +156,9 @@ public class GameManager implements GameComponent, RenewableSingleton {
             preroundTimerFrames = GameConstants.Game.PREROUND_DURATION_FRAMES;
         }
         else {
+            roundTimerFrames    = 0;  
+            preroundTimerFrames = 0;
+
             isInShop = true;
             enterShop();
         }
