@@ -84,6 +84,12 @@ public class GameManager implements GameComponent, RenewableSingleton {
     public boolean isGameOver() { return isGameOver; }
 
     /**
+     * Checks if the Player is in shopping round
+     * @return true if the current round is in shop. Otherwise, false
+     */
+    public boolean isInShop() { return isInShop; }
+
+    /**
      * Sets the boolean that determines if the player is still kicking butts,
      * and activate respawn timer
      * @param playerDied : true if the player has died and hasn't respawned, otherwise false 
