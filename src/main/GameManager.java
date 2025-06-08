@@ -23,10 +23,10 @@ public class GameManager implements GameComponent, RenewableSingleton {
     private final Random random = new Random();
 
     // Game round state
-    private int preroundTimerFrames; 
-    private int currentRound = 1;
-    private int roundDurationFrames;
-    private int roundTimerFrames = GameConstants.Game.BASE_ROUND_DURATION_FRAMES;
+    private int currentStage = 1;
+    private int preStageTimerFrames; 
+    private int stageDurationFrames;
+    private int stageTimerFrames = GameConstants.Game.BASE_ROUND_DURATION_FRAMES;
     private boolean isRoundOver;
     private boolean isGameOver; 
 
@@ -60,17 +60,23 @@ public class GameManager implements GameComponent, RenewableSingleton {
      * Returns the number of frames to be counted to end the round
      * @return the number of frames
      */
-    public int getRoundTimerFrames() {
-        return roundTimerFrames;
+    public int getStageTimerFrames() {
+        return stageTimerFrames;
     }
     
     /**
      * Returns the number of remaining frames to be counted
      * @return The amount of frames to be counted left
      */
-    public int getRoundDurationFrames() {
-        return roundDurationFrames;
+    public int getStageDurationFrames() {
+        return stageDurationFrames;
     }
+
+    /**
+     * Returns a number that tells the current stage (level)
+     * @return a number that indicates the current stage
+     */
+    public int getCurentRound() { return currentStage; }
 
     /**
      * Returns a boolean that indicates that the Player is living <p>
@@ -109,9 +115,9 @@ public class GameManager implements GameComponent, RenewableSingleton {
     //#region GameComponent
     @Override
     public void start() {
-        currentRound = 1;
-        preroundTimerFrames = GameConstants.Game.PREROUND_DURATION_FRAMES;
-        roundTimerFrames    = roundDurationFrames = GameConstants.Game.BASE_ROUND_DURATION_FRAMES;
+        currentStage = 1;
+        preStageTimerFrames = GameConstants.Game.PREROUND_DURATION_FRAMES;
+        stageTimerFrames    = stageDurationFrames = GameConstants.Game.BASE_ROUND_DURATION_FRAMES;
     }
     
     @Override
@@ -119,10 +125,10 @@ public class GameManager implements GameComponent, RenewableSingleton {
         if (PlayerStats.getLivesLeft() < 0)
             gameOver();
 
-        isRoundOver = ((EntityManager.getInstance().getEnemyCount() == 0 && roundTimerFrames <= 0) || debugMode);
+        isRoundOver = ((EntityManager.getInstance().getEnemyCount() == 0 && stageTimerFrames <= 0) || debugMode);
 
-        if (preroundTimerFrames > 0)
-            preroundTimerFrames--;
+        if (preStageTimerFrames > 0)
+            preStageTimerFrames--;
 
         if (playerDied) {
             if (respawnTimerFrames == 0)
@@ -132,15 +138,15 @@ public class GameManager implements GameComponent, RenewableSingleton {
                 respawnTimerFrames--;
         
         } else {
-            if (roundTimerFrames > 0 && preroundTimerFrames == 0)
-                roundTimerFrames--;
+            if (stageTimerFrames > 0 && preStageTimerFrames == 0)
+                stageTimerFrames--;
         }
 
         updateTick++;
 
         // Spawner
-        if (!isInShop && preroundTimerFrames == 0 && roundTimerFrames > 0 && !playerDied && player != null 
-            && updateTick % Math.max(GameConstants.FPS + 30 - currentRound * 10, 40) == 0) {
+        if (!isInShop && preStageTimerFrames == 0 && stageTimerFrames > 0 && !playerDied && player != null 
+            && updateTick % Math.max(GameConstants.FPS + 30 - currentStage * 10, 40) == 0) {
             spawner.spawnEnemyHorde();
         }
     }
@@ -163,17 +169,17 @@ public class GameManager implements GameComponent, RenewableSingleton {
         EntityManager.getInstance().removeAllPickables();
         EntityManager.getInstance().removeAllBullets();
 
-        currentRound++; 
+        currentStage++; 
         
-        if (currentRound % 3 != 0) {
+        if (currentStage % 3 != 0) {
             isInShop = false;
-            roundDurationFrames += GameConstants.Game.INCREMENT_DURATION_FRAMES;  
-            roundTimerFrames    = roundDurationFrames;  
-            preroundTimerFrames = GameConstants.Game.PREROUND_DURATION_FRAMES;
+            stageDurationFrames += GameConstants.Game.INCREMENT_DURATION_FRAMES;  
+            stageTimerFrames    = stageDurationFrames;  
+            preStageTimerFrames = GameConstants.Game.PREROUND_DURATION_FRAMES;
         }
         else {
-            roundTimerFrames    = 0;  
-            preroundTimerFrames = 0;
+            stageTimerFrames    = 0;  
+            preStageTimerFrames = 0;
 
             isInShop = true;
             enterShop();
@@ -183,8 +189,8 @@ public class GameManager implements GameComponent, RenewableSingleton {
         player.setPositionX(GameConstants.DEFAULT_SPAWN_X);
         player.setPositionY((double)GameConstants.TILE_SIZE * 2); // Hard-coded
 
-        if (currentRound < 10)
-            TileManager.getInstance().loadMap(GameConstants.Game.getMapStrings()[currentRound - 1]);
+        if (currentStage < 10)
+            TileManager.getInstance().loadMap(GameConstants.Game.getMapStrings()[currentStage - 1]);
         else 
             TileManager.getInstance().loadMap(GameConstants.Game.getMapPool()[random.nextInt(GameConstants.Game.MAPS_COUNT)]);
     }

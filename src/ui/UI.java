@@ -151,7 +151,7 @@ public class UI implements Renderable, GameComponent {
      * @param height : Height of the timer in screen pixels
      */
     private void drawTimer(Graphics2D g2, int posY, int height) {
-        float remainingRatio = (float) GameManager.getInstance().getRoundTimerFrames() / GameManager.getInstance().getRoundDurationFrames();
+        float remainingRatio = (float) GameManager.getInstance().getStageTimerFrames() / GameManager.getInstance().getStageDurationFrames();
         // System.out.println(remainingRatio);
         
         int width = GameConstants.TILE_SIZE * 17; // 17 Tiles wide
