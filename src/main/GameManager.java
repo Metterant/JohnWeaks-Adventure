@@ -22,12 +22,12 @@ public class GameManager implements GameComponent, RenewableSingleton {
     // Random instance for reuse
     private final Random random = new Random();
 
-    // Game round state
+    // Game stage state
     private int currentStage = 1;
     private int preStageTimerFrames; 
     private int stageDurationFrames;
     private int stageTimerFrames = GameConstants.Game.BASE_ROUND_DURATION_FRAMES;
-    private boolean isRoundOver;
+    private boolean isStageOver;
     private boolean isGameOver; 
 
     // Player state
@@ -57,7 +57,7 @@ public class GameManager implements GameComponent, RenewableSingleton {
     public PlayerController getPlayerController() { return playerController; }
 
     /**
-     * Returns the number of frames to be counted to end the round
+     * Returns the number of frames to be counted to end the stage (level)
      * @return the number of frames
      */
     public int getStageTimerFrames() {
@@ -76,7 +76,7 @@ public class GameManager implements GameComponent, RenewableSingleton {
      * Returns a number that tells the current stage (level)
      * @return a number that indicates the current stage
      */
-    public int getCurentRound() { return currentStage; }
+    public int getCurentStage() { return currentStage; }
 
     /**
      * Returns a boolean that indicates that the Player is living <p>
@@ -85,10 +85,10 @@ public class GameManager implements GameComponent, RenewableSingleton {
     public boolean getPlayerDied() { return playerDied; }
 
     /**
-     * Checks if the current round is over
-     * @return true if the round is over. Otherwise, false
+     * Checks if the current stage is over
+     * @return true if the stage is over. Otherwise, false
      */
-    public boolean isRoundOver() { return isRoundOver; }
+    public boolean isStageOver() { return isStageOver; }
 
     /**
      * Checks if the game is over
@@ -97,8 +97,8 @@ public class GameManager implements GameComponent, RenewableSingleton {
     public boolean isGameOver() { return isGameOver; }
 
     /**
-     * Checks if the Player is in shopping round
-     * @return true if the current round is in shop. Otherwise, false
+     * Checks if the Player is in shopping stage (level)
+     * @return true if the current stage is shop. Otherwise, false
      */
     public boolean isInShop() { return isInShop; }
 
@@ -125,7 +125,7 @@ public class GameManager implements GameComponent, RenewableSingleton {
         if (PlayerStats.getLivesLeft() < 0)
             gameOver();
 
-        isRoundOver = ((EntityManager.getInstance().getEnemyCount() == 0 && stageTimerFrames <= 0) || debugMode);
+        isStageOver = ((EntityManager.getInstance().getEnemyCount() == 0 && stageTimerFrames <= 0) || debugMode);
 
         if (preStageTimerFrames > 0)
             preStageTimerFrames--;
@@ -161,8 +161,8 @@ public class GameManager implements GameComponent, RenewableSingleton {
 
     /* UTILS */
 
-    /** Goes to next round */
-    public void nextRound() {
+    /** Goes to next stage */
+    public void nextStage() {
         /* CLEAN UP */
         // Clear items
         EntityManager.getInstance().removeAllEnemies();
