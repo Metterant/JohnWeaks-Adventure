@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import entity.Enemy;
+import main.GameManager;
 
 public class Biker extends Enemy {
 
@@ -31,7 +32,7 @@ public class Biker extends Enemy {
 
     @Override
     public void start() {
-        health = 1; 
+        health = 1 + (GameManager.getInstance().getCurentStage() / 3); 
         spriteCount = 2;
 
         super.start();
