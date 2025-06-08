@@ -198,8 +198,8 @@ public class Player extends ControllableEntity implements EnemyCollidable {
 
         // If the collided Tile is Next Round Tile, then move onto next round
         if (collidedTile != null && 
-            TileManager.getInstance().tileMapNum[collidedTile.getCol()][collidedTile.getRow()] == TileConstants.NEXT_ROUND_TILE && GameManager.getInstance().isRoundOver()) {
-                GameManager.getInstance().nextRound();
+            TileManager.getInstance().tileMapNum[collidedTile.getCol()][collidedTile.getRow()] == TileConstants.NEXT_ROUND_TILE && GameManager.getInstance().isStageOver()) {
+                GameManager.getInstance().nextStage();
             }
         
         
