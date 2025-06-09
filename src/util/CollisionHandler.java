@@ -120,6 +120,12 @@ public class CollisionHandler {
         }
     }
 
+    /**
+     * Ultility Method used to check collision between two Entities
+     * @param entityA first entity
+     * @param entityB second entity
+     * @return a boolean that indicates whether two objects' collisionBoxes are colliding 
+     */
     public boolean isColliding(Entity entityA, Entity entityB) {
         return entityA.collisionBox.intersects(entityB.collisionBox);
     }
