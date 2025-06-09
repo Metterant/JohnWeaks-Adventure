@@ -3,6 +3,7 @@ package util;
 import entity.*;
 import entity.player.Player;
 import main.GameManager;
+import sound.SoundManager;
 import tile.TileConstants;
 import tile.TileManager;
 import util.pathfinding.TileCoords;
@@ -113,6 +114,7 @@ public class CollisionHandler {
 
             if (nearbyEntity instanceof Pickable pickable && isColliding(nearbyEntity, player) 
                 && pickable.checkPickupConditions()) {
+                SoundManager.getInstance().playSound(SoundManager.PICK_UP);
                 pickable.getPickedUp(player);
 
                 EntityManager.getInstance().destroyEntity(nearbyEntity);

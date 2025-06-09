@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 
 import input.AIController;
 import main.GameManager;
+import sound.SoundManager;
 import util.EntityManager;
 import util.GameConstants;
 import util.pathfinding.TileCoords;
@@ -149,6 +150,7 @@ public abstract class Enemy extends ControllableEntity {
     public int applyDamage(int damage) {
         if (damage < 0) throw new IllegalArgumentException("Damage can't be less than 0");
 
+        SoundManager.getInstance().playSound(SoundManager.HIT);
         health -= damage;
 
         damageFrameCount = 10;

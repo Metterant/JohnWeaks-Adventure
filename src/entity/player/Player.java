@@ -13,6 +13,7 @@ import entity.Enemy;
 import entity.Entity;
 import input.InputController;
 import main.GameManager;
+import sound.SoundManager;
 import tile.TileConstants;
 import tile.TileManager;
 import util.CollisionHandler;
@@ -407,6 +408,9 @@ public class Player extends ControllableEntity implements EnemyCollidable {
     //#endregion
 
     private void usePowerup(PlayerPowerup powerup) {
+        // Playsound (Unused)
+        // SoundManager.getInstance().playSound(SoundManager.POWER_UP);
+
         switch (powerup) {
             case NONE:
                 // No powerup to use
@@ -451,6 +455,9 @@ public class Player extends ControllableEntity implements EnemyCollidable {
     }
 
     private void shootBullet() {
+        // Playsound
+        SoundManager.getInstance().playSound(SoundManager.SHOOT);
+
         double directionX = keyHandler.getInputShootX();
         double directionY = keyHandler.getInputShootY();
 
@@ -571,6 +578,7 @@ public class Player extends ControllableEntity implements EnemyCollidable {
 
     private void playerDied() {
         // Remove all Pickables and Enemies
+        SoundManager.getInstance().playSound(SoundManager.DIE);
         EntityManager.getInstance().removeAllEnemies();
         EntityManager.getInstance().removeAllPickables();
     }
