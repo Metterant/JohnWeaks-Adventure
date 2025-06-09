@@ -3,6 +3,7 @@ package main;
 import javax.swing.JPanel;
 
 import entity.player.PlayerStats;
+import sound.SoundManager;
 import tile.TileManager;
 import ui.*;
 import util.EntityManager;
@@ -108,6 +109,8 @@ public class GamePanel extends JPanel implements Runnable {
         * Orders:
         * TileManager -> GameManager -> EntityManager -> UI
         */
+
+        SoundManager.getInstance().asyncLoadAllClips();
 
         // Init Tile Manager
         TileManager.getInstance().loadImages();
