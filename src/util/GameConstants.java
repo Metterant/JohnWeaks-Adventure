@@ -92,8 +92,8 @@ public class GameConstants {
         public static final double BOOSTED_SPPED = 1.0d;
 
         public static final int DAMAGE_BASE = 1;
-        public static final int DAMAGE_LEVEL_2 = 2;
-        public static final int DAMAGE_LEVEL_3 = 4;
+        public static final int DAMAGE_LEVEL_2 = 3;
+        public static final int DAMAGE_LEVEL_3 = 6;
         public static final int BASE_FRAMES_PER_SHOT = 25;
 
         private Player() { }
